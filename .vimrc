@@ -1411,35 +1411,43 @@ endif
 
 " Vim Configure {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-com! ReVimrc :so $vim/vimrc
+let s:vimrc_path  = 'C:/User/' . $USERNAME . '/.vimrc'
+let s:gvimrc_path = 'C:/User/' . $USERNAME . '/.gvimrc'
+let s:colors_path = 'C:/User/' . $USERNAME . '/vimfiles/colors/'
 
-com! Vimrc   :sp $vim/vimrc
-com! VIMRC   :sp $vim/vimrc
-com! EVIMRC  :e $vim/vimrc
-com! VVIMRC  :vsp $vim/vimrc
-com! TVIMRC  :tabnew $vim/vimrc
+let s:vimrc_path  = '~/.vimrc'
+let s:gvimrc_path = '~/.gvimrc'
+let s:colors_path = '~/vimfiles/colors/'
 
-com! Gvimrc  :sp $vim/gvimrc
-com! GVIMRC  :sp $vim/gvimrc
-com! EGVIMRC :e $vim/gvimrc
-com! VGVIMRC :vsp $vim/gvimrc
-com! TGVIMRC :tabnew $vim/gvimrc
+com! ReVimrc :exe 'so ' . s:vimrc_path
 
-com! EditColor :exe 'sp $VIMRUNTIME/colors/' . g:colors_name . '.vim'
-"com! ColorEdit :exe 'sp $VIMRUNTIME/colors/' . g:colors_name . '.vim'
+com! Vimrc   :exe 'sp '     . s:vimrc_path
+com! VIMRC   :exe 'sp '     . s:vimrc_path
+com! EVIMRC  :exe 'e '      . s:vimrc_path
+com! VVIMRC  :exe 'vsp '    . s:vimrc_path
+com! TVIMRC  :exe 'tabnew ' . s:vimrc_path
 
-com! VEditColor :exe 'vs $VIMRUNTIME/colors/' . g:colors_name . '.vim'
-com! VColorEdit :exe 'vs $VIMRUNTIME/colors/' . g:colors_name . '.vim'
+com! Gvimrc  :exe 'sp '     . s:gvimrc_path
+com! GVIMRC  :exe 'sp '     . s:gvimrc_path
+com! EGVIMRC :exe 'e '      . s:gvimrc_path
+com! VGVIMRC :exe 'vsp '    . s:gvimrc_path
+com! TGVIMRC :exe 'tabnew ' . s:gvimrc_path
 
-let g:vimrc_buf_name = '^' . $vim . '/vimrc$'
-let g:color_buf_name1 = '^' . $vimruntime . '/colors/'
-let g:color_buf_name2 = '.vim$'
+com! EditColor  :exe 'sp ' . s:colors_path . g:colors_name . '.vim'
+com! ColorEdit  :exe 'sp ' . s:colors_path . g:colors_name . '.vim'
+com! VEditColor :exe 'vs ' . s:colors_path . g:colors_name . '.vim'
+com! VColorEdit :exe 'vs ' . s:colors_path . g:colors_name . '.vim'
+
+let g:vimrc_buf_name = '^' . s:vimrc_path
+let g:color_buf_name = '^' . s:colors_path
+let g:color_file_ext = '.vim$'
+
 nnoremap <expr> <Leader>v  ( len(win_findbuf(buffer_number(g:vimrc_buf_name))) > 0 ) && win_id2win(reverse(win_findbuf(buffer_number(g:vimrc_buf_name)))[0]) > 0 ?
 			\  ( win_id2win(reverse(win_findbuf(buffer_number(g:vimrc_buf_name)))[0]) . '<C-w><C-w>' ) :
 			\  ( bufname('')=='' && &buftype=='' && !&modified ) ? ':EVIMRC<CR>' :
 			\  ( <SID>WindowRatio() >= 0 ? ':VVIMRC<CR>' : ':VIMRC<CR>' )
-nnoremap <expr> <Leader>V  ( len(win_findbuf(buffer_number(g:color_buf_name1 . g:colors_name . g:color_buf_name2))) > 0 ) ?
-			\  ( win_id2win(win_findbuf(buffer_number(g:color_buf_name1 . g:colors_name . g:color_buf_name2))[0]) . '<C-w><C-w>' ) :
+nnoremap <expr> <Leader>V  ( len(win_findbuf(buffer_number(g:color_buf_name . g:colors_name . g:color_file_ext))) > 0 ) ?
+			\  ( win_id2win(win_findbuf(buffer_number(g:color_buf_name . g:colors_name . g:color_file_ext))[0]) . '<C-w><C-w>' ) :
 			\  ( <SID>WindowRatio() >= 0 ? ':VEditColor<CR>' : ':EditColor<CR>' )
 
 " Vim Configure }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
