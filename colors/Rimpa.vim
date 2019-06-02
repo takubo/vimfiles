@@ -12,7 +12,7 @@ if exists("syntax_on")
   syntax reset
 endif
 
-let colors_name = "Vitamin"
+let colors_name = "Rimpa"
 
 
 " Vim >= 7.0 specific colors
