@@ -266,3 +266,8 @@ com! InStrTest :call <SID>in_str_test()
 "TODO case行でコロンの自動付加
 "TODO 単独elseの後に；を付加しないようにする。
 so $VIMRUNTIME/pack/takubo/start/tmp/plugin/test.vim
+
+let s:clv_path = './c_local.vim'
+if 1 || filereadable(clv_path)
+  exe 'so ' . s:clv_path
+endif
