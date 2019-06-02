@@ -1,0 +1,7 @@
+BlockDiff
+clever-f.vim
+comfortable-motion.vim
+current-func-info.vim
+mru.vim
+my-vim-plugins
+vim-anzu
