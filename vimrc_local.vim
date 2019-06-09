@@ -7,7 +7,7 @@ if !has('win32') && !has('win64')
 endif
 
 let s:home = 'C:/cygwin/home/' . $USERNAME
-if $HOME == s:home
+if substitute($HOME, '\', '/', 'g') == s:home
   " cygwinから起動されたときは、この後の設定を実施すると二重になる。
   finish
 endif
