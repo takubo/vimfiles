@@ -2131,3 +2131,43 @@ if has('win32') || has('win64') " || has('win32unix')
   exe 'set rtp+=C:\cygwin\home\' . $USERNAME . '\dotfiles\.vim\after'
 endif
 endif
+
+
+
+
+
+
+
+
+" Mapping
+
+cmap <expr> <CR> ( getcmdtype() == '/' ) ?
+               \ ( '<Plug>(MySearch-SlashCR)' ) :
+               \ ( '<CR>' )
+
+nmap *  <Plug>(MySearch-CWord-New-Word-Move)
+nmap #  <Plug>(MySearch-CWord-New-Part-Move)
+nmap &  <Plug>(MySearch-CWord-Add-Word-Move)
+nmap @  <Plug>(MySearch-CWord-Add-Part-Move)
+
+nmap g* <Plug>(MySearch-CWord-New-Word-Keep)
+nmap g# <Plug>(MySearch-CWord-New-Part-Keep)
+nmap g& <Plug>(MySearch-CWord-Add-Word-Keep)
+nmap g@ <Plug>(MySearch-CWord-Add-Part-Keep)
+
+nmap g8 g*
+nmap g3 g#
+nmap g7 g&
+nmap g2 g@
+
+nmap n  <Plug>(MySearch-n)
+nmap N  <Plug>(MySearch-N)
+
+nmap <Leader>n ggnN
+nmap <Leader>N  GNn
+
+"nnoremap <Leader>& <Plug>(MySearch-TopUnderScore)
+"nnoremap <Leader>@ <Plug>(MySearchT-ToggleMultiHighLight)
+
+" clear status
+"nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
