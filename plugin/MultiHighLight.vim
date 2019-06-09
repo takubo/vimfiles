@@ -111,12 +111,11 @@ function! s:init()
   let g:HighlightPatterns = []
   let s:Suspending = v:false  " Suspend中にResetされるとmatchdeleteがエラーになってしまう。
 
+  " Make highlight
   augroup MultiHighLightColor
     au!
   augroup end
-  " Make highlight
   for i in range(s:ColorMax)
-    "exe 'highlight MultiHighLight' . i . ' guifg=' . s:FgColorSequence[i] . ' guibg=' . s:BgColorSequence[i]
     exe 'autocmd MultiHighLightColor VimEnter,ColorScheme * highlight MultiHighLight' . i . ' guifg=' . s:FgColorSequence[i] . ' guibg=' . s:BgColorSequence[i]
   endfor
 
