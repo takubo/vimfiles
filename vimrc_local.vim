@@ -19,10 +19,6 @@ endif
 let $PATH.=';C:\cygwin\bin'
 
 " Shellの設定
-"set sh=D:\takubo\bin\zckw\ckw
-"set sh=D:\takubo\bin\zckw\ckw -e\ C:\cygwin\bin\zsh
-"set sh=C:\cygwin\cygwin.bat
-"set sh=C:\cygwin\bin\mintty
 set sh=C:\cygwin\bin\zsh
 
 " ! や :! 等のコマンドを実行するためにシェルに渡されるフラグ。
@@ -33,8 +29,6 @@ set shellcmdflag=-c\
 set shellxquote=\"
 
 " runtimepathの追加
-"exe 'set runtimepath+=C:/cygwin/home/' . $USERNAME . '/dotfiles/.vim'
-"exe 'set runtimepath+=C:/cygwin/home/' . $USERNAME . '/dotfiles/.vim/after'
 exe 'set runtimepath+=C:/cygwin/home/' . $USERNAME . '/vimfiles/'
 exe 'set runtimepath+=C:/cygwin/home/' . $USERNAME . '/vimfiles/after'
 
