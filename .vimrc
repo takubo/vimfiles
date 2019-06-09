@@ -355,8 +355,15 @@ call EscEsc_Add('call clever_f#reset()')
 
 " Search {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
+
 "----------------------------------------------------------------------------------------
-if 0
+" General Mapping
+
+cmap <expr> <CR> ( getcmdtype() == '/' ) ?
+               \ ( '<Plug>(MySearch-SlashCR)' ) :
+               \ ( '<CR>' )
+
+"----------------------------------------------------------------------------------------
 " 単語   新規 動く	*
 " 単語   新規 留まる	g*	g8
 " 単語   追加 動く	g&	g7
@@ -366,62 +373,82 @@ if 0
 " 非単語 追加 動く	g@	g2
 " 非単語 追加 留まる	@
 "----------------------------------------------------------------------------------------
-else
-" 単語   新規 動く	*
-" 単語   追加 動く	&
-" 非単語 新規 動く	#
-" 非単語 追加 動く	@
-  nnoremap <expr> *  (match(expand("<cword>"), '_') == 0) ? ('/\<_\?' . substitute(expand("<cword>"), '^_', '', '') . '\><CR>') : ('/\<_\?<C-r><C-w>\><CR>')
-  nnoremap <expr> #  (match(expand("<cword>"), '_') == 0) ? ('/_\?' . substitute(expand("<cword>"), '^_', '', '') . '<CR>') : ('/_\?<C-r><C-w><CR>')
-  nnoremap <expr> &  '/<C-p>\\|\<' . ((match(expand("<cword>"), '_') == 0) ? ('_\?' . substitute(expand("<cword>"), '^_', '', '')) : ('_\?<C-r><C-w>')) . '\><CR>'
-  nnoremap <expr> @  '/<C-p>\\|' . ((match(expand("<cword>"), '_') == 0) ? ('_\?' . substitute(expand("<cword>"), '^_', '', '')) : ('_\?<C-r><C-w>')) . '<CR>'
-endif
+
+nmap *  <Plug>(MySearch-CWord-New-Word-Move)
+nmap #  <Plug>(MySearch-CWord-New-Part-Move)
+nmap &  <Plug>(MySearch-CWord-Add-Word-Move)
+nmap @  <Plug>(MySearch-CWord-Add-Part-Move)
+
+nmap g* <Plug>(MySearch-CWord-New-Word-Keep)
+nmap g# <Plug>(MySearch-CWord-New-Part-Keep)
+nmap g& <Plug>(MySearch-CWord-Add-Word-Keep)
+nmap g@ <Plug>(MySearch-CWord-Add-Part-Keep)
+
+nmap g8 g*
+nmap g3 g#
+nmap g7 g&
+nmap g2 g@
+
+nmap n  <Plug>(MySearch-n)
+nmap N  <Plug>(MySearch-N)
+
+nmap <Leader>n ggnN
+nmap <Leader>N  GNn
+
+"nnoremap <Leader>& <Plug>(MySearch-TopUnderScore)
+"nnoremap <Leader>@ <Plug>(MySearchT-ToggleMultiHighLight)
+
+" clear status
+"nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
 
 "----------------------------------------------------------------------------------------
-function! s:search_str_num()
-  let g:save_lang=$LANG
-  let $LANG='C'
-  PushPos
-  let num = CmdOut("silent exe '%s!' . @/ . '!!gn'")
-  PopPos
-  echo '/' . @/ num
-  let $LANG=g:save_lang
-endfunction
-com! SearchStrNum call <SID>search_str_num()
 
-nnoremap <silent> n n:SearchStrNum<CR>
-nnoremap <silent> N N:SearchStrNum<CR>
 
 "----------------------------------------------------------------------------------------
+" 行検索
+"
 nnoremap <Leader>* ^y$:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><CR>
 vnoremap <Leader>*   y:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><CR>
 vnoremap         *   y:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><CR>
+"----------------------------------------------------------------------------------------
+
 
 "----------------------------------------------------------------------------------------
-"? nnoremap <leader>/ /<Up>\<Bar>
-"? nnoremap ? /\<\><Left><Left>
-"? nnoremap <Bar> /<C-p>\<Bar>
-"? nnoremap ! /<C-p>\\|<C-r><C-w><CR>
-"? nnoremap ! /<C-R>*<CR>
-"? __nnoremap _ /\<<C-R>*\><CR>
-"nnoremap <leader>* /\<_\?<C-r><C-w>\><CR>
-"nnoremap <expr> <leader>* (match(expand("<cword>"), '_') == 0) ? ('/\<_\?' . substitute(expand("<cword>"), '^_', '', '') . '\><CR>') : ('/\<_\?<C-r><C-w>\><CR>')
-"nnoremap <expr> <leader># (match(expand("<cword>"), '_') == 0) ? ('/_\?' . substitute(expand("<cword>"), '^_', '', '') . '<CR>') : ('/_\?<C-r><C-w><CR>')
-"nnoremap ! /<C-p>\\|\<<C-r><C-w>\><CR>
-"cnoremap <C-g> \<\><Left><Left>
+" search.vimがないとき用
+"
+"  " 単語   新規 動く	*
+"  " 単語   追加 動く	&
+"  " 非単語 新規 動く	#
+"  " 非単語 追加 動く	@
+"  nnoremap <expr> *  (match(expand("<cword>"), '_') == 0) ? ('/\<_\?' . substitute(expand("<cword>"), '^_', '', '') . '\><CR>') : ('/\<_\?<C-r><C-w>\><CR>')
+"  nnoremap <expr> #  (match(expand("<cword>"), '_') == 0) ? ('/_\?' . substitute(expand("<cword>"), '^_', '', '') . '<CR>') : ('/_\?<C-r><C-w><CR>')
+"  nnoremap <expr> &  '/<C-p>\\|\<' . ((match(expand("<cword>"), '_') == 0) ? ('_\?' . substitute(expand("<cword>"), '^_', '', '')) : ('_\?<C-r><C-w>')) . '\><CR>'
+"  nnoremap <expr> @  '/<C-p>\\|' . ((match(expand("<cword>"), '_') == 0) ? ('_\?' . substitute(expand("<cword>"), '^_', '', '')) : ('_\?<C-r><C-w>')) . '<CR>'
+"----------------------------------------------------------------------------------------
+
 
 "----------------------------------------------------------------------------------------
-"nnoremap       g*  *
-"nnoremap       g#  g*
+" Anzu.vimがないとき用
+"
+"function! s:search_str_num()
+"  let g:save_lang=$LANG
+"  let $LANG='C'
+"  PushPos
+"  let num = CmdOut("silent exe '%s!' . @/ . '!!gn'")
+"  PopPos
+"  echo '/' . @/ num
+"  let $LANG=g:save_lang
+"endfunction
+"com! SearchStrNum call <SID>search_str_num()
+"
+"nnoremap <silent> n n:SearchStrNum<CR>
+"nnoremap <silent> N N:SearchStrNum<CR>
+"----------------------------------------------------------------------------------------
 
-"nnoremap       g!  /<C-p>\\|\<<C-r><C-w>\><CR>
-"nnoremap       g&  /<C-p>\\|<C-r><C-w><CR>
-
-"nnoremap        ?  /<C-p>\<Bar>
-"nnoremap        ?  /\M
-"nnoremap    <Bar>  /<C-p>\<Bar>\<\><Left><Left>
 
 "----------------------------------------------------------------------------------------
+" Migemo
+"
 "??? let g:MigemoIsSlash = 0
 "??? if has('migemo')
 "???   function! s:toggle_migemo_search()
@@ -441,24 +468,8 @@ vnoremap         *   y:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><C
 "???   nnoremap ? g/
 "???   nnoremap <silent> <leader>/ :<C-u>call <SID>toggle_migemo_search()<CR>
 "??? endif
-
 "----------------------------------------------------------------------------------------
-" /			/				o
-" /\<\>			?				 
-" *			*				o
-" g*			#				o
-" / 追加		/ <C-p> <C-t>			 
-" /\<\> 追加		/ <C-p> <C-g> <C-t>		 
-" * 追加		&				o
-" g* 追加		!				 
 
-" _ ! ?
-" / ? * # & _ ! @
-
-" 新規 追加
-" 通常 単語囲み
-" 入力 カーソル下の単語 クリップボード 前回
-" Enter要 不要
 
 " Search }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -2132,42 +2143,3 @@ if has('win32') || has('win64') " || has('win32unix')
 endif
 endif
 
-
-
-
-
-
-
-
-" Mapping
-
-cmap <expr> <CR> ( getcmdtype() == '/' ) ?
-               \ ( '<Plug>(MySearch-SlashCR)' ) :
-               \ ( '<CR>' )
-
-nmap *  <Plug>(MySearch-CWord-New-Word-Move)
-nmap #  <Plug>(MySearch-CWord-New-Part-Move)
-nmap &  <Plug>(MySearch-CWord-Add-Word-Move)
-nmap @  <Plug>(MySearch-CWord-Add-Part-Move)
-
-nmap g* <Plug>(MySearch-CWord-New-Word-Keep)
-nmap g# <Plug>(MySearch-CWord-New-Part-Keep)
-nmap g& <Plug>(MySearch-CWord-Add-Word-Keep)
-nmap g@ <Plug>(MySearch-CWord-Add-Part-Keep)
-
-nmap g8 g*
-nmap g3 g#
-nmap g7 g&
-nmap g2 g@
-
-nmap n  <Plug>(MySearch-n)
-nmap N  <Plug>(MySearch-N)
-
-nmap <Leader>n ggnN
-nmap <Leader>N  GNn
-
-"nnoremap <Leader>& <Plug>(MySearch-TopUnderScore)
-"nnoremap <Leader>@ <Plug>(MySearchT-ToggleMultiHighLight)
-
-" clear status
-"nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
