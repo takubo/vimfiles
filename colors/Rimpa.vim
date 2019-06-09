@@ -33,6 +33,9 @@ endif
 " General colors
 "hi Search	guifg=#000000 guibg=#00eeee
 hi Search	guibg=#c0504d	guifg=white
+hi Search	guibg=#b7282e	guifg=NONE
+hi Search	guibg=#c0504d	guifg=NONE
+hi Search	guibg=#b7282e	guifg=white
 hi SignColumn	guibg=Red guifg=White
 hi FoldColumn	guibg=#444444 guifg=#ff5d28
 hi TabLineFill	guifg=#8f3338 guibg=#A4A4A4
@@ -74,6 +77,7 @@ hi StatusLine	guifg=#efd3b8 guibg=#7f1f1a gui=none  | "italic
 hi StatusLineTerm	guifg=#efd3b8 guibg=#df2a1a gui=none  | "italic
 hi StatusLineTerm	guifg=#efd3b8 guibg=#df2a1a gui=none  | "italic
 hi StatusLineTerm	guifg=#efd3b8 guibg=#8f1a02 gui=none  | "italic
+hi StatusLineTerm	guifg=#efd3b8 guibg=#e83929 gui=none  | "italic
 hi StatusLineTerm	guifg=#efd3b8 guibg=#d0330b gui=none  | "italic
 "hi StatusLineTermNC	guifg=#efd3b8 guibg=#af1a0a gui=none  | "italic
 "hi StatusLineTermNC	guifg=#efd3b8 guibg=#480d01 gui=none  | "italic
