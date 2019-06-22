@@ -349,7 +349,8 @@ endfunction
 " 'noh'はユーザ定義関数内では(事実上)実行出来ないので、別途実行の要あり。
 nnoremap <silent> <Esc><Esc> <Esc>:<C-u>call Esc_Esc() <Bar> noh  <Bar> echon <CR>
 
-call EscEsc_Add('call RestoreDefaultStatusline(0)')
+" おかしくなったときにEscEscで復帰できるように、念のためforceをTrueにして呼び出す。
+call EscEsc_Add('call RestoreDefaultStatusline(v:true)')
 call EscEsc_Add('call clever_f#reset()')
 
 " Esc_Esc }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -1200,11 +1201,19 @@ function! s:SetStatusline(stl, local, time)
 
   " タイマスタート
   if a:time > 0
-    let s:TimerUsl = timer_start(a:time, 'RestoreDefaultStatusline', {'repeat': 0})
+    let s:TimerUsl = timer_start(a:time, 'RestoreDefaultStatusline', {'repeat': v:false})
   endif
 endfunction
 
-function! RestoreDefaultStatusline(dummy)
+function! RestoreDefaultStatusline(force)
+  " 旧タイマの削除
+  if !exists('s:TimerUsl') && !a:force
+    return
+  elseif exists('s:TimerUsl')
+    call timer_stop(s:TimerUsl)
+    unlet s:TimerUsl
+  endif
+
   call s:SetStatusline(s:stl, '', -1)
   let cur_win = winnr()
   windo if exists('w:stl') | let &l:stl = w:stl | unlet w:stl | endif
@@ -1216,13 +1225,13 @@ endfunction
 "----------------------------------------------------------------------------------------
 " Make Default Statusline
 
-function! s:SetDefaultStatusline(fullpath)
+function! s:SetDefaultStatusline(statusline_contents)
 
   let s:stl = "  "
   let s:stl .= "%#SLFileName#[ %{winnr()} ]%## ( %n ) "
   let s:stl .= "%##%m%r%{(!&autoread&&!&l:autoread)?'[AR]':''}%h%w "
 
-  if a:fullpath
+  if a:statusline_contents['Fullpath']
     let s:stl .= "%<"
     let s:stl .= "%##%#SLFileName# %F "
   else
@@ -1242,26 +1251,34 @@ function! s:SetDefaultStatusline(fullpath)
 
   let s:stl .= "%#SLFileName#  %{repeat(' ',winwidth(0)-178)}"
 
-  let s:stl .= "%## %3p%% [%5L] "
+  let s:stl .= "%## %3p%% [%4L] "
  "let s:stl .= "%## %3p%%  %5L  "
-  if 0
-    let s:stl .= "%## %5l L, %3v C "
+  if a:statusline_contents['CurrentLineColumn']
+    let s:stl .= "%## %4lL, %3vC "
   endif
   if 0
     let s:stl .= "%#SLFileName# "
   endif
 
-  call RestoreDefaultStatusline(0)
+  call RestoreDefaultStatusline(v:true)
 endfunction
 
 "----------------------------------------------------------------------------------------
 " Switch Statusline Contents
 
-let g:stl_fullpath = v:false
-nnoremap <silent> <Leader>- :<C-u>let g:stl_fullpath = !g:stl_fullpath <Bar> call <SID>SetDefaultStatusline(g:stl_fullpath)<CR>
+let g:StatuslineContents = {}
+
+let g:StatuslineContents['Fullpath'] = v:false
+let g:StatuslineContents['CurrentLineColumn'] = v:false
+
+"nnoremap <silent> <Leader>- :<C-u>let g:StatuslineContents['Fullpath'] = !g:StatuslineContents['Fullpath'] <Bar> call <SID>SetDefaultStatusline(g:StatuslineContents)<CR>
+com! StlFullpath let g:StatuslineContents['Fullpath'] = !g:StatuslineContents['Fullpath'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
+nnoremap <silent> <Leader>- :<C-u>StlFullpath<CR>
+
+com! StlCurrentLineColumn let g:StatuslineContents['CurrentLineColumn'] = !g:StatuslineContents['CurrentLineColumn'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 
 " 初期設定のために1回は呼び出す。
-call s:SetDefaultStatusline(g:stl_fullpath)
+call s:SetDefaultStatusline(g:StatuslineContents)
 
 "----------------------------------------------------------------------------------------
 " Alt Statusline API
@@ -1273,6 +1290,12 @@ endfunction
 function! AddAltStatusline(stl, local, time)
   call s:SetStatusline((a:local == 'l' ? &l:stl : &stl) . a:stl, a:local, a:time)
 endfunction
+
+"----------------------------------------------------------------------------------------
+" Alt Statusline Enter Visual Mode (TODO)
+nnoremap <silent> v     :<C-u>call RestoreDefaultStatusline(v:false)<CR>v
+nnoremap <silent> V     :<C-u>call RestoreDefaultStatusline(v:false)<CR>V
+nnoremap <silent> <C-v> :<C-u>call RestoreDefaultStatusline(v:false)<CR><C-v>
 
 " Statusline }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
