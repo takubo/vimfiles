@@ -171,10 +171,10 @@ nmap <Leader>3  <Leader>#
 "nnoremap <silent><expr> <leader>, stridx(&isk, '_') < 0 ? ':<C-u>setl isk+=_<CR>' : ':<C-u>setl isk-=_<CR>'
 "nnoremap <silent><expr> <leader>u stridx(&isk, '_') < 0 ? ':<C-u>setl isk+=_<CR>' : ':<C-u>setl isk-=_<CR>'
 
-nnoremap <silent> <Leader>@ :<C-u>call <SID>ToggleNumber()<CR>
+nnoremap <silent> <Leader>@ :<C-u>call <SID>ToggleLineNumber()<CR>
 nmap <Leader>2  <Leader>@
 
-function! s:ToggleNumber()
+function! s:ToggleLineNumber()
   if !&l:number && !&l:relativenumber
     let &l:number = 1
   elseif &l:number && !&l:relativenumber
@@ -211,6 +211,7 @@ vnoremap if ][k<ESC>V[[j
 
 " Cursor Move, CursorLine, CursorColumn, and Scroll {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
+
 "----------------------------------------------------------------------------------------
 " Vertical Move
 
@@ -222,11 +223,13 @@ nnoremap k  gk
 vnoremap j  gj
 vnoremap k  gk
 
+
 "----------------------------------------------------------------------------------------
 " Horizontal Move
 
 " ^に、|の機能を重畳
 nnoremap <silent> ^ <Esc>:exe v:prevcount ? ('normal! ' . v:prevcount . '<Bar>') : 'normal! ^'<CR>
+
 
 "----------------------------------------------------------------------------------------
 " Scroll
@@ -258,6 +261,7 @@ nmap gk <Plug>(ComfortableMotion-Flick-Up)
 vnoremap gj <C-d>
 vnoremap gk <C-u>
 
+
 "----------------------------------------------------------------------------------------
 " Cursorline & Cursorcolumn
 
@@ -269,6 +273,7 @@ augroup end
 
 nnoremap <silent> <Leader>c :<C-u>setl cursorline!<CR>
 nnoremap <silent> <leader>C :<C-u>setl cursorcolumn!<CR>
+
 
 "----------------------------------------------------------------------------------------
 " Scrolloff
@@ -295,6 +300,7 @@ augroup MyVimrc_ScrollOff
   " -o, -Oオプション付きで起動したWindowでは、WinNew, WinEnterが発火しないので、別途設定。
   au VimEnter * call PushPos_All() | exe 'tabdo windo let w:BrowsingScroll = v:false | call <SID>best_scrolloff()' | call PopPos_All()
 augroup end
+
 
 " Cursor Move, CursorLine, CursorColumn, and Scroll }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -777,6 +783,31 @@ nnoremap <expr> du match(&diffopt, 'icase' ) < 0 ? ':<C-u>set diffopt+=icase<CR>
 " diff Y(whi)tespace
 nnoremap <expr> dy match(&diffopt, 'iwhite') < 0 ? ':<C-u>set diffopt+=iwhite<CR>' : ':<C-u>set diffopt-=iwhite<CR>'
 
+" diff off
+nnoremap d<S-Space> :<C-u>diffoff<CR>
+
+" diff accept (obtain and next, obtain and previouse) (dotは、repeat'.')
+nnoremap d. do1gs]c^
+nnoremap dp do1gs[c^
+
+" Next Hunk
+"nnoremap <silent> t ]c^zz:FuncNameStl<CR>
+nnoremap <silent> t ]c^:FuncNameStl<CR>
+
+" Previouse Hunk
+"nnoremap <silent> T [c^zz:FuncNameStl<CR>
+nnoremap <silent> T [c^:FuncNameStl<CR>
+
+" 最初にgg/G/[c/]cすると、FuncNameStlが実行されない不具合あり。対策として、t/Tをnmap。
+
+" Top Hunk
+nmap      <silent> <Leader>t ggtT
+"nnoremap <silent> <Leader>t gg]c[c^zz:FuncNameStl<CR>
+
+" Bottom Hunk
+nmap      <silent> <Leader>T  GTt
+"nnoremap <silent> <Leader>T  G[c]c^zz:FuncNameStl<CR>
+
 " diff Special
 nnoremap <expr> d<Space>
         \ &diff ? ':<C-u>diffupdate<CR>' :
@@ -789,46 +820,9 @@ nnoremap <expr> d<CR>
         \ winnr('$') == 2 ? ':<C-u>call PushPos_All() <Bar> exe "windo diffthis" <Bar> call PopPos_All()<CR>' :
         \ ':<C-u>diffthis<CR>'
 
-" diff off
-nnoremap d<S-Space> :<C-u>diffoff<CR>
-
-" diff accept (obtain and next or Previouse) (dotは、repeat.)
-nnoremap d. do1gs]c^
-nnoremap dp do1gs[c^
-
-if 1 " exists(':FuncNameStl') == 2
-  " Next Hunk
-  "nnoremap <silent> t ]c^zz:FuncNameStl<CR>
-  nnoremap <silent> t ]c^:FuncNameStl<CR>
-  " Previouse Hunk
-  "nnoremap <silent> T [c^zz:FuncNameStl<CR>
-  nnoremap <silent> T [c^:FuncNameStl<CR>
-  " Top Hunk
-  nmap      <silent> <Leader>t ggtT
-  "nnoremap <silent> <Leader>t gg]c[c^zz:FuncNameStl<CR>
-  " Bottom Hunk
-  nmap      <silent> <Leader>T  GTt
-  "nnoremap <silent> <Leader>T  G[c]c^zz:FuncNameStl<CR>
-  " 最初にgg/G/[c/]cすると、FuncNameStlが実行されない不具合あり。対策として、t/Tをnmap。
-else
-  " Next Hunk
-  nnoremap <silent> t ]c^zz
-  " Previouse Hunk
-  nnoremap <silent> T [c^zz
-  " Top Hunk
-  nnoremap <silent> <Leader>t gg]c[c^zz
-  " Bottom Hunk
-  nnoremap <silent> <Leader>T  G[c]c^zz
-endif
-
 " Block Diff
-if 0
-  vmap <leader>1 <Plug>(BlockDiff-GetBlock1)
-  vmap <leader>2 <Plug>(BlockDiff-GetBlock2andExe)
-  vmap <leader>3 <Plug>(BlockDiff-GetBlock1andExe)
-  vmap <leader>4 <Plug>(BlockDiff-GetBlock2)
-  nmap <leader>1 <Plug>(BlockDiff-Exe)
-endif
+vmap <leader>1 <Plug>(BlockDiff-GetBlock1)
+vmap <leader>2 <Plug>(BlockDiff-GetBlock2andExe)
 
 " Diff }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
