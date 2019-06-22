@@ -1,7 +1,7 @@
 scriptencoding utf-8
 " vim: set ts=8 sts=2 sw=2 tw=0 :
 
-if exists('loaded_BrowserJump')
+if !exists('loaded_BrowserJump')
   finish
 endif
 let loaded_BrowserJump = v:true
@@ -13,14 +13,7 @@ set cpo&vim
 let g:BrowserJump_JumpToOrgPos = get(g:, 'BrowserJump_JumpToOrgPos', v:false)
 
 
-function! s:init_win()
-  let w:BrowserJumpList = []
-  let w:BrowserJumpNowIndex = -1
-  let w:BrowserJumpTop = v:false
-endfunction
-
-
-function! BrowserJump_Back()
+function! BrowserJump#Back()
   if s:update_jumplist() || w:BrowserJumpTop
     exe 'normal! ' . line('.') . 'G'
     call s:update_jumplist()
@@ -34,7 +27,7 @@ function! BrowserJump_Back()
 endfunction
 
 
-function! BrowserJump_Foward()
+function! BrowserJump#Foward()
   if w:BrowserJumpNowIndex < (len(w:BrowserJumpList) - 1)
     " 現在位置に戻って来れるように更新
     let ind = w:BrowserJumpNowIndex
@@ -87,31 +80,13 @@ function! s:update_jumplist()
 endfunction
 
 
-function! BrowserJump_Disp()
+function! BrowserJump#History()
   let w:BrowserJumpTop = (w:BrowserJumpTop || s:update_jumplist())
   for i in range(0, len(w:BrowserJumpList) - 1)
     echo printf('%3d ', i) (w:BrowserJumpNowIndex == i ? w:BrowserJumpTop ? '?' : '>' : ' ') w:BrowserJumpList[i]['org'] w:BrowserJumpList[i]['buf_nr']
   endfor
   echo ' ' ((w:BrowserJumpNowIndex < 0 || len(w:BrowserJumpList) <= w:BrowserJumpNowIndex) ? w:BrowserJumpNowIndex : '')
 endfunction
-
-
-augroup BrowserJump
-  au!
-  au WinNew * call s:init_win()
-augroup end
-call PushPos_All() | exe 'tabdo windo call s:init_win()' | call PopPos_All()
-
-
-nnoremap <silent> <Plug>(BrowserJump-Back)         :<C-u>call BrowserJump_Back()<CR>
-nnoremap <silent> <Plug>(BrowserJump-Foward)       :<C-u>call BrowserJump_Foward()<CR>
-nnoremap <silent> <Plug>(BrowserJump-Disp)         :<C-u>call BrowserJump_Disp()<CR>
-nnoremap <silent> <Plug>(BrowserJump-ToggleOrgPos) :<C-u>let g:BrowserJump_JumpToOrgPos=!g:BrowserJump_JumpToOrgPos<CR>:echo (g:BrowserJump_JumpToOrgPos ? '' : 'No') . 'BrowserJump_JumpToOrgPos'<CR>
-
-nmap <silent> H         <Plug>(BrowserJump-Back)
-nmap <silent> L         <Plug>(BrowserJump-Foward)
-nmap <silent> <Leader>H <Plug>(BrowserJump-Disp)
-nmap <silent> <Leader>L <Plug>(BrowserJump-ToggleOrgPos)
 
 
 let &cpo = s:save_cpo

@@ -584,8 +584,12 @@ nnoremap <silent> <A-m>     :<C-u>let c_jk_local = !c_jk_local<CR>
 " Tag, Jump, and Unified CR {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 " Browse
-nnoremap H <C-o>
-nnoremap L <C-i>
+"nnoremap H <C-o>
+"nnoremap L <C-i>
+nmap <silent> H         <Plug>(BrowserJump-Back)
+nmap <silent> L         <Plug>(BrowserJump-Foward)
+"nmap <silent> <Leader>H <Plug>(BrowserJump-Disp)
+"nmap <silent> <Leader>L <Plug>(BrowserJump-ToggleOrgPos)
 
 " 補償
 noremap zh H
