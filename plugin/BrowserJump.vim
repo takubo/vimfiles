@@ -27,7 +27,7 @@ augroup end
 com! -nargs=0 BrowserJumpBack         call BrowserJump#Back()
 com! -nargs=0 BrowserJumpFoward       call BrowserJump#Foward()
 com! -nargs=0 BrowserJumpHistory      call BrowserJump#History()
-com! -nargs=0 BrowserJumpToggleOrgPos call BrowserJump_Jump#ToOrgPos()
+com! -nargs=0 BrowserJumpToggleOrgPos call BrowserJump#ToggleOrgPos()
 
 
 nnoremap <silent> <Plug>(BrowserJump-Back)         :<C-u>BrowserJumpBack<CR>
