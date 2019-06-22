@@ -242,9 +242,12 @@ let g:comfortable_motion_air_drag = 6.0
 let g:comfortable_motion_impulse_multiplier = 3.8
 
 let g:comfortable_motion_friction = 250.0
+let g:comfortable_motion_friction = 253.0
 let g:comfortable_motion_air_drag = 25.0
 let g:comfortable_motion_air_drag = 45.0
 let g:comfortable_motion_impulse_multiplier = 15.8
+let g:comfortable_motion_impulse_multiplier = 35.8
+let g:comfortable_motion_impulse_multiplier = 38.0
 
 nnoremap <silent> <Plug>(ComfortableMotion-Flick-Down) :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0)     )<CR>
 nnoremap <silent> <Plug>(ComfortableMotion-Flick-Up)   :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -1)<CR>
