@@ -130,6 +130,9 @@ augroup MyVimrc
 augroup end
 
 
+so ~/vimfiles/macros/PushposPopPos.vim
+
+
 
 " Basic {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
@@ -1656,91 +1659,6 @@ function! GetKey()
   return nr2char(getchar())
 endfunction
 "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-
-" Push Pop Pos {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-
-"" データ構造定義 """"""""""""""""
-"  dict {
-"    'TopRow' : #;
-"    'Cursor' : [];
-"  } s:SavePos[スタック];
-""""""""""""""""""""""""""""""""""
-
-let s:SavePos = []
-
-function! PushPos()
-  " 画面最上行番号取得 (インデックス1が行番号)
-  let toprow = getpos('w0')[1]
-
-  " カーソル位置取得
-  let cursor = getcurpos()
-
-  " スタックへ保存
-  call add(s:SavePos, {'TopRow' : toprow, 'Cursor' : cursor})
-endfunction
-com! PushPos :call PushPos()
-
-function! ApplyPos()
-  " " スタックが空なら何もしない
-  " if empty(s:SavePos) | return | endif
-
-  " silentを付けて回る!!!!!!
-
-  " スタックトップの要素を取得
-  let savepos = get(s:SavePos, len(s:SavePos)- 1)
-
-  " 画面最上行番号を復帰
-  " scrolloffを一旦0にしないと、上手く設定できない。
-  let save_scrolloff = &scrolloff
-  let &scrolloff = 0
-  exe "normal! " . savepos['TopRow'] . "zt"
-  let &scrolloff = save_scrolloff
-
-  " カーソル位置を復帰
-  call setpos('.', savepos['Cursor'])
-endfunction
-com! ApplyPos :call ApplyPos()
-
-function! DropPos()
-  " " スタックが空なら何もしない
-  " if empty(s:SavePos) | return | endif
-
-  " スタックトップの要素を除去
-  call remove(s:SavePos, len(s:SavePos)- 1)
-endfunction
-com! DropPos :call DropPos()
-
-function! PopPos()
-  call ApplyPos()
-  call DropPos()
-endfunction
-com! PopPos :call PopPos()
-
-" ---------------
-" PushPos_All:
-" ---------------
-function! PushPos_All()
-    PushPos
-    let g:now_buf = bufnr('')
-    let g:now_win = winnr()
-    let g:now_tab = tabpagenr()
-endfunction
-com! PushPosAll :call PushPos_All()
-
-" ---------------
-" PopPos_All:
-" ---------------
-function! PopPos_All()
-    silent exe 'tabnext ' . g:now_tab
-    silent exe g:now_win . 'wincmd w'
-    silent exe 'buffer ' . g:now_buf
-    PopPos
-endfunction
-com! PopPosAll :call PopPos_All()
-
-" Push Pop Pos }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
