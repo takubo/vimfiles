@@ -623,6 +623,27 @@ function! Unified_CR(mode)
   endif
 endfunction
 
+
+" ----------------------------------------------------------------------------------------------
+" Tag Match
+
+augroup MyVimrc_TagMatch
+  au!
+  au ColorScheme * hi TagMatch	guibg=#c0504d	guifg=white
+augroup end
+
+function! TagHighlightDelete(dummy)
+  "echo a:dummy
+  "sleep 5
+  "call matchdelete(g:TagMatch)
+  call matchdelete(g:TagMatchI[a:dummy])
+  call remove(g:TagMatchI, a:dummy . '')
+  "echo g:TagMatchI
+endfunction
+
+let g:TagMatchI = {}
+let s:TagHighlightTime = 1000  " [ms]
+
 " TODO
 "   ラベルならf:b
 "   変数なら、スクロールしない
@@ -630,9 +651,18 @@ endfunction
 "   asmのタグ
 function! JumpToDefine(mode)
   let w0 = expand("<cword>")
+
+  if w0 !~ '\<\i\+\>'
+    return
+  endif
+
   let w = w0
 
- "for i in range(2)
+  let g:TagMatch0 = matchadd('TagMatch', '\<'.w.'\>')
+  let g:TimerTagMatch0 = timer_start(s:TagHighlightTime, 'TagHighlightDelete')
+  let g:TagMatchI[g:TimerTagMatch0] = g:TagMatch0
+  redraw
+
   for i in range(2 + 2)
     try
       if a:mode =~? 's'
@@ -644,6 +674,9 @@ function! JumpToDefine(mode)
       exe "normal! z\<CR>" . (winheight(0)/4) . "\<C-y>"
       " カーソル位置を調整 (C専用)
       call PostTagJumpCursor_C()
+      let g:TagMatch = matchadd('TagMatch', '\<'.w.'\>')
+      let g:TimerTagMatch = timer_start(s:TagHighlightTime, 'TagHighlightDelete')
+      let g:TagMatchI[g:TimerTagMatch] = g:TagMatch
       return
     catch /:E426:/
       if w0 =~ '^_'
@@ -653,7 +686,9 @@ function! JumpToDefine(mode)
 	" 元の検索語は"_"始まりでない
 	let w = '_' . w0
       endif
+      if i == 0
       let exception = v:exception
+      endif
     catch /:E433:/
       echohl ErrorMsg | echo matchstr(v:exception, 'E\d\+:.*') | echohl None
       return
