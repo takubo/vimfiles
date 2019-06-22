@@ -1618,8 +1618,8 @@ com! Transparency echo printf(' Transparency = %4.1f%%', &transparency * 100 / 2
 
 
 ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-command! Tab2Space :setlocal   expandtab | retab<CR>
-command! Space2Tab :setlocal noexpandtab | retab!<CR>
+com! Tab2Space :setlocal   expandtab | retab<CR>
+com! Space2Tab :setlocal noexpandtab | retab!<CR>
 
 com! XMLShape :%s/></>\r</g | filetype indent on | setf xml | normal gg=G
 "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1750,45 +1750,6 @@ com! PopPosAll :call PopPos_All()
 
 
 
-" Commnad Output Capture {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-
-command!
-      \ -nargs=+ -bang
-      \ -complete=command
-      \ CmdOutCapture
-      \ call s:cmd_out_capture([<f-args>], <bang>0)
-
-function! s:cmd_out_capture(args, banged)
-  new
-  silent put =CmdOut(join(a:args))
-  1,2delete _
-endfunction
-
-command!
-      \ -nargs=+ -bang
-      \ -complete=command
-      \ CmdOutYank
-      \ call s:cmd_out_yank([<f-args>], <bang>0)
-
-function! s:cmd_out_yank(args, banged)
-  silent let @* = CmdOut(join(a:args))
-endfunction
-
-function! CmdOut(cmd)
-  redir => result
-  silent execute a:cmd
-  redir END
-  return result
-endfunction
-
-function! CmdOutLine(args)
-  return split(CmdOut(a:args), '\n')
-endfunction
-
-" Commnad Output Capture }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
-
-
 " Util {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 function! TitleCase(str)
@@ -1809,18 +1770,6 @@ function! D2X(dec)
   return hex . "U" . (len(hex) > 6 ? "UL" : "U")
 endfunction
 "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-"so $vim/PrjTree.vim
-"so $vim/qf.vim
-"so $vim/mycfi.vim
-"so $vim/test.vim
-"so $vim/em.vim
-"so $vim/my_multiple.vim
-"so $vim/buf.vim
-"so $VIMRUNTIME/macros/matchit.vim
-"so $vim/anzu.vim
-"so $vim/BrowserJump.vim
 
 
 "set foldmethod=syntax
