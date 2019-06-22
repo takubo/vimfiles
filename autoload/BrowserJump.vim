@@ -89,5 +89,11 @@ function! BrowserJump#History()
 endfunction
 
 
+function! BrowserJump#ToggleOrgPos()
+  let g:BrowserJump_JumpToOrgPos = !g:BrowserJump_JumpToOrgPos
+  echo 'BrowserJump: ' . (g:BrowserJump_JumpToOrgPos ? '' : 'No ') . 'JumpToOrgPos'
+endfunction
+
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
