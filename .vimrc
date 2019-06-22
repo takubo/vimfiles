@@ -1482,7 +1482,7 @@ endif
 
 
 
-" Vim Configure {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+" Configuration {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 let s:vimrc_path  = 'C:/User/' . $USERNAME . '/.vimrc'
 let s:gvimrc_path = 'C:/User/' . $USERNAME . '/.gvimrc'
@@ -1523,7 +1523,7 @@ nnoremap <expr> <Leader>V  ( len(win_findbuf(buffer_number(g:color_buf_name . g:
 			\  ( win_id2win(win_findbuf(buffer_number(g:color_buf_name . g:colors_name . g:color_file_ext))[0]) . '<C-w><C-w>' ) :
 			\  ( <SID>WindowRatio() >= 0 ? ':VEditColor<CR>' : ':EditColor<CR>' )
 
-" Vim Configure }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+" Configuration }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
@@ -1558,7 +1558,7 @@ nnoremap <silent> gf :<C-u>aboveleft sp<CR>gF
 
 
 
-" Clever-f Configuration {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+" Clever-f {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 let g:clever_f_smart_case=1			"
 let g:clever_f_use_migemo=1			"
@@ -1581,7 +1581,7 @@ function! s:clever_f_use_migemo_toggle()
   echo g:clever_f_use_migemo ? 'clever_f_use_migemo' : 'No clever_f_use_migemo'
 endfunction
 
-" Clever-f Configuration }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+" Clever-f }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
@@ -1753,19 +1753,6 @@ endfunction
 " Util }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
-">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-augroup MyVimrc_Em
-  au!
-  au BufNewFile,BufRead,BufFilePost,BufWinEnter,BufNew,FilterReadPost,FileReadPost *.{c,h} so $vim/em.vim
-augroup end
-function! D2X(dec)
-  "return printf("0x%X", a:dec)
-  let hex = printf("0x%X", a:dec)
-  return hex . "U" . (len(hex) > 6 ? "UL" : "U")
-endfunction
-"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
 "set foldmethod=syntax
 set nowildmenu
 set wildmode=longest,full
@@ -1786,10 +1773,6 @@ if 0
 endif
 "=====================================================================================================================================
 
-set packpath+=$VIMRUNTIME
-
-let $PATH.=';C:\cygwin\bin'
-
 " Windowsでの設定例です。Mac他の場合は外部コマンド部分を読み替えてください。
 au FileType plantuml command! OpenUml :!/cygdrive/c/Program\ Files/Google/Chrome/Application/chrome.exe %
 
@@ -1799,11 +1782,6 @@ com! FL help function-list<CR>
 
 " from default
 filetype plugin indent on
-
-
-com! Date echo '' strftime("%Y/%m/%d (%a) %H:%M:%S")
-com! Time Date
-com! Bat echo '' bat_str
 
 
 set renderoptions=type:directx,scrlines:1
@@ -1955,11 +1933,6 @@ nnoremap <silent> <nowait> yl :<C-u>vnew<CR>
 " - , <BS>
 " \\
 " : + |
-
-
-if filereadable('customer.vim')
-  so $vim/customer.vim
-endif
 
 
 com! AR :setl autoread!
