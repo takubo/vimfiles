@@ -282,7 +282,7 @@ let g:BrowsingScroll = v:false
 nnoremap z<Space>  :<C-u> let g:BrowsingScroll = !g:BrowsingScroll
                   \ <Bar> exe g:BrowsingScroll ? 'normal! zz' : ''
                   \ <Bar> call <SID>best_scrolloff()
-                  \ <Bar> echo g:BrowsingScroll ? 'BrowsingScroll' : 'NoBrowsingScroll'<CR>
+                  \ <Bar> echo g:BrowsingScroll ? 'Global BrowsingScroll' : 'Global NoBrowsingScroll'<CR>
 nnoremap g<Space>  :<C-u> let w:BrowsingScroll = !w:BrowsingScroll
                   \ <Bar> exe w:BrowsingScroll ? 'normal! zz' : ''
                   \ <Bar> call <SID>best_scrolloff()
