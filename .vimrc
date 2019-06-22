@@ -1260,23 +1260,26 @@ nmap <expr> <S-Space> winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Up)'   :
 " Unified_Space }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
+
 " Mru {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-if exists('loaded_mru') && 0
-  "let MRU_Window_Height = min([20, &lines / 4 ])
-  "let MRU_Window_Height = max([8, &lines / 4 ])
-  let MRU_Window_Height = 25
-  augroup MyVimrc_MRU
+" MRU Plugin ----------------------------------------------------------------------------------------------
+"let MRU_Window_Height = min([20, &lines / 4 ])
+"let MRU_Window_Height = max([8, &lines / 4 ])
+let MRU_Window_Height = 25
+augroup MyVimrc_MRU
     au!
     "au VimResized * let MRU_Window_Height = min([25, &lines / 3 ])
-    au VimResized * let MRU_Window_Height = max([8, &lines / 3 ])
-  augroup end
-  nnoremap <silent> <leader>o :<C-u>MRU<CR>
-else
-  command! -nargs=* MRU exe 'browse filter %\c' . substitute(<q-args>, '[ *]', '.*', 'g') . '% oldfiles'
-  nnoremap <Leader>o :<C-u>MRU<Space>
-  " nnoremap <Leader>o  :<C-u>/ oldfiles<Home>browse filter /\c
-endif
+  au VimEnter,VimResized * let MRU_Window_Height = max([8, &lines / 3 ])
+augroup end
+" nnoremap <silent> <leader>o :<C-u>MRU<CR>
+
+" My MRU --------------------------------------------------------------------------------------------------
+command! -nargs=* MRU2 exe 'browse filter %\c' . substitute(<q-args>, '[ *]', '.*', 'g') . '% oldfiles'
+" nnoremap <Leader>o  :<C-u>/ oldfiles<Home>browse filter /\c
+
+" Common --------------------------------------------------------------------------------------------------
+nnoremap <Leader>o :<C-u>MRU<Space>
 
 " Mru }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
