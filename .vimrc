@@ -271,7 +271,7 @@ nnoremap <silent> <leader>C :<C-u>setl cursorcolumn!<CR>
 " Scrolloff
 
 function! s:best_scrolloff()
-  " Quickfixでは、なぜかWinNewが聞かないので、exists()で変数の存在を確認せねばならない。
+  " Quickfixでは、なぜかWinNewが発火しないので、exists()で変数の存在を確認せねばならない。
   let &l:scrolloff = (g:BrowsingScroll || (exists('w:BrowsingScroll') && w:BrowsingScroll)) ? 99999 : ( winheight(0) < 10 ? 0 : winheight(0) < 20 ? 2 : 5 )
 endfunction
 
@@ -289,9 +289,9 @@ augroup MyVimrc_ScrollOff
   au!
   au WinNew              * let w:BrowsingScroll = v:false
   au WinEnter,VimResized * call <SID>best_scrolloff()
+  " -o, -Oオプション付きで起動したWindowでは、WinNew, WinEnterが発火しないので、別途設定。
+  au VimEnter * call PushPos_All() | exe 'tabdo windo let w:BrowsingScroll = v:false | call <SID>best_scrolloff()' | call PopPos_All()
 augroup end
-" 最初のWindowに対しては、WinNewが効かないので、別途設定。
-let w:BrowsingScroll = v:false
 
 " Cursor Move, CursorLine, CursorColumn, and Scroll }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
