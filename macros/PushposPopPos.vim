@@ -93,13 +93,13 @@ endfunction
 
 
 
-com! PushPos :call PushPos()
-com! ApplyPos :call ApplyPos()
-com! DropPos :call DropPos()
-com! PopPos :call PopPos()
+com! PushPos  call PushPos()
+com! ApplyPos call ApplyPos()
+com! DropPos  call DropPos()
+com! PopPos   call PopPos()
 
-com! PushPosAll :call PushPos_All()
-com! PopPosAll :call PopPos_All()
+com! PushPosAll call PushPos_All()
+com! PopPosAll  call PopPos_All()
 
 
 

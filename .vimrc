@@ -130,7 +130,7 @@ augroup MyVimrc
 augroup end
 
 
-so ~/vimfiles/macros/PushposPopPos.vim
+ru macros/PushposPopPos.vim
 
 
 
