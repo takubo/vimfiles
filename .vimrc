@@ -383,18 +383,18 @@ cmap <expr> <CR> ( getcmdtype() == '/' ) ?
 "------------------------------------
 
 nmap *  <Plug>(MySearch-CWord-New-Word-Move)
+nmap &  <Plug>(MySearch-CWord-Add-Word-Keep)
 nmap #  <Plug>(MySearch-CWord-New-Part-Move)
-nmap &  <Plug>(MySearch-CWord-Add-Word-Move)
-nmap @  <Plug>(MySearch-CWord-Add-Part-Move)
+nmap @  <Plug>(MySearch-CWord-Add-Part-Keep)
 
 nmap g* <Plug>(MySearch-CWord-New-Word-Keep)
+nmap g& <Plug>(MySearch-CWord-Add-Word-Move)
 nmap g# <Plug>(MySearch-CWord-New-Part-Keep)
-nmap g& <Plug>(MySearch-CWord-Add-Word-Keep)
-nmap g@ <Plug>(MySearch-CWord-Add-Part-Keep)
+nmap g@ <Plug>(MySearch-CWord-Add-Part-Move)
 
 nmap g8 g*
-nmap g3 g#
 nmap g7 g&
+nmap g3 g#
 nmap g2 g@
 
 nmap n  <Plug>(MySearch-n)
