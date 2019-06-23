@@ -405,7 +405,9 @@ nmap g2 g@
 nmap n  <Plug>(MySearch-n)
 nmap N  <Plug>(MySearch-N)
 
+" move to first
 nmap <Leader>n ggnN
+" move to last
 nmap <Leader>N  GNn
 
 "nnoremap <Leader>& <Plug>(MySearch-TopUnderScore)
@@ -414,8 +416,6 @@ nmap <Leader>N  GNn
 " clear status
 "nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
 
-"----------------------------------------------------------------------------------------
-
 
 "----------------------------------------------------------------------------------------
 " 行検索
@@ -423,65 +423,6 @@ nmap <Leader>N  GNn
 nnoremap <Leader>* ^y$:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><CR>
 vnoremap <Leader>*   y:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><CR>
 vnoremap         *   y:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><CR>
-"----------------------------------------------------------------------------------------
-
-
-"----------------------------------------------------------------------------------------
-" search.vimがないとき用
-"
-"  " 単語   新規 動く	*
-"  " 単語   追加 動く	&
-"  " 非単語 新規 動く	#
-"  " 非単語 追加 動く	@
-"  nnoremap <expr> *  (match(expand("<cword>"), '_') == 0) ? ('/\<_\?' . substitute(expand("<cword>"), '^_', '', '') . '\><CR>') : ('/\<_\?<C-r><C-w>\><CR>')
-"  nnoremap <expr> #  (match(expand("<cword>"), '_') == 0) ? ('/_\?' . substitute(expand("<cword>"), '^_', '', '') . '<CR>') : ('/_\?<C-r><C-w><CR>')
-"  nnoremap <expr> &  '/<C-p>\\|\<' . ((match(expand("<cword>"), '_') == 0) ? ('_\?' . substitute(expand("<cword>"), '^_', '', '')) : ('_\?<C-r><C-w>')) . '\><CR>'
-"  nnoremap <expr> @  '/<C-p>\\|' . ((match(expand("<cword>"), '_') == 0) ? ('_\?' . substitute(expand("<cword>"), '^_', '', '')) : ('_\?<C-r><C-w>')) . '<CR>'
-"----------------------------------------------------------------------------------------
-
-
-"----------------------------------------------------------------------------------------
-" Anzu.vimがないとき用
-"
-"function! s:search_str_num()
-"  let g:save_lang=$LANG
-"  let $LANG='C'
-"  PushPos
-"  let num = CmdOut("silent exe '%s!' . @/ . '!!gn'")
-"  PopPos
-"  echo '/' . @/ num
-"  let $LANG=g:save_lang
-"endfunction
-"com! SearchStrNum call <SID>search_str_num()
-"
-"nnoremap <silent> n n:SearchStrNum<CR>
-"nnoremap <silent> N N:SearchStrNum<CR>
-"----------------------------------------------------------------------------------------
-
-
-"----------------------------------------------------------------------------------------
-" Migemo
-"
-"??? let g:MigemoIsSlash = 0
-"??? if has('migemo')
-"???   function! s:toggle_migemo_search()
-"???     let g:MigemoIsSlash = !g:MigemoIsSlash
-"???     if g:MigemoIsSlash
-"???       nnoremap / g/
-"???       nnoremap ? /
-"???       let g:clever_f_use_migemo=1
-"???     else
-"???       nnoremap / /
-"???       nnoremap ? g/
-"???       let g:clever_f_use_migemo=0
-"???     endif
-"???   endfunction
-"??? 
-"???  "nnoremap / /
-"???   nnoremap ? g/
-"???   nnoremap <silent> <leader>/ :<C-u>call <SID>toggle_migemo_search()<CR>
-"??? endif
-"----------------------------------------------------------------------------------------
 
 
 " Search }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -2027,6 +1968,32 @@ com! -nargs=0 SH2 call FrontSh()
 nnoremap g<Space> :SH2<CR>
 
 " Cygwin }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+
+
+"----------------------------------------------------------------------------------------
+" Migemo
+"
+"??? let g:MigemoIsSlash = 0
+"??? if has('migemo')
+"???   function! s:toggle_migemo_search()
+"???     let g:MigemoIsSlash = !g:MigemoIsSlash
+"???     if g:MigemoIsSlash
+"???       nnoremap / g/
+"???       nnoremap ? /
+"???       let g:clever_f_use_migemo=1
+"???     else
+"???       nnoremap / /
+"???       nnoremap ? g/
+"???       let g:clever_f_use_migemo=0
+"???     endif
+"???   endfunction
+"??? 
+"???  "nnoremap / /
+"???   nnoremap ? g/
+"???   nnoremap <silent> <leader>/ :<C-u>call <SID>toggle_migemo_search()<CR>
+"??? endif
+"----------------------------------------------------------------------------------------
 
 
 
