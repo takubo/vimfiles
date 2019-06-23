@@ -167,15 +167,15 @@ cnoremap >> \>
 cnoremap <Bar><Bar> \<Bar>
 
 " コメント行の後の新規行の自動コメント化のON/OFF
-nnoremap <expr> <Leader># &formatoptions =~# 'o' ? ':<C-u>set formatoptions-=o<CR>:set formatoptions-=r<CR>' : ':<C-u>set formatoptions+=o<CR>:set formatoptions+=r<CR>'
-nmap <Leader>3  <Leader>#
+nnoremap <expr> <Leader>@ &formatoptions =~# 'o' ? ':<C-u>set formatoptions-=o<CR>:set formatoptions-=r<CR>' : ':<C-u>set formatoptions+=o<CR>:set formatoptions+=r<CR>'
+nmap <Leader>2 <Leader>@
 
 "nnoremap <silent><expr> <leader>. stridx(&isk, '.') < 0 ? ':<C-u>setl isk+=.<CR>' : ':<C-u>setl isk-=.<CR>'
 "nnoremap <silent><expr> <leader>, stridx(&isk, '_') < 0 ? ':<C-u>setl isk+=_<CR>' : ':<C-u>setl isk-=_<CR>'
 "nnoremap <silent><expr> <leader>u stridx(&isk, '_') < 0 ? ':<C-u>setl isk+=_<CR>' : ':<C-u>setl isk-=_<CR>'
 
-nnoremap <silent> <Leader>@ :<C-u>call <SID>ToggleLineNumber()<CR>
-nmap <Leader>2  <Leader>@
+nnoremap <silent> <Leader># :<C-u>call <SID>ToggleLineNumber()<CR>
+nmap <Leader>3 <Leader>#
 
 function! s:ToggleLineNumber()
   if !&l:number && !&l:relativenumber
@@ -243,18 +243,9 @@ nnoremap <silent> <C-k> <C-u>
 vnoremap <silent> <Space>   <C-d>
 vnoremap <silent> <S-Space> <C-u>
 
-let g:comfortable_motion_friction = 90.0
-let g:comfortable_motion_air_drag = 6.0
-let g:comfortable_motion_impulse_multiplier = 3.8
-
-let g:comfortable_motion_friction = 250.0
 let g:comfortable_motion_friction = 253.0
-let g:comfortable_motion_air_drag = 25.0
 let g:comfortable_motion_air_drag = 45.0
-let g:comfortable_motion_impulse_multiplier = 15.8
-let g:comfortable_motion_impulse_multiplier = 35.8
 let g:comfortable_motion_impulse_multiplier = 38.0
-
 nnoremap <silent> <Plug>(ComfortableMotion-Flick-Down) :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0)     )<CR>
 nnoremap <silent> <Plug>(ComfortableMotion-Flick-Up)   :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -1)<CR>
 
@@ -1877,7 +1868,6 @@ function! CursorWord()
   endif
   return 0
 endfunction
-"map \e :so %<CR>
 
 
 function! ProcTopUnderScore(word)
@@ -1931,7 +1921,7 @@ endfunction
 function! ZZ()
   let n = 25
   for i in range(n)
-    execute "normal! " . 1 . g:comfortable_motion_scroll_down_key
+    execute "normal! " . g:comfortable_motion_scroll_down_key
     redraw
   endfor
 endfunction
