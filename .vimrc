@@ -1223,6 +1223,13 @@ function! RestoreDefaultStatusline(force)
   silent exe cur_win . 'wincmd w'
 endfunction
 
+augroup MyVimrc_Stl
+  au!
+  " このイベントがないと、AltStlが設定されているWindowを分割して作ったWindowの&l:stlに、
+  " (分割元Windowの)AltStlの内容が設定されっぱなしになってしまう。
+  au WinEnter * let &l:stl = ''
+augroup end
+
 "----------------------------------------------------------------------------------------
 " Make Default Statusline
 
