@@ -1928,39 +1928,6 @@ endfunction
 
 
 
-" Cygwin {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-
-com! -nargs=0 SH call system('/cygdrive/C/cygwin/bin/mintty.exe --size maxheight,maxwidth')
-com! -nargs=0 SH call system("/cygdrive/C/cygwin/bin/mintty.exe --title 'Vim Term' --size 160,50 -B void ")
-com! -nargs=0 SH call system("/cygdrive/C/cygwin/bin/mintty.exe --title 'Vim Term' --size 160,50 -B frame")
-com! -nargs=0 SH call system("/cygdrive/C/cygwin/bin/mintty.exe --title 'Vim Term' --size 160,50")
-com! -nargs=0 SH call system("/cygdrive/C/cygwin/bin/mintty.exe --title 'Vim Term' --size 160,50 /cygdrive/C/cygwin/bin/zsh.exe")
-"com! -nargs=0 SH call system("/cygdrive/C/cygwin/bin/mintty.exe --option Locale=ja_JP --option Charset=UTF-8 --title 'Vim Term' --size 160,50 /cygdrive/C/cygwin/bin/zsh.exe")
-
-"com! -nargs=0 SH call system("/cygdrive/C/cygwin/bin/mintty.exe --option Locale=ja_JP --option Charset=UTF-8 --title 'Vim Term' --size 160,50 -")
-
-function! FrontSh()
-python3 << PYCODE
-import ctypes
-hWnd = ctypes.windll.user32.FindWindowW(None, "Vim Term")
-if hWnd is not 0:
-  ctypes.windll.user32.SetForegroundWindow(hWnd)
-  vim.command(':let found = v:true')
-else:
-  vim.command(':let found = v:false')
-PYCODE
-if !found
-  SH
-endif
-endfunction
-
-com! -nargs=0 SH2 call FrontSh()
-nnoremap g<Space> :SH2<CR>
-
-" Cygwin }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
-
-
 "----------------------------------------------------------------------------------------
 " Migemo
 "
