@@ -46,8 +46,7 @@ set number
 set laststatus=2
 set list
 "trail:末尾のスペース, eol:改行, extends:, precedes:, nbsp:
-set listchars=tab:>_,trail:$ | ",eol:,extends:,precedes:,nbsp:
-set omnifunc=syntaxcomplete#Cmplete
+set listchars=tab:>_,trail:$,extends:>,precedes:< | ",eol:,extends:,precedes:,nbsp:
 " タイトルを表示
 set title
 set shiftwidth=8
@@ -65,6 +64,7 @@ set undoreload=-1
 "実際に文字がないところにもカーソルを置けるようにする
 set virtualedit=block
 set wildmenu
+set wildmode=longest:full,full
 " 長い行を折り返して表示 (nowrap:折り返さない)
 set wrap
 " 検索時にファイルの最後まで行ったら最初に戻る (nowrapscan:戻らない)
@@ -99,14 +99,14 @@ syntax enable
 colorscheme Rimpa
 " TODO hi CursorLine ctermbg=NONE guibg=NONE
 
-augroup MyVimrc_JpnMode
-  au!
-  "au WinEnter,BufEnter * exe 'colorscheme ' (&iminsert ? 'Asche' : 'Rimpa') | exe 'set whichwrap' . (&iminsert ? '+' : '-') . '=h,l'
-augroup end
+set mouse=
+set mousehide
+
+" from default
+filetype plugin indent on
 
 
 set timeoutlen=1100
-
 
 augroup MyVimrc
   au!
@@ -127,6 +127,12 @@ augroup MyVimrc
  "au BufNewFile,BufRead,FileType *.awk so $vim/avd/avd.vim
   au BufNewFile,BufRead,FileType * set textwidth=0
 
+augroup end
+
+
+augroup MyVimrc_Init
+  au!
+  au VimEnter * clearjumps | au! MyVimrc_Init
 augroup end
 
 
@@ -170,10 +176,6 @@ cnoremap <Bar><Bar> \<Bar>
 nnoremap <expr> <Leader>@ &formatoptions =~# 'o' ? ':<C-u>set formatoptions-=o<CR>:set formatoptions-=r<CR>' : ':<C-u>set formatoptions+=o<CR>:set formatoptions+=r<CR>'
 nmap <Leader>2 <Leader>@
 
-"nnoremap <silent><expr> <leader>. stridx(&isk, '.') < 0 ? ':<C-u>setl isk+=.<CR>' : ':<C-u>setl isk-=.<CR>'
-"nnoremap <silent><expr> <leader>, stridx(&isk, '_') < 0 ? ':<C-u>setl isk+=_<CR>' : ':<C-u>setl isk-=_<CR>'
-"nnoremap <silent><expr> <leader>u stridx(&isk, '_') < 0 ? ':<C-u>setl isk+=_<CR>' : ':<C-u>setl isk-=_<CR>'
-
 nnoremap <silent> <Leader># :<C-u>call <SID>ToggleLineNumber()<CR>
 nmap <Leader>3 <Leader>#
 
@@ -194,7 +196,6 @@ cnoremap <expr> <C-t>	  getcmdtype() == ':' ? '../' :
 
 nnoremap <leader>; q:
 
-"nnoremap <silent> <leader>t :<C-u>ToggleWord<CR>
 
 "nnoremap  ]]  ]]f(bzt
 nnoremap g]]  ]]f(b
@@ -236,6 +237,9 @@ nnoremap <silent> ^ <Esc>:exe v:prevcount ? ('normal! ' . v:prevcount . '<Bar>')
 
 "----------------------------------------------------------------------------------------
 " Scroll
+
+set sidescroll=1
+set sidescrolloff=5
 
 nnoremap <silent> <C-j> <C-d>
 nnoremap <silent> <C-k> <C-u>
@@ -367,7 +371,7 @@ cmap <expr> <CR> ( getcmdtype() == '/' ) ?
                \ ( '<Plug>(MySearch-SlashCR)' ) :
                \ ( '<CR>' )
 
-"----------------------------------------------------------------------------------------
+"------------------------------------
 " 単語   新規 動く	*
 " 単語   新規 留まる	g*	g8
 " 単語   追加 動く	g&	g7
@@ -376,7 +380,7 @@ cmap <expr> <CR> ( getcmdtype() == '/' ) ?
 " 非単語 新規 留まる	g#	g3
 " 非単語 追加 動く	g@	g2
 " 非単語 追加 留まる	@
-"----------------------------------------------------------------------------------------
+"------------------------------------
 
 nmap *  <Plug>(MySearch-CWord-New-Word-Move)
 nmap #  <Plug>(MySearch-CWord-New-Part-Move)
@@ -397,9 +401,9 @@ nmap n  <Plug>(MySearch-n)
 nmap N  <Plug>(MySearch-N)
 
 " move to first
-nmap <Leader>n ggnN
+"nmap <Leader>n ggnN
 " move to last
-nmap <Leader>N  GNn
+"nmap <Leader>N  GNn
 
 "nnoremap <Leader>& <Plug>(MySearch-TopUnderScore)
 "nnoremap <Leader>@ <Plug>(MySearchT-ToggleMultiHighLight)
@@ -409,8 +413,14 @@ nmap <Leader>N  GNn
 
 
 "----------------------------------------------------------------------------------------
+" 補償
+
+nnoremap g9 g8
+
+
+"----------------------------------------------------------------------------------------
 " 行検索
-"
+
 nnoremap <Leader>* ^y$:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><CR>
 vnoremap <Leader>*   y:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><CR>
 vnoremap         *   y:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><CR>
@@ -502,6 +512,8 @@ nnoremap <silent> <leader>g     :<C-u>call CS("\\b<C-r><C-w>\\b")<CR>
 nnoremap          <leader>g     :<C-u>call CS('')<Left><Left>
 
 "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+nnoremap <Leader>g :<C-u>vim "\<<C-r><C-w>\>" *.c<CR>
 
 " Grep }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -1211,7 +1223,6 @@ let g:StatuslineContents = {}
 let g:StatuslineContents['Fullpath'] = v:false
 let g:StatuslineContents['CurrentLineColumn'] = v:false
 
-"nnoremap <silent> <Leader>- :<C-u>let g:StatuslineContents['Fullpath'] = !g:StatuslineContents['Fullpath'] <Bar> call <SID>SetDefaultStatusline(g:StatuslineContents)<CR>
 com! StlFullpath let g:StatuslineContents['Fullpath'] = !g:StatuslineContents['Fullpath'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 nnoremap <silent> <Leader>- :<C-u>StlFullpath<CR>
 
@@ -1516,7 +1527,6 @@ if 1
   "let g:clever_f_mark_char = 1
 endif
 
-"nnoremap <Leader>k :<C-u>let g:clever_f_use_migemo = !g:clever_f_use_migemo<CR>
 nnoremap <Leader>k :<C-u>call <SID>clever_f_use_migemo_toggle()<CR>
 function! s:clever_f_use_migemo_toggle()
   let g:clever_f_use_migemo = !g:clever_f_use_migemo
@@ -1549,7 +1559,87 @@ nnoremap <silent>       <C-PageDown> :exe 'se transparency=' . (&transparency ==
 
 com! Transparency echo printf(' Transparency = %4.1f%%', &transparency * 100 / 255.0)
 
+exe 'set transparency=' . g:my_transparency
+
+
 " Transparency }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+
+
+" FuncName {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+
+
+function! Func_Name_Stl(alt_stl_time)
+  let stl="   %m   %#hl_func_name_stl#   " . cfi#format("%s ()", "... ()") . "   %##"
+  call SetAltStatusline(stl, 'l', a:alt_stl_time)
+endfunction
+
+
+com! FuncNameStl       call Func_Name_Stl(5000)
+com! FuncNameEcho      echo cfi#format("%s ()", "... ()")
+com! FuncNameEchoColor echohl hl_func_name_stl <Bar> echo cfi#format("%s", "... ()") <Bar> echohl None
+com! FuncName          exe 'FuncNameStl' | exe 'FuncNameEcho'
+
+
+nnoremap <silent> <Plug>(FuncName-Stl) :<C-u>FuncNameStl<CR>
+
+
+" 関数名表示
+nnoremap <silent> , :<C-u>FuncName<CR>
+
+
+" Command Line での関数名挿入
+cnoremap <C-r><C-f> <C-R>=cfi#format('%s', '')<CR>
+cmap     <C-r>f <C-r><C-f>
+
+
+" FuncName }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+
+
+" Util {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+
+
+function! TitleCase(str)
+  return toupper(a:str[0]) . a:str[1:]
+endfunction
+
+
+" 数値比較用の関数 lhs のほうが大きければ正数，小さければ負数，lhs と rhs が等しければ 0 を返す
+function! CompNr(lhs, rhs)
+    return a:lhs - a:rhs
+endfunction
+
+
+function! GetKey()
+  return nr2char(getchar())
+endfunction
+
+
+function! Eatchar(pat)
+  let c = nr2char(getchar(0))
+  return (c =~ a:pat) ? '' : c
+endfunc
+"例 iabbr <silent> if if ()<Left><C-R>=Eatchar('\s')<CR>
+
+
+function! ProcTopUnderScore(word)
+  if a:word[0] == '_'
+    return '_\?' . a:word[1:]
+  elseif a:word[0] =~ '\a'
+    return '_\?' . a:word
+  endif
+  return a:word
+endfunction
+
+
+function! Factorial(n)
+  python3 import math
+  return pyxeval('math.factorial(' . a:n . ')')
+endfunction
+
+
+" Util }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
@@ -1557,102 +1647,20 @@ com! Transparency echo printf(' Transparency = %4.1f%%', &transparency * 100 / 2
 com! Tab2Space :setlocal   expandtab | retab<CR>
 com! Space2Tab :setlocal noexpandtab | retab!<CR>
 
-com! XMLShape :%s/></>\r</g | filetype indent on | setf xml | normal gg=G
-"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-" 現在のバッファを、別のタブでも開き直す。
-" デフォルトの<C-w>tとの違いは、元のウィンドウも残るということ。
-function! TabReopen()
-  let b0 = bufnr("%")
-  tabnew
-  let b1 = bufnr("%")
-  execute 'buf  ' b0
-  execute 'bdel ' b1
-  echo b0 b1
-endfunction
-nnoremap <C-w>T :<C-u>call TabReopen()<CR>
-"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-function! Eatchar(pat)
-  let c = nr2char(getchar(0))
-  return (c =~ a:pat) ? '' : c
-endfunc
-"例 iabbr <silent> if if ()<Left><C-R>=Eatchar('\s')<CR>
-"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-" 数値比較用の関数 lhs のほうが大きければ正数，小さければ負数，lhs と rhs が等しければ 0 を返す
-function! CompNr(lhs, rhs)
-    return a:lhs - a:rhs
-endfunction
-"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-function! GetKey()
-  return nr2char(getchar())
-endfunction
-"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-
-" Util {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-
-function! TitleCase(str)
-  return toupper(a:str[0]) . a:str[1:]
-endfunction
-
-" Util }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
-
-"set foldmethod=syntax
-set nowildmenu
-set wildmode=longest,full
-
-
-"=====================================================================================================================================
-if 0
-  " diffのコマンド
-  set diffexpr=MyDiff()
-  function MyDiff()
-    let opt = ""
-    if &diffopt =~ "iwhite"
-      let opt = opt . "-b "
-    endif
-    silent execute "!git-diff-normal-format " . opt . v:fname_in . " " . v:fname_new . " > " . v:fname_out
-    redraw!
-  endfunction
-endif
-"=====================================================================================================================================
-
 " Windowsでの設定例です。Mac他の場合は外部コマンド部分を読み替えてください。
 au FileType plantuml command! OpenUml :!/cygdrive/c/Program\ Files/Google/Chrome/Application/chrome.exe %
 
-"nnoremap <silent> <Leader>F :<C-u>help function-list<CR>
 com! FL help function-list<CR>
 
+com! XMLShape :%s/></>\r</g | filetype indent on | setf xml | normal gg=G
 
-" from default
-filetype plugin indent on
+com! AR :setl autoread!
+"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 
 
 set renderoptions=type:directx,scrlines:1
 
-"set updatetime=300
-augroup MyVimrc_Rendor
-  au!
-  "au InsertLeave * normal! <C-l>
-  "au CursorHold * normal! <C-l>
-  "au CursorHold * call feedkeys(":\<C-u>redraw<CR>", 'nx')
-  "au CursorHold * redraw
-  "au VimResized * normal! <C-l>
-  "au CursorHold * let &renderoptions=&renderoptions
-augroup end
 
 
 " {{{
@@ -1673,188 +1681,37 @@ augroup end
 " `}}}
 
 
-set mouse=
-set mousehide
-
-"set updatetime=500
-
-augroup MyVimrc_Init
-  au!
-  au VimEnter * clearjumps | au! MyVimrc_Init
-augroup end
-
 
 nnoremap <Leader><Space> :<C-u>let &iminsert = (&iminsert ? 0 : 2) <Bar> exe "colorscheme " . (&iminsert ? "Asche" : "Rimpa") <CR>
 nnoremap <Leader>j       :<C-u>let &iminsert = (&iminsert ? 0 : 2) <Bar> exe "colorscheme " . (&iminsert ? "Asche" : "Rimpa") <CR>
 nnoremap        g<Space> :<C-u>let &iminsert = (&iminsert ? 0 : 2) <Bar> exe "colorscheme " . (&iminsert ? "Asche" : "Rimpa") <CR>
 
-
-" {{{{{ Jump Test
-"nnoremap <silent> % :<C-u>keepjumps normal! %<CR>
-"nnoremap <silent> G :<C-u>keepjumps normal! G<CR>
-"nnoremap <silent> { :<C-u>keepjumps normal! {<CR>
-"nnoremap <silent> } :<C-u>keepjumps normal! }<CR>
-" }}}}}
-
-
 " Refactoring
-"nnorema <silent> <C-d> :<C-u>PushPos<CR>:g$.$s    /<C-r>//<C-r><C-w>/g<CR>:PopPos<CR>:echo 'Refactoring'<CR>
 nnorema <silent> <Leader>d :<C-u>PushPos<CR>:g$.$s    /<C-r>//<C-r><C-w>/g<CR>:PopPos<CR>:let @/='<C-r><C-w>'<CR>
-"nnorema <silent> <C-d> :<C-u>call PushPos() <Bar> g$.$s    /<C-r>//<C-r><C-w>/g <Bar> call PopPos() <Bar> echo 'Refactoring'<CR>
-"nnorema <silent> <C-d> :<C-u>g$.$s    /<C-r>//<C-r><C-w>/g<CR><C-o>:echo 'Refactoring'<CR>
-
-cnoremap jj *
-cnoremap kk _
-
-nnoremap Q K
-
-" Last
-
-" {{{{{ winkey
-
-"unlock g:www
-let g:www = 'uivompqdacx'
-let g:www = 'vompqdacx'
-"lock g:www
-
-for i in range(len(g:www))
-  exe "nnoremap <nowait> y" . g:www[i] . " " . i . "\<C-w>\<C-w>"
-endfor
-nnoremap <silent> <nowait> yu :<C-u>split<CR>
-nnoremap <silent> <nowait> yi :<C-u>vsplit<CR>
-nnoremap <silent> <nowait> yj :<C-u>new<CR>
-nnoremap <silent> <nowait> yl :<C-u>vnew<CR>
-
-"nmap <C-e> <Esc>
-"nmap <C-e><C-e> <Esc><Esc>
-"vmap <C-e> <Esc>
-"cmap <C-e> <Esc>
-
-
-""" y
-""" s
-""" r
-""" 
-""" ;',.
-""" jk/
-" }}}}}
-
-" TODO {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-
-"バッファ切り替えイベントでも、カーソルラインをセットする。
-"ftpluginのCとAWKを統合する。
-"無名バッファで、カレントディレクトリを設定できるようにする。
-"Split + 戻る, Split + 進む
-
-
-"modifide filese
-" vimrc
-" gvimrc
-" vitamin
-" syntax xms
-" syntax C
-" syntax vim
-
-
-" 検索
-" 置換
-" Grep
-" Diff
-" タグ
-" 補完
-" Snippet
-" 画面、表示 （ウィンドウ、バッファ、タブ）
-" 移動、切り替え （ウィンドウ、バッファ、タブ）
-
-" 基本
-" 移動
-" 見た目
-" 編集
-" 便利ツール
-
-" Completion CScope Snippets cnext_cprev
-
-" Ctrl hjkl o ud fb np ^ ]
-" TODO }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
-
-
-" 1 f順方向 -
-" 2 f逆方向 ,
-" 3 前のWindow :
-" 4 関数名 \\
-" 5 画面Auto分割 <BS>
-" 5 画面横分割 _
-" 6 画面縦分割 +
-
-" - , <BS>
-" \\
-" : + |
-
-
-com! AR :setl autoread!
-
-"nnoremap U <Nop>
-
-nnoremap <Leader>g :<C-u>vim "\<<C-r><C-w>\>" *.c<CR>
 
 nnoremap <C-@> g-
 nnoremap <C-^> g+
 nnoremap <C-]> g;
 nnoremap <C-\> g,
 
-" @^
-" - ]\ jk ey du np hqio
-
-set wildmenu
-set wildmode=longest:full,full
 cnoremap <C-o> <C-\>e(getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?') ? '\<' . getcmdline() . '\>' : getcmdline()<CR><Left><Left>
 
 nnoremap + :setl isk+=
-"nnoremap _ :setl isk-=
 nnoremap - :setl isk-=
 
 nnoremap <silent> <C-]> [c^:FuncNameStl<CR>
 nnoremap <silent> <C-\> ]c^:FuncNameStl<CR>
-"nnoremap <silent> s ]c^zz:FuncNameStl<CR>
-"nnoremap <silent> S [c^zz:FuncNameStl<CR>
 
-nmap      <silent> gs ggsS
-nmap      <silent> gS  GSs
+nnoremap <silent> <C-]> g;:FuncNameStl<CR>
+nnoremap <silent> <C-\> g,:FuncNameStl<CR>
 
-nnoremap g9 g8
-nnoremap 9g9 8g8
+nnoremap U                         <C-w>n
 
+nnoremap ( zh
+nnoremap ) zl
+nnoremap g4 g$
+nnoremap g6 g^
 
-
-" FuncName {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-
-function! Func_Name_Stl(alt_stl_time)
-  let stl="   %m   %#hl_func_name_stl#   " . cfi#format("%s ()", "... ()") . "   %##"
-  call SetAltStatusline(stl, 'l', a:alt_stl_time)
-endfunction
-
-com! FuncNameStl       call Func_Name_Stl(5000)
-com! FuncNameEcho      echo cfi#format("%s ()", "... ()")
-com! FuncNameEchoColor echohl hl_func_name_stl <Bar> echo cfi#format("%s", "... ()") <Bar> echohl None
-com! FuncName          exe 'FuncNameStl' | exe 'FuncNameEcho'
-
-
-nnoremap <silent> <Plug>(FuncName-Stl) :<C-u>FuncNameStl<CR>
-
-
-"nnoremap <silent> ][ ][:FuncNameStl<CR>
-"nnoremap <silent> [] []:FuncNameStl<CR>
-
-nnoremap <expr> <C-w><CR> (&ft != 'qf') ? ('<C-w><C-]>z<CR>' . (winheight(0)/4) . '<C-y>') : ('<CR>:call feedkeys(":FuncName\<CR>"')
-nnoremap <expr> <C-w><CR> (&ft != 'qf') ? ('<C-w><C-]>z<CR>' . (winheight(0)/4) . '<C-y>') : ('<CR>:FuncName<CR>')
-
-cnoremap <C-r><C-f> <C-R>=cfi#format('%s', '')<CR>
-cmap     <C-r>f <C-r><C-f>
-
-nnoremap <silent> , :<C-u>FuncName<CR>
-
-" FuncName }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 function! CursorOnWord()
@@ -1870,53 +1727,6 @@ function! CursorWord()
 endfunction
 
 
-function! ProcTopUnderScore(word)
-  if a:word[0] == '_'
-    return '_\?' . a:word[1:]
-  elseif a:word[0] =~ '\a'
-    return '_\?' . a:word
-  endif
-  return a:word
-endfunction
-
-
-exe 'set transparency=' . g:my_transparency
-
-
-"nnoremap <silent> <C-b> <esc>3<C-w><
-"nnoremap <silent> <C-f> <esc>3<C-w>>
-"nnoremap <silent> <C-n> <esc>1<C-w>+:<C-u>call <SID>best_scrolloff()<CR>
-"nnoremap <silent> <C-p> <esc>1<C-w>-:<C-u>call <SID>best_scrolloff()<CR>
-"nnoremap <Tab>   gt
-"nnoremap <S-Tab> gT
-nnoremap <silent> <C-]> g;:FuncNameStl<CR>
-nnoremap <silent> <C-\> g,:FuncNameStl<CR>
-nnoremap <silent> ( g;:FuncNameStl<CR>
-nnoremap <silent> ) g,:FuncNameStl<CR>
-"nnoremap <silent> <C-p> g;:FuncNameStl<CR>
-"nnoremap <silent> <C-n> g,:FuncNameStl<CR>
-
-nnoremap U                         <C-w>n
-nnoremap <silent> <C-u>            :<C-u>vnew<CR>
-nnoremap <C-n>                     <C-w>n
-nnoremap <silent> <C-p>            :<C-u>vnew<CR>
-
-
-set listchars+=extends:>,precedes:<
-set sidescroll=1
-set sidescrolloff=5
-nnoremap ( zh
-nnoremap ) zl
-nnoremap g4 g$
-nnoremap g6 g^
-
-function! Factorial(n)
-  python3 import math
-  return pyxeval('math.factorial(' . a:n . ')')
-endfunction
-
-"nnoremap <C-y> :<C-u>registers<CR>:put<Space>
-
 
 function! ZZ()
   let n = 25
@@ -1925,32 +1735,3 @@ function! ZZ()
     redraw
   endfor
 endfunction
-
-
-
-"----------------------------------------------------------------------------------------
-" Migemo
-"
-"??? let g:MigemoIsSlash = 0
-"??? if has('migemo')
-"???   function! s:toggle_migemo_search()
-"???     let g:MigemoIsSlash = !g:MigemoIsSlash
-"???     if g:MigemoIsSlash
-"???       nnoremap / g/
-"???       nnoremap ? /
-"???       let g:clever_f_use_migemo=1
-"???     else
-"???       nnoremap / /
-"???       nnoremap ? g/
-"???       let g:clever_f_use_migemo=0
-"???     endif
-"???   endfunction
-"??? 
-"???  "nnoremap / /
-"???   nnoremap ? g/
-"???   nnoremap <silent> <leader>/ :<C-u>call <SID>toggle_migemo_search()<CR>
-"??? endif
-"----------------------------------------------------------------------------------------
-
-
-

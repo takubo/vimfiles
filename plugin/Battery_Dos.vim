@@ -5,7 +5,6 @@ if !has('win32')
   finish
 endif
 
-
 if exists('loaded_battery')
   finish
 endif
