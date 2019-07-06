@@ -1729,3 +1729,5 @@ function! ZZ()
     redraw
   endfor
 endfunction
+
+"let plugin_dicwin_disable = v:true
