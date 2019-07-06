@@ -379,14 +379,14 @@ nmap N  <Plug>(Search-N)
 "----------------------------------------------------------------------------------------
 " CWord
 
-nmap *  <Plug>(Search-CWord-New-Word-Move)
+nmap *  <Plug>(Search-CWord-New-Word-Keep)
 nmap &  <Plug>(Search-CWord-Add-Word-Keep)
-nmap #  <Plug>(Search-CWord-New-Part-Move)
+nmap #  <Plug>(Search-CWord-New-Part-Keep)
 nmap @  <Plug>(Search-CWord-Add-Part-Keep)
 
-nmap g* <Plug>(Search-CWord-New-Word-Keep)
+nmap g* <Plug>(Search-CWord-New-Word-Move)
 nmap g& <Plug>(Search-CWord-Add-Word-Move)
-nmap g# <Plug>(Search-CWord-New-Part-Keep)
+nmap g# <Plug>(Search-CWord-New-Part-Move)
 nmap g@ <Plug>(Search-CWord-Add-Part-Move)
 
 nmap g8 g*
