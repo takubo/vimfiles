@@ -719,7 +719,9 @@ nnoremap d<S-Space> :<C-u>diffoff<CR>
 
 " diff accept (obtain and next, obtain and previouse) (dotは、repeat'.')
 nnoremap d. do1gs]c^
-nnoremap dp do1gs[c^
+nnoremap d, do1gs[c^
+nnoremap dO do1gs]c^
+nnoremap dP do1gs[c^
 
 " Next Hunk
 "nnoremap <silent> t ]c^zz:FuncNameStl<CR>
