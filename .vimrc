@@ -550,11 +550,14 @@ function! Unified_CR(mode)
   if v:prevcount
     " jumpする前に登録しないと、v:prevcountが上書されてしまう。
     call histadd('cmd', v:prevcount)
-    " jumplistに残すためGを使用
+    " jumplistに残すために、Gを使用。
     exe 'normal! ' . v:prevcount . 'G'
     return
   elseif &ft == 'qf'
     call feedkeys("\<CR>:FF2\<CR>", 'nt')
+    return
+  elseif &ft == 'vim'
+    exe 'help ' . expand('<cword>')
     return
   elseif &ft == 'help'
     call feedkeys("\<C-]>", 'nt')
