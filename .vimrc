@@ -1202,7 +1202,7 @@ function! s:SetDefaultStatusline(statusline_contents)
   let s:stl .= "%## %3p%% [%4L] "
  "let s:stl .= "%## %3p%%  %5L  "
   if a:statusline_contents['CurrentLineColumn']
-    let s:stl .= "%## %4lL, %3vC "
+    let s:stl .= "%## %4lL, %3v(%3c)C "
   endif
   if 0
     let s:stl .= "%#SLFileName# "
