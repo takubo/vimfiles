@@ -1,25 +1,11 @@
+scriptencoding utf-8
 " vi:set ts=8 sts=2 sw=2 tw=0 nowrap:
 "
 " dicwin.vim - Dictionary window
 "
-" Maintainer:	MURAOKA Taro <koron.kaoriya@gmail.com>
-" Last Change:	07-Jul-2019.
-" Commands:	<C-k><C-k>  Search word under cursor.
-"		<C-k>/	    Search prompted word.
-"		<C-k>c	    Close dictionary window.
-"		<C-k>n	    Search next. (with last word)
-"		<C-k>p	    Search previous. (with last word)
-"		<C-k>w	    Jump to dictionary window (if exists)
-" Require:	&runtimepath/dict/gene.txt or &runtimepath/gene.txt
-"
 " URL where you can get 'gene.txt':
 "   http://www.namazu.org/~tsuchiya/sdic/data/gene.html
 
-scriptencoding utf-8
-
-if exists('plugin_dicwin_disable')
-  finish
-endif
 let s:myname = expand('<sfile>:t:r')
 
 let s:lastword = ''
@@ -27,9 +13,6 @@ let s:lastpattern = ''
 
 function! s:DicwinOnload()
   call s:DetermineDictpath()
-  if filereadable(g:dicwin_dictpath)
-    call s:SetupKeymap()
-  endif
 endfunction
 
 function! s:DetermineDictpath()
@@ -53,29 +36,6 @@ function! s:GlobPath(paths, target)
   else
     return list[0]
   end
-endfunction
-
-" Kemaps
-function! s:SetupKeymap()
-  let s:use_mapleader = 0
-  if !exists('g:mapleader')
-    let g:mapleader = "\<C-k>"
-    let s:use_mapleader = 1
-  endif
-  nnoremap <silent> <Leader>k :call <SID>OpenDictionary(g:dicwin_dictpath, expand('<cword>'))<CR>
-  nnoremap <silent> <Leader>n :call <SID>Search(g:dicwin_dictpath, 0)<CR>
-  nnoremap <silent> <Leader>p :call <SID>Search(g:dicwin_dictpath, 1)<CR>
-  nnoremap <silent> <Leader>w :call <SID>GoDictWindow()<CR>
-  nnoremap <silent> <Leader>c :call <SID>Close()<CR>
-  nnoremap <silent> <Leader>/ :call <SID>Query()<CR>
-  nnoremap <silent> <Leader><C-k> :call <SID>OpenDictionary(g:dicwin_dictpath, expand('<cword>'))<CR>
-  nnoremap <silent> <Leader><C-n> :call <SID>Search(g:dicwin_dictpath, 0)<CR>
-  nnoremap <silent> <Leader><C-p> :call <SID>Search(g:dicwin_dictpath, 1)<CR>
-  nnoremap <silent> <Leader><C-w> :call <SID>GoDictWindow()<CR>
-  if s:use_mapleader > 0
-    unlet s:use_mapleader
-    unlet g:mapleader
-  endif
 endfunction
 
 "
@@ -182,13 +142,14 @@ function! s:Search(dic, dir)
   if line_before == line_after
     echohl WarningMsg
     echo s:myname. ': No other "' .s:lastword. '".'
+    echohl None
   elseif (a:dir == 0 && line_before < line_after) || (a:dir != 0 && line_before > line_after)
-    echo s:myname. ': Found ' .dirname. ' "' .s:lastword. '" in line ' .line_after. '.'
+    "echo s:myname. ': Found ' .dirname. ' "' .s:lastword. '" in line ' .line_after. '.'
   else
     echohl WarningMsg
     echo s:myname. ': Search from ' .restart. ' and found ' .dirname. ' "' .s:lastword. '".'
+    echohl None
   endif
-  echohl None
   " Revert previous window
   call s:PrevWindowRevert()
 endfunction
@@ -214,12 +175,12 @@ function! s:OpenDictionary(dic, word)
     execute "silent! normal! gg/^" . s:lastpattern . "\\%( [+~]\\|$\\)\<CR>"
     " Output  result
     if line('.') != 1
-      echo s:myname . ": Found \"" . s:lastword . '".'
-    else
+      "echo s:myname . ": Found \"" . s:lastword . '".'
+    elseif !g:DictwinAuto
       echohl ErrorMsg
       echo s:myname . ": Can't find \"" . s:lastword . '".'
+      echohl None
     endif
-    echohl None
   else
     " output 'no word message'
     echohl WarningMsg
@@ -251,6 +212,12 @@ function! s:OpenDictionaryWindow(name)
     let s:lastword = ''
     let s:lastpattern = ''
     setlocal nowrap
+
+    " from DicWinLeave
+    2 wincmd _
+    normal! zt
+
+    nnoremap <silent> <buffer> q :call <SID>Close()<CR>
   endif
 endfunction
 
@@ -288,4 +255,38 @@ function! s:PrevWindowRevert()
 endfunction
 
 call s:DicwinOnload()
+
+
+" Kemaps
 nnoremap <silent> <Leader>k :call <SID>OpenDictionary(g:dicwin_dictpath, expand('<cword>'))<CR>
+"nnoremap <silent> <Leader>n :call <SID>Search(g:dicwin_dictpath, 0)<CR>
+"nnoremap <silent> <Leader>p :call <SID>Search(g:dicwin_dictpath, 1)<CR>
+"nnoremap <silent> <Leader>w :call <SID>GoDictWindow()<CR>
+"nnoremap <silent> <Leader>c :call <SID>Close()<CR>
+"nnoremap <silent> <Leader>/ :call <SID>Query()<CR>
+"nnoremap <silent> <Leader><C-k> :call <SID>OpenDictionary(g:dicwin_dictpath, expand('<cword>'))<CR>
+"nnoremap <silent> <Leader><C-n> :call <SID>Search(g:dicwin_dictpath, 0)<CR>
+"nnoremap <silent> <Leader><C-p> :call <SID>Search(g:dicwin_dictpath, 1)<CR>
+"nnoremap <silent> <Leader><C-w> :call <SID>GoDictWindow()<CR>
+
+
+function! s:auto(switch)
+  let g:DictwinAuto = a:switch
+  augroup dictwin
+    au!
+    if a:switch
+      let s:updatetime = &updatetime
+      let &updatetime = 500
+      au CursorHold * call <SID>OpenDictionary(g:dicwin_dictpath, expand('<cword>'))
+    else
+      let &updatetime = s:updatetime
+    endif
+  augroup end
+endfunction
+com! DictwinAuto call <SID>auto(1)
+com! DictwinOff  call <SID>auto(0)
+
+let g:DictwinAuto = v:false
+let s:updatetime = &updatetime
+DictwinOff
+nnoremap <expr> <Leader>e ':<C-u>' . (g:DictwinAuto ? 'DictwinOff' : 'DictwinAuto') . '<CR>'
