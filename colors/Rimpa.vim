@@ -23,6 +23,7 @@ if version >= 700
   hi CursorColumn	guibg=#121212 ctermbg=236 gui=NONE
   hi MatchParen	guifg=#f6f3e8 guibg=#857b6f gui=bold ctermbg=59
   hi Pmenu	guifg=#dcda8f guibg=#1a1a1a gui=none ctermfg=239 ctermbg=232
+  hi Pmenu	guifg=#dcda8f guibg=black gui=none ctermfg=239 ctermbg=232
   hi PmenuSel 	guifg=#000000 guibg=#cdd129 ctermfg=0 ctermbg=184
   hi PmenuSel 	guifg=#000000 guibg=#c0504d ctermfg=0 ctermbg=184
   hi PmenuSbar 	guifg=#000000 guibg=black ctermfg=0 ctermbg=184
@@ -56,6 +57,7 @@ hi Normal 	guifg=#f6f3f0 guibg=#181818 gui=none ctermfg=254 ctermbg=235
 hi Normal 	guifg=#f6f3f0 guibg=#1C1C1C gui=none ctermfg=254 ctermbg=235
 hi Normal 	guifg=#f6f3f0 guibg=#222222 gui=none ctermfg=254 ctermbg=235
 hi Normal 	guifg=#f6f3f0 guibg=#202020 gui=none ctermfg=254 ctermbg=235
+hi Normal 	guifg=#f6f3f0 guibg=#282828 gui=none ctermfg=254 ctermbg=235
 "hi Normal 	guifg=#f6f3f0 guibg=grey20 gui=none ctermfg=254 ctermbg=235
 hi SpecialKey	guifg=#2D2D2D guibg=#222222 gui=none
 hi NonText 	guifg=#808080 guibg=#303030 gui=none ctermfg=242 ctermbg=237
