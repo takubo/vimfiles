@@ -119,7 +119,8 @@ augroup MyVimrc
   "au QuickfixCmdPost vimgrep botright cwindow
   "au QuickfixCmdPost make,grep,grepadd,vimgrep 999wincmd w
 
-  au InsertEnter * set timeoutlen=3000
+ "au InsertEnter * set timeoutlen=3000
+  au InsertEnter * set timeoutlen=700
   au InsertLeave * set timeoutlen=1100
 
   "au FileType c,cpp,awk set mps+=?::,=:;
@@ -1309,17 +1310,17 @@ augroup MyComplete
   au!
 
   au CompleteDone * try | iunmap gg | catch | finally
-  au CompleteDone * inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : '<Esc>:<C-u>w<CR>'
+  au CompleteDone * inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : s:esc_and_write
 
   au InsertCharPre * try | iunmap gg | catch | finally
 
-  au TextChangedI * exe pumvisible() ? "" : "inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : '<Esc>:<C-u>w<CR>'"
+  au TextChangedI * exe pumvisible() ? "" : "inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : " . s:esc_and_write_quoted
   au TextChangedI * exe pumvisible() ? "" : "try | iunmap gg | catch | finally"
 
   au InsertLeave * try | iunmap gg | catch | finally
-  au InsertLeave * inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : '<Esc>:<C-u>w<CR>'
+  au InsertLeave * inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : s:esc_and_write
 
-  au InsertCharPre * exe pumvisible() || v:char != "j" ? "" : "inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : '<Esc>:<C-u>w<CR>'"
+  au InsertCharPre * exe ( pumvisible() || v:char != "j" ) ? ( "" ) : ( "inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : " . s:esc_and_write_quoted )
   au InsertCharPre * exe pumvisible() ? "" : "try | iunmap gg | catch | finally"
 
 augroup end
@@ -1348,8 +1349,8 @@ function! Cmpl_jk(key)
   return ''
 endfunction
 
-inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : '<Esc>:w<CR>'
-inoremap          <expr> jj pumvisible() ? '<C-N><C-N>' : '<Esc>:w<CR>'
+inoremap <silent> <expr> jj pumvisible() ? '<C-N><C-N>' : s:esc_and_write
+inoremap          <expr> jj pumvisible() ? '<C-N><C-N>' : s:esc_and_write
 inoremap <expr> j pumvisible() ? Cmpl_jk("\<C-n>") : TrigCompl('j')
 inoremap <expr> k pumvisible() ? Cmpl_jk("\<C-p>") : TrigCompl('k')
 inoremap <expr> <C-j> pumvisible() ? 'j' : '<C-n>'
@@ -1358,7 +1359,10 @@ inoremap <expr> <C-k> pumvisible() ? 'k' : '<Esc>'
 inoremap <expr> <CR>  pumvisible() ? '<C-y>' : '<C-]><C-G>u<CR>'
 inoremap <expr> <Esc> pumvisible() ? '<C-e>' : '<Esc>'
 
-inoremap <expr> gg ( pumvisible() ? '<C-Y>' : '' ) . '<Esc>:<C-u>w<CR>'
+inoremap <expr> gg ( pumvisible() ? '<C-Y>' : '' ) . s:esc_and_write
+
+let s:esc_and_write =  '<Esc>:<C-u>w<CR>'
+let s:esc_and_write_quoted = "'" . s:esc_and_write . "'"
 
 " Completion }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
