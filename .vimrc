@@ -432,23 +432,18 @@ vnoremap         *   y:let lstmp = @"<CR>/\C\V<C-r>=escape(lstmp, '/\|\\')<CR><C
 
 " Substitute {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-nnoremap <C-s>           :<C-u>g$.$s    //<Left>
-nnoremap <Leader><C-s>   :<C-u>g$.$s    %%<Left>
-nnoremap <Leader>s       :<C-u>g$.$s    /<C-R>///g<Left><Left>
-nnoremap S               :<C-u>g$.$s    /<C-R>//<C-R><C-W>/g
+nnoremap <C-s>           :<C-u>g$.$s    ##<Left>
+nnoremap S               :<C-u>g$.$s    #<C-R>/##g<Left><Left>
+nnoremap gs              :<C-u>g$.$s    #<C-R><C-W>##g<Left><Left>
+nnoremap gS              :<C-u>g$.$s    #<C-R><C-W>#<C-R><C-W>#g<Left><Left>
+nnoremap <Leader>s           :<C-u>s    ###g<Left><Left><Left>
 
-nnoremap g<C-s>              :<C-u>s    //<Left>
-nnoremap g<Leader><C-s>      :<C-u>s    %%<Left>
-nnoremap g<Leader>s          :<C-u>s    /<C-R>///g<Left><Left>
-nnoremap gS                  :<C-u>s    /<C-R>//<C-R><C-W>/g
+vnoremap <C-s>                    :s    ##<Left>
+vnoremap S                        :s    #<C-R>/##g<Left><Left>
+vnoremap gs                       :s    #<C-R>/#<C-R><C-W>#g
 
-vnoremap <C-s>                    :s    //<Left>
-vnoremap <Leader><C-s>            :s    %%<Left>
-vnoremap <leader>s                :s    /<C-R>///g<Left><Left>
-vnoremap S                        :s    /<C-R>//<C-R><C-W>/g
-
-cnoremap <expr> <C-g> match(getcmdline(), '\(g.\..s\\|s\)    /') == 0 ? '<End>/g' :
-                    \ match(getcmdline(), '\(g.\..s\\|s\)    %') == 0 ? '<End>/g' : ''
+"cnoremap <expr> <C-g> match(getcmdline(), '\(g.\..s\\|s\)    /') == 0 ? '<End>/g' :
+"                    \ match(getcmdline(), '\(g.\..s\\|s\)    %') == 0 ? '<End>/g' : ''
 
 " Substitute }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
