@@ -834,7 +834,7 @@ nnoremap <silent> g<Bar>           :<C-u>vnew<CR>
 "----------------------------------------------------------------------------------------
 " Reopen as Tab
 
-nnoremap <C-w><C-t> :<C-u>tab split<CR>
+nnoremap <C-w><C-w> :<C-u>tab split<CR>
 tnoremap <C-w><C-t> <C-w>T
 
 " TODO diffのバッファも再現する。
