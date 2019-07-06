@@ -1,20 +1,20 @@
 scriptencoding utf-8
 " vim:set ts=8 sts=2 sw=2 tw=0 expandtab: (この行に関しては:help modelineを参照)
 
-if exists('loaded_MySearch')
+if exists('loaded_Search')
   "finish
   call MultiHighLight_Reset()
 else
   call EscEsc_Add('call MultiHighLight_Suspend()')
   call EscEsc_Add('let g:MultiHighLightState = 2')
 endif
-let loaded_MySearch = v:true
+let loaded_Search = v:true
 
 let g:anzu_status_format = '/%p ( %i / %l )'
 let g:anzu_search_limit = 999
 
-let g:MySearchProcTopUnderScore = v:false
-let g:MySearchMultiHighLight = v:true
+let g:SearchProcTopUnderScore = v:false
+let g:SearchMultiHighLight = v:true
 
 
 let g:MultiHighLightState = 0
@@ -24,22 +24,22 @@ let g:MultiHighLightState = 0
 
 
 function! s:SearchToggleProcTopUnderScore()
-  let g:MySearchProcTopUnderScore = !g:MySearchProcTopUnderScore
-  echo 'ProcTopUnderScore ' g:MySearchProcTopUnderScore ? 'ON' : 'OFF'
+  let g:SearchProcTopUnderScore = !g:SearchProcTopUnderScore
+  echo 'ProcTopUnderScore ' g:SearchProcTopUnderScore ? 'ON' : 'OFF'
 endfunction
 
 
 function! s:SearchToggleMultiHighLight()
-  let g:MySearchMultiHighLight = !g:MySearchMultiHighLight
-  if !g:MySearchMultiHighLight
+  let g:SearchMultiHighLight = !g:SearchMultiHighLight
+  if !g:SearchMultiHighLight
     call MultiHighLight_Reset()
   endif
-  echo 'MultiHighLight ' g:MySearchMultiHighLight ? 'ON' : 'OFF'
+  echo 'MultiHighLight ' g:SearchMultiHighLight ? 'ON' : 'OFF'
 endfunction
 
 
 function! s:SearchSlashCR()
-  if g:MySearchMultiHighLight
+  if g:SearchMultiHighLight
     "call MultiHighLight_Suspend()
     call MultiHighLight_Reset()
     let g:MultiHighLightState = 0
@@ -49,7 +49,7 @@ endfunction
 
 
 function! s:SearchN()
-  if g:MySearchMultiHighLight
+  if g:SearchMultiHighLight
     if g:MultiHighLightState == 2
       call MultiHighLight_Resume()
     endif
@@ -70,7 +70,7 @@ function! s:SearchCWord(add, proc_top_underscore, aword, keep_pos)
     let search_str = '\<' . search_str . '\>'
   endif
 
-  if g:MySearchMultiHighLight
+  if g:SearchMultiHighLight
     if a:add && g:MultiHighLightState == 0
       call MultiHighLight_Add(@/)
     elseif a:add && g:MultiHighLightState == 2
@@ -140,38 +140,38 @@ let s:CursorMove = v:false
 
 lockvar s:SearchNew s:SearchAdd s:MatchWord s:MatchPart
 
-com! MySearchCWordNewWordMove call <SID>SearchCWord(s:SearchNew, g:MySearchProcTopUnderScore, s:MatchWord, s:CursorMove) | set hlsearch
-com! MySearchCWordNewPartMove call <SID>SearchCWord(s:SearchNew, g:MySearchProcTopUnderScore, s:MatchPart, s:CursorMove) | set hlsearch
-com! MySearchCWordAddWordMove call <SID>SearchCWord(s:SearchAdd, g:MySearchProcTopUnderScore, s:MatchWord, s:CursorMove) | set hlsearch
-com! MySearchCWordAddPartMove call <SID>SearchCWord(s:SearchAdd, g:MySearchProcTopUnderScore, s:MatchPart, s:CursorMove) | set hlsearch
+com! SearchCWordNewWordMove call <SID>SearchCWord(s:SearchNew, g:SearchProcTopUnderScore, s:MatchWord, s:CursorMove) | set hlsearch
+com! SearchCWordNewPartMove call <SID>SearchCWord(s:SearchNew, g:SearchProcTopUnderScore, s:MatchPart, s:CursorMove) | set hlsearch
+com! SearchCWordAddWordMove call <SID>SearchCWord(s:SearchAdd, g:SearchProcTopUnderScore, s:MatchWord, s:CursorMove) | set hlsearch
+com! SearchCWordAddPartMove call <SID>SearchCWord(s:SearchAdd, g:SearchProcTopUnderScore, s:MatchPart, s:CursorMove) | set hlsearch
 
-com! MySearchCWordNewWordKeep call <SID>SearchCWord(s:SearchNew, g:MySearchProcTopUnderScore, s:MatchWord, s:CursorKeep) | set hlsearch
-com! MySearchCWordNewPartKeep call <SID>SearchCWord(s:SearchNew, g:MySearchProcTopUnderScore, s:MatchPart, s:CursorKeep) | set hlsearch
-com! MySearchCWordAddWordKeep call <SID>SearchCWord(s:SearchAdd, g:MySearchProcTopUnderScore, s:MatchWord, s:CursorKeep) | set hlsearch
-com! MySearchCWordAddPartKeep call <SID>SearchCWord(s:SearchAdd, g:MySearchProcTopUnderScore, s:MatchPart, s:CursorKeep) | set hlsearch
+com! SearchCWordNewWordKeep call <SID>SearchCWord(s:SearchNew, g:SearchProcTopUnderScore, s:MatchWord, s:CursorKeep) | set hlsearch
+com! SearchCWordNewPartKeep call <SID>SearchCWord(s:SearchNew, g:SearchProcTopUnderScore, s:MatchPart, s:CursorKeep) | set hlsearch
+com! SearchCWordAddWordKeep call <SID>SearchCWord(s:SearchAdd, g:SearchProcTopUnderScore, s:MatchWord, s:CursorKeep) | set hlsearch
+com! SearchCWordAddPartKeep call <SID>SearchCWord(s:SearchAdd, g:SearchProcTopUnderScore, s:MatchPart, s:CursorKeep) | set hlsearch
 
 
 
 
 " Plug Mapping
 
-nnoremap <silent> <Plug>(MySearch-CWord-New-Word-Move) :<C-u>MySearchCWordNewWordMove<CR>
-nnoremap <silent> <Plug>(MySearch-CWord-New-Part-Move) :<C-u>MySearchCWordNewPartMove<CR>
-nnoremap <silent> <Plug>(MySearch-CWord-Add-Word-Move) :<C-u>MySearchCWordAddWordMove<CR>
-nnoremap <silent> <Plug>(MySearch-CWord-Add-Part-Move) :<C-u>MySearchCWordAddPartMove<CR>
+nnoremap <silent> <Plug>(Search-CWord-New-Word-Move) :<C-u>SearchCWordNewWordMove<CR>
+nnoremap <silent> <Plug>(Search-CWord-New-Part-Move) :<C-u>SearchCWordNewPartMove<CR>
+nnoremap <silent> <Plug>(Search-CWord-Add-Word-Move) :<C-u>SearchCWordAddWordMove<CR>
+nnoremap <silent> <Plug>(Search-CWord-Add-Part-Move) :<C-u>SearchCWordAddPartMove<CR>
 
-nnoremap <silent> <Plug>(MySearch-CWord-New-Word-Keep) :<C-u>MySearchCWordNewWordKeep<CR>
-nnoremap <silent> <Plug>(MySearch-CWord-New-Part-Keep) :<C-u>MySearchCWordNewPartKeep<CR>
-nnoremap <silent> <Plug>(MySearch-CWord-Add-Word-Keep) :<C-u>MySearchCWordAddWordKeep<CR>
-nnoremap <silent> <Plug>(MySearch-CWord-Add-Part-Keep) :<C-u>MySearchCWordAddPartKeep<CR>
+nnoremap <silent> <Plug>(Search-CWord-New-Word-Keep) :<C-u>SearchCWordNewWordKeep<CR>
+nnoremap <silent> <Plug>(Search-CWord-New-Part-Keep) :<C-u>SearchCWordNewPartKeep<CR>
+nnoremap <silent> <Plug>(Search-CWord-Add-Word-Keep) :<C-u>SearchCWordAddWordKeep<CR>
+nnoremap <silent> <Plug>(Search-CWord-Add-Part-Keep) :<C-u>SearchCWordAddPartKeep<CR>
 
-nnoremap <silent> <Plug>(MySearch-n) n:call <SID>SearchN()<CR>
-nnoremap <silent> <Plug>(MySearch-N) N:call <SID>SearchN()<CR>
+nnoremap <silent> <Plug>(Search-n) n:call <SID>SearchN()<CR>
+nnoremap <silent> <Plug>(Search-N) N:call <SID>SearchN()<CR>
 
-cnoremap <silent> <Plug>(MySearch-SlashCR) <CR>:call <SID>SearchSlashCR()<CR>
+cnoremap <silent> <Plug>(Search-SlashCR) <CR>:call <SID>SearchSlashCR()<CR>
 
-nnoremap <silent> <Plug>(MySearch-TopUnderScore)         :call <SID>SearchToggleProcTopUnderScore()<CR>
-nnoremap <silent> <Plug>(MySearchT-ToggleMultiHighLight) :call <SID>SearchToggleMultiHighLight()<CR>
+nnoremap <silent> <Plug>(Search-TopUnderScore)         :call <SID>SearchToggleProcTopUnderScore()<CR>
+nnoremap <silent> <Plug>(SearchT-ToggleMultiHighLight) :call <SID>SearchToggleMultiHighLight()<CR>
 
 
 " Test

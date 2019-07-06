@@ -369,44 +369,32 @@ call EscEsc_Add('call clever_f#reset()')
 " General Mapping
 
 cmap <expr> <CR> ( getcmdtype() == '/' ) ?
-               \ ( '<Plug>(MySearch-SlashCR)' ) :
+               \ ( '<Plug>(Search-SlashCR)' ) :
                \ ( '<CR>' )
 
-"------------------------------------
-" 単語   新規 動く	*
-" 単語   新規 留まる	g*	g8
-" 単語   追加 動く	g&	g7
-" 単語   追加 留まる	&
-" 非単語 新規 動く	#
-" 非単語 新規 留まる	g#	g3
-" 非単語 追加 動く	g@	g2
-" 非単語 追加 留まる	@
-"------------------------------------
+nmap n  <Plug>(Search-n)
+nmap N  <Plug>(Search-N)
 
-nmap *  <Plug>(MySearch-CWord-New-Word-Move)
-nmap &  <Plug>(MySearch-CWord-Add-Word-Keep)
-nmap #  <Plug>(MySearch-CWord-New-Part-Move)
-nmap @  <Plug>(MySearch-CWord-Add-Part-Keep)
 
-nmap g* <Plug>(MySearch-CWord-New-Word-Keep)
-nmap g& <Plug>(MySearch-CWord-Add-Word-Move)
-nmap g# <Plug>(MySearch-CWord-New-Part-Keep)
-nmap g@ <Plug>(MySearch-CWord-Add-Part-Move)
+"----------------------------------------------------------------------------------------
+" CWord
+
+nmap *  <Plug>(Search-CWord-New-Word-Move)
+nmap &  <Plug>(Search-CWord-Add-Word-Keep)
+nmap #  <Plug>(Search-CWord-New-Part-Move)
+nmap @  <Plug>(Search-CWord-Add-Part-Keep)
+
+nmap g* <Plug>(Search-CWord-New-Word-Keep)
+nmap g& <Plug>(Search-CWord-Add-Word-Move)
+nmap g# <Plug>(Search-CWord-New-Part-Keep)
+nmap g@ <Plug>(Search-CWord-Add-Part-Move)
 
 nmap g8 g*
 nmap g7 g&
 nmap g3 g#
 nmap g2 g@
 
-nmap n  <Plug>(MySearch-n)
-nmap N  <Plug>(MySearch-N)
-
-" move to first
-"nmap <Leader>n ggnN
-" move to last
-"nmap <Leader>N  GNn
-
-"nnoremap <Leader>& <Plug>(MySearch-TopUnderScore)
+"nnoremap <Leader>& <Plug>(Search-TopUnderScore)
 "nnoremap <Leader>@ <Plug>(MySearchT-ToggleMultiHighLight)
 
 " clear status
