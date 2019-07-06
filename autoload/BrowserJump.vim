@@ -55,7 +55,7 @@ endfunction
 
 
 function! s:update_jumplist()
-  let new_jump_list = CmdOutLine('jumps')[1:-2]
+  let new_jump_list = CommnadOutputLine('jumps')[1:-2]
   silent clearjumps
   "echo len(new_jump_list) new_jump_list
 
