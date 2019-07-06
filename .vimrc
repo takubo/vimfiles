@@ -111,7 +111,7 @@ set timeoutlen=1100
 augroup MyVimrc
   au!
 
-  au QuickfixCmdPost make,grep,grepadd,vimgrep,cbuffer,cfile botright cwindow
+  au QuickfixCmdPost make,grep,grepadd,vimgrep,cbuffer,cfile exe 'botright cwindow ' . &lines / 4
   au QuickfixCmdPost lmake,lgrep,lgrepadd,lvimgrep,lcbuffer,lcfile lwindow
  "au BufNewFile,BufRead,FileType qf set modifiable
 
@@ -456,19 +456,19 @@ cnoremap <expr> <C-g> match(getcmdline(), '\(g.\..s\\|s\)    /') == 0 ? '<End>/g
 
 " Grep {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-"nnoremap <C-g> :<C-u>vim "\<<C-R><C-W>\>" *.c *.h<CR>
-nnoremap <C-g> :<C-u>vim "" <Left><Left>
-nnoremap <leader>g :<C-u>vim "\<<C-R><C-W>\>" 
-"nnoremap <leader>G :<C-u>vim "<C-R><C-W>" *.c *.h<CR>
-nnoremap <leader>G :<C-u>vim "<C-R><C-W>" 
-
-">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-let g:prj_root_file = '.git'
-
 set grepprg=$HOME/bin/ag\ --line-numbers
 set grepprg=/usr/bin/grep\ -an
+set grepprg=git\ grep\ --no-index\ -I\ --line-number
 
+"========================================================
+
+nnoremap !             :<C-u>grep ''<Left>
+nnoremap <Leader>g     :<C-u>grep '<C-R>/'<CR>
+nnoremap <C-g>         :<C-u>grep '\<<C-R><C-W>\>'<CR>
+
+"========================================================
+
+let g:prj_root_file = '.git'
 
 augroup MyVimrc_Grep
   au!
@@ -503,15 +503,15 @@ endfunction
 
 com! CS call CS("\<C-r>\<C-w>")
 
-nnoremap          <leader>g     :<C-u>call CS("\\<<C-r><C-w>\\>")<CR>
-nnoremap <silent> <C-g>         :<C-u>call CS("\\<<C-r><C-w>\\>")<CR>
-nnoremap          <leader>G     :<C-u>call CS("<C-r><C-w>")<CR>
-nnoremap          <leader><C-g> :<C-u>call CS('')<Left><Left>
-nnoremap <silent> <C-g>         :<C-u>call CS("\\b<C-r><C-w>\\b")<CR>
-nnoremap <silent> <leader>g     :<C-u>call CS("\\b<C-r><C-w>\\b")<CR>
-nnoremap          <leader>g     :<C-u>call CS('')<Left><Left>
+"nnoremap          <leader>g     :<C-u>call CS("\\<<C-r><C-w>\\>")<CR>
+"nnoremap <silent> <C-g>         :<C-u>call CS("\\<<C-r><C-w>\\>")<CR>
+"nnoremap          <leader>G     :<C-u>call CS("<C-r><C-w>")<CR>
+"nnoremap          <leader><C-g> :<C-u>call CS('')<Left><Left>
+"nnoremap <silent> <C-g>         :<C-u>call CS("\\b<C-r><C-w>\\b")<CR>
+"nnoremap <silent> <leader>g     :<C-u>call CS("\\b<C-r><C-w>\\b")<CR>
+"nnoremap          <leader>g     :<C-u>call CS('')<Left><Left>
 
-"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+"========================================================
 
 nnoremap <Leader>g :<C-u>vim "\<<C-r><C-w>\>" *.c<CR>
 
