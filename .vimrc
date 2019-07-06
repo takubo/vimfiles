@@ -1007,7 +1007,7 @@ nnoremap <A-b> :exe tabpagenr() == 1              ? 'tabmove $' : 'tabmove -1'<C
 
 function! s:make_tabpage_label(n)
   " カレントタブページかどうかでハイライトを切り替える
-  let hi = a:n is tabpagenr() ? '%#Statusline#' : '%#TabLine#'
+  let hi = a:n is tabpagenr() ? '%#TabLineDate#' : '%#TabLine#'
 
   if s:TablineStatus == 1
     return hi . ' [ ' . a:n . ' ] %#TabLineFill#'
@@ -1052,18 +1052,18 @@ function! TabLineStr()
 
   " Left
   let left = ''
-  let left .= '%#Statusline#  ' . strftime('%Y/%m/%d (%a) %X') . '  '
+  let left .= '%#TabLineDate#  ' . strftime('%Y/%m/%d (%a) %X') . '  '
   let left .= '%#SLFileName# ' . g:BatteryInfo . ' '
-  let left .= '%#Statusline#  '
+  let left .= '%#TabLineDate#  '
 
   " Right
   let right = ''
-  let right .= "%#Statusline#  "
+  let right .= "%#TabLineDate#  "
   let right .= "%#SLFileName# %{'[ '. substitute(&diffopt, ',', ', ', 'g') . ' ]'} "
- "let right .= '%#Statusline#  ' . strftime('%Y/%m/%d (%a) %X')
-  let right .= '%#Statusline#  ' . s:TablineStatus . '/' . (s:TablineStatusNum - 1)
-  let right .= '%#Statusline#  ' . printf("%2d", &l:ts)
-  let right .= '%#Statusline#  '
+ "let right .= '%#TabLineDate#  ' . strftime('%Y/%m/%d (%a) %X')
+  let right .= '%#TabLineDate#  ' . s:TablineStatus . '/' . (s:TablineStatusNum - 1)
+  let right .= '%#TabLineDate#  ' . printf("%2d", &l:ts)
+  let right .= '%#TabLineDate#  '
 
   return left . '%##    %<' . tabpages . '%=  ' . right
 endfunction
