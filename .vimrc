@@ -1730,4 +1730,6 @@ function! ZZ()
   endfor
 endfunction
 
-"let plugin_dicwin_disable = v:true
+let plugin_dicwin_disable = v:true
+
+ru! ftplugin/man.vim

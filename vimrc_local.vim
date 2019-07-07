@@ -1,15 +1,16 @@
 scriptencoding utf-8
 " vim:set ts=8 sts=2 sw=2 tw=0:
 
-
 if !has('win32')
   finish
 endif
+
 
 " Shellの設定 (Cygwinでも、なぜか設定しないとbashになる。)
 set sh=C:/cygwin/bin/zsh
 
 let s:home = 'C:/cygwin/home/' . $USERNAME
+
 if substitute($HOME, '\', '/', 'g') == s:home
   " Cygwinから起動されたときの設定
 
@@ -21,21 +22,19 @@ if substitute($HOME, '\', '/', 'g') == s:home
   finish
 endif
 
-
 " $HOMEの設定
 if isdirectory(s:home)
   let $HOME=s:home
 endif
 
-" ファイル名の展開にスラッシュを使う
-set shellslash
+let $LANG = 'ja_JP.UTF-8'
 
 " PATHの追加
 let $PATH .= ';C:/cygwin/bin;'
 let $PATH .= $HOME . '/bin;'
 
-" Shellの設定
-set sh=C:\cygwin\bin\zsh
+" ファイル名の展開にスラッシュを使う
+set shellslash
 
 " ! や :! 等のコマンドを実行するためにシェルに渡されるフラグ。
 " 末尾のスペースは必要!!
