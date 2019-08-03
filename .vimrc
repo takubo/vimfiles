@@ -137,7 +137,9 @@ augroup MyVimrc_Init
 augroup end
 
 
+
 ru macros/PushposPopPos.vim
+ru macros/EscEsc.vim
 
 
 
@@ -334,31 +336,18 @@ cnoremap <A-b>		<S-Left>
 
 
 
-" Esc_Esc {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+" EscEsc {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-let g:EscEsc = []
+nmap <Esc><Esc> <Plug>(EscEsc)
 
-function! EscEsc_Add(str)
-  call add(g:EscEsc, a:str)
-endfunction
+if !exists('s:EscEsc_Add_Done')
+  " おかしくなったときにEscEscで復帰できるように、念のためforceをTrueにして呼び出す。
+  call EscEsc_Add('call RestoreDefaultStatusline(v:true)')
+  call EscEsc_Add('call clever_f#reset()')
+endif
+let s:EscEsc_Add_Done = v:true
 
-com! EscDisp echo g:EscEsc
-
-function! Esc_Esc()
-  for i in g:EscEsc
-    "echo i
-    exe i
-  endfor
-endfunction
-
-" 'noh'はユーザ定義関数内では(事実上)実行出来ないので、別途実行の要あり。
-nnoremap <silent> <Esc><Esc> <Esc>:<C-u>call Esc_Esc() <Bar> noh  <Bar> echon <CR>
-
-" おかしくなったときにEscEscで復帰できるように、念のためforceをTrueにして呼び出す。
-call EscEsc_Add('call RestoreDefaultStatusline(v:true)')
-call EscEsc_Add('call clever_f#reset()')
-
-" Esc_Esc }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+" EscEsc }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
