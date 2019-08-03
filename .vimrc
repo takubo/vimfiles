@@ -38,6 +38,7 @@ set history=10000
 set ignorecase
 " 大文字小文字の両方が含まれている場合は大文字小文字を区別
 set smartcase
+set tagcase=match
 set incsearch
 set mps+=<:>
 set nowrapscan
@@ -446,7 +447,7 @@ set grepprg=git\ grep\ --no-index\ -I\ --line-number
 
 nnoremap !             :<C-u>grep ''<Left>
 nnoremap <Leader>g     :<C-u>grep '<C-R>/'<CR>
-nnoremap <C-g>         :<C-u>grep '\<<C-R><C-W>\>'<CR>
+nnoremap <silent> <C-g> :<C-u>grep '\<<C-R><C-W>\>'<CR>
 
 "========================================================
 
@@ -687,6 +688,7 @@ nnoremap <silent> <C-S-CR>     <Esc>:call Unified_CR('sw')<CR>
 nnoremap          <C-S-CR>     <Esc>:tags<CR>;pop
 
 nmap     <silent> <BS><CR>     <BS><BS><CR>
+nmap     <silent> <Leader><CR> <Leader><Leader><CR>
 
 " Tag, Jump, and Unified CR }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -814,9 +816,10 @@ nnoremap <BS> <C-w>
 
 " Auto
 nnoremap <silent> <expr> <BS><BS>         ( <SID>WindowRatio() >= 0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
-nnoremap <silent> <expr> <Leader><Leader> ( <SID>WindowRatio() >= 0 ? ":\<C-u>vnew\<CR>" : "\<C-w>n" )
-"nnoremap <silent> <expr> <Leader><Leader> ( <SID>WindowRatio() <  0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
+"nnoremap <silent> <expr> <Leader><Leader> ( <SID>WindowRatio() >= 0 ? ":\<C-u>vnew\<CR>" : "\<C-w>n" )
+nnoremap <silent> <expr> <Leader><Leader> ( <SID>WindowRatio() <  0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
 "nnoremap <BS><CR> " Tag, Jump, and Unified CR を参照。
+"nnoremap <Leader><CR> " Tag, Jump, and Unified CR を参照。
 
 " Manual
 "nnoremap gu                        <C-w>s:setl noscrollbind<CR>
@@ -828,7 +831,11 @@ nnoremap <silent> g<Bar>           :<C-u>vnew<CR>
 "----------------------------------------------------------------------------------------
 " Reopen as Tab
 
+nnoremap <C-o>      :<C-u>tab split<CR>
+nnoremap <C-w><C-w> <C-w>T
 nnoremap <C-w><C-w> :<C-u>tab split<CR>
+nnoremap <C-w><C-t> <C-w>T
+
 tnoremap <C-w><C-t> <C-w>T
 
 " TODO diffのバッファも再現する。
@@ -1522,7 +1529,7 @@ nnoremap <silent> yx :PushPos<CR>ggyG:PopPos<CR> | ":echo "All lines yanked."<CR
 
 "nnoremap <silent> <C-o> :<C-u>exe (g:alt_stl_time > 0 ? '' : 'normal! <C-l>')
 "                      \ <Bar> let g:alt_stl_time = 12
-nnoremap <silent> <C-o> :<C-u>pwd
+nnoremap <silent> g<C-o> :<C-u>pwd
                       \ <Bar> echon '        ' &fileencoding '  ' &fileformat '  ' &filetype '    ' printf('L %d  C %d  %3.2f %%  TL %3d', line('.'), col('.'), line('.') * 100.0 / line('$'), line('$'))
                       \ <Bar> call SetAltStatusline('%#hl_buf_name_stl#  %F', 'g', 10000)<CR>
 
