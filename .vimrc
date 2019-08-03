@@ -1114,10 +1114,14 @@ let TimerTabline = timer_start(s:UpdateTablineInterval, 'UpdateTabline', {'repea
 " Switch TabLine Status
 
 let s:TablineStatusNum = 9
-let s:TablineStatus = 7 - 1  " 初回のToggleTabline呼び出しがあるので、ここは本来値-1を設定。
+"let s:TablineStatus = 7 - 1  " 初回のToggleTabline呼び出しがあるので、ここは本来値-1を設定。
 
-function! s:ToggleTabline()
+function! s:ToggleTabline(arg)
+  if a:arg == ''
   let s:TablineStatus = ( s:TablineStatus + 1 ) % s:TablineStatusNum
+  elseif a:arg < s:TablineStatusNum
+    let s:TablineStatus = a:arg
+  endif
   if s:TablineStatus == 0
     set showtabline=0
   else
@@ -1127,9 +1131,10 @@ function! s:ToggleTabline()
 endfunction
 
 " 初期設定
-silent call <SID>ToggleTabline()
+silent call <SID>ToggleTabline(s:TablineStatusNum - 1)
 
-nnoremap <silent> <leader>= :<C-u>call <SID>ToggleTabline()<CR>
+nnoremap <silent> <leader>= :<C-u>call <SID>ToggleTabline('')<CR>
+com! -nargs=1 Tabline call <SID>ToggleTabline(<args>)
 
 " Tabline }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
