@@ -364,6 +364,11 @@ cmap <expr> <CR> ( getcmdtype() == '/' ) ?
 nmap n  <Plug>(Search-n)
 nmap N  <Plug>(Search-N)
 
+"nnoremap ? /<C-p>\<Bar>
+" 末尾が\|でないときだけ、\|を追加しないと、\|の後でEscでキャンセルすると、\|が溜まっていってしまう。
+"nnoremap ? /<C-p><C-\>e getcmdline() . ( match(getcmdline(), '\|$') == -1 ? '\\|' : '') <CR>
+nnoremap ? /<C-p><C-r>=match(getcmdline(), '\|$') == -1 ? '\\|' : ''<CR>
+
 
 "----------------------------------------------------------------------------------------
 " CWord
