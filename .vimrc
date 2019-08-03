@@ -1062,11 +1062,11 @@ function! s:make_tabpage_label(n)
 
   " カレントバッファ
   let curbufnr = bufnrs[tabpagewinnr(a:n) - 1]  " tabpagewinnr() は 1 origin
-  let fname = ( s:TablineStatus == 4 || s:TablineStatus == 5 ? expand('#' . curbufnr . ':t') : pathshorten(bufname(curbufnr)) )
+  let fname = ( s:TablineStatus == 4 || s:TablineStatus == 5  || s:TablineStatus == 6 ? expand('#' . curbufnr . ':t') : pathshorten(bufname(curbufnr)) )
  "let fname = pathshorten(expand('#' . curbufnr . ':p'))
   let fname = fname == '' ? 'No Name' : fname  " 無名バッファは、バッファ名が出ない。
 
-  let label = no . ' ' . num . (s:TablineStatus == 5 || s:TablineStatus == 7 ? mod : '') . ' '  . fname
+  let label = no . (s:TablineStatus != 4 ? (' ' . num) : '' ) . (s:TablineStatus == 6 || s:TablineStatus == 8 ? mod : '') . ' '  . fname
 
   return '%' . a:n . 'T' . hi . '  ' . label . '%T  %#TabLineFill#'
 endfunction
@@ -1089,7 +1089,7 @@ function! TabLineStr()
   let right .= "%#SLFileName# %{'[ '. substitute(&diffopt, ',', ', ', 'g') . ' ]'} "
  "let right .= '%#TabLineDate#  ' . strftime('%Y/%m/%d (%a) %X')
   let right .= '%#TabLineDate#  ' . s:TablineStatus . '/' . (s:TablineStatusNum - 1)
-  let right .= '%#TabLineDate#  ' . printf("%2d", &l:ts)
+ "let right .= '%#TabLineDate#  ' . printf("%2d", &l:ts)
   let right .= '%#TabLineDate#  '
 
   return left . '%##    %<' . tabpages . '%=  ' . right
@@ -1113,7 +1113,7 @@ let TimerTabline = timer_start(s:UpdateTablineInterval, 'UpdateTabline', {'repea
 "----------------------------------------------------------------------------------------
 " Switch TabLine Status
 
-let s:TablineStatusNum = 8
+let s:TablineStatusNum = 9
 let s:TablineStatus = 7 - 1  " 初回のToggleTabline呼び出しがあるので、ここは本来値-1を設定。
 
 function! s:ToggleTabline()

@@ -4,3 +4,4 @@ comfortable-motion.vim
 current-func-info.vim
 mru.vim
 vim-anzu
+vim-fugitive
