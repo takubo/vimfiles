@@ -41,7 +41,11 @@ set smartcase
 set incsearch
 set mps+=<:>
 set nowrapscan
+
 set number
+set norelativenumber
+set numberwidth=3
+
 " 常にステータス行を表示
 set laststatus=2
 set list
@@ -87,8 +91,6 @@ set sessionoptions+=unix,slash
 set showtabline=0
 
 set display+=lastline
-
-set numberwidth=3
 
 set visualbell t_vb=
 
@@ -176,16 +178,18 @@ cnoremap >> \>
 cnoremap <Bar><Bar> \<Bar>
 
 " コメント行の後の新規行の自動コメント化のON/OFF
-nnoremap <expr> <Leader>@ &formatoptions =~# 'o' ? ':<C-u>set formatoptions-=o<CR>:set formatoptions-=r<CR>' : ':<C-u>set formatoptions+=o<CR>:set formatoptions+=r<CR>'
-nmap <Leader>2 <Leader>@
-
-nnoremap <silent> <Leader># :<C-u>call <SID>ToggleLineNumber()<CR>
+nnoremap <expr> <Leader># &formatoptions =~# 'o' ? ':<C-u>set formatoptions-=o<CR>:set formatoptions-=r<CR>' : ':<C-u>set formatoptions+=o<CR>:set formatoptions+=r<CR>'
 nmap <Leader>3 <Leader>#
+
+nnoremap <silent> <Leader>@ :<C-u>call <SID>ToggleLineNumber()<CR>
+nmap <Leader>2 <Leader>@
 
 function! s:ToggleLineNumber()
   if !&l:number && !&l:relativenumber
+    let &numberwidth = 3
     let &l:number = 1
   elseif &l:number && !&l:relativenumber
+    let &numberwidth = 1
     let &l:relativenumber = 1
   else
     let &l:number = 0
