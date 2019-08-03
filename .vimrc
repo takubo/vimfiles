@@ -562,7 +562,10 @@ function! Unified_CR(mode)
     call feedkeys("\<C-]>", 'nt')
     return
   else
-    call JumpToDefine(a:mode)
+    let ret = JumpToDefine(a:mode)
+    if ret > 0
+      keeppatterns normal! gd
+    endif
     return
   endif
 endfunction
@@ -597,7 +600,7 @@ function! JumpToDefine(mode)
   let w0 = expand("<cword>")
 
   if w0 !~ '\<\i\+\>'
-    return
+    return -1
   endif
 
   let w = w0
@@ -621,7 +624,7 @@ function! JumpToDefine(mode)
       let g:TagMatch = matchadd('TagMatch', '\<'.w.'\>')
       let g:TimerTagMatch = timer_start(s:TagHighlightTime, 'TagHighlightDelete')
       let g:TagMatchI[g:TimerTagMatch] = g:TagMatch
-      return
+      return 0
     catch /:E426:/
       if w0 =~ '^_'
 	" 元の検索語は"_"始まり
@@ -635,10 +638,11 @@ function! JumpToDefine(mode)
       endif
     catch /:E433:/
       echohl ErrorMsg | echo matchstr(v:exception, 'E\d\+:.*') | echohl None
-      return
+      return 1
     endtry
   endfor
   echohl ErrorMsg | echo matchstr(exception, 'E\d\+:.*') | echohl None
+  return 1
 endfunction
 
 " カーソル位置を調整 (C専用)
