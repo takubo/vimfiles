@@ -1501,7 +1501,8 @@ let g:gvimrc_buf_name = '^' . g:gvimrc_path
 let g:color_buf_name  = '^' . g:colors_path
 let g:color_file_ext = '.vim$'
 
-nnoremap <expr> <silent> <Leader>v  ( len(win_findbuf(bufnr(g:vimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) > 0 ) ?
+nnoremap <expr> <silent> <Leader>v
+				 \ ( len(win_findbuf(bufnr(g:vimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) > 0 ) ?
 				 \  ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':VIMRC<CR>'
 				"\  ( bufname('')=='' && &buftype=='' && !&modified ) ? ':EVIMRC<CR>' : ':VIMRC<CR>'
 
@@ -1510,7 +1511,8 @@ nnoremap <expr> <silent> <Leader><C-v>
 				 \  ( win_id2win(reverse(win_findbuf(bufnr(g:gvimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':GVIMRC<CR>'
 				"\  ( bufname('')=='' && &buftype=='' && !&modified ) ? ':EGVIMRC<CR>' : ':GVIMRC<CR>'
 
-nnoremap <expr> <silent> <Leader>V  ( len(win_findbuf(bufnr(g:color_buf_name . g:colors_name . g:color_file_ext))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:color_buf_name . g:colors_name . g:color_file_ext)))[0]) > 0 ) ?
+nnoremap <expr> <silent> <Leader>V
+				 \ ( len(win_findbuf(bufnr(g:color_buf_name . g:colors_name . g:color_file_ext))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:color_buf_name . g:colors_name . g:color_file_ext)))[0]) > 0 ) ?
 				 \  ( win_id2win(win_findbuf(bufnr(g:color_buf_name . g:colors_name . g:color_file_ext))[0]) . '<C-w><C-w>' ) : ':EditColor<CR>'
 				"\  ( bufname('')=='' && &buftype=='' && !&modified ) ? ':EEditColor<CR>' : ':EditColor<CR>'
 
