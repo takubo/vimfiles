@@ -705,8 +705,11 @@ nnoremap <silent> dQ :<C-u>call PushPos_All() <Bar> exe 'bufdo diffoff' <Bar> ex
 " Toggle Scrollbind
 nnoremap dx :<C-u>setl scrollbind!<CR>
 
-" diff toggle ignorecase (uはVisualモードでの、toggle case.)
-nnoremap <expr> du match(&diffopt, 'icase' ) < 0 ? ':<C-u>set diffopt+=icase<CR>'  : ':<C-u>set diffopt-=icase<CR>'
+" diff update
+nmap du d<Space>
+
+" diff toggle ignorecase
+nnoremap <expr> dl match(&diffopt, 'icase' ) < 0 ? ':<C-u>set diffopt+=icase<CR>'  : ':<C-u>set diffopt-=icase<CR>'
 
 " diff Y(whi)tespace
 nnoremap <expr> dy match(&diffopt, 'iwhite') < 0 ? ':<C-u>set diffopt+=iwhite<CR>' : ':<C-u>set diffopt-=iwhite<CR>'
@@ -728,7 +731,7 @@ nnoremap <silent> t ]c^:FuncNameStl<CR>
 "nnoremap <silent> T [c^zz:FuncNameStl<CR>
 nnoremap <silent> T [c^:FuncNameStl<CR>
 
-" 最初にgg/G/[c/]cすると、FuncNameStlが実行されない不具合あり。対策として、t/Tをnmap。
+" 最初に gg , G , [c , ]c すると、FuncNameStlが実行されない不具合あり。対策として、t,Tをnmap。
 
 " Top Hunk
 nmap      <silent> <Leader>t ggtT
