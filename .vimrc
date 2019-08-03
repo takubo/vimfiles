@@ -1217,6 +1217,21 @@ function! s:SetDefaultStatusline(statusline_contents)
   let s:stl .= "%#SLFileName#[ %{winnr()} ]%## ( %n ) "
   let s:stl .= "%##%m%r%{(!&autoread&&!&l:autoread)?'[AR]':''}%h%w "
 
+ "let s:stl .= "%#hl_func_name_stl#%{bufname('') =~ '^fugitive' ? ' fugitive:' : ''}"
+ "let s:stl .= "%#hl_func_name_stl#%{&filetype == 'fugitive' ? ' fugitive:' : ''}"
+ "let s:stl .= "%#hl_func_name_stl#%{bufname('') =~ '^fugitive' ? ' [fugitive]' : ''}"
+ "let s:stl .= "%#hl_func_name_stl#%{&filetype == 'fugitive' ? ' [fugitive]' : ''}"
+
+  let g:MyStlFugitive = a:statusline_contents['GitBranch'] ? ' [fugitive]' : ' fugitive'
+  let s:stl .= "%#hl_func_name_stl#%{bufname('') =~ '^fugitive' ? g:MyStlFugitive : ''}"
+  let s:stl .= "%#hl_func_name_stl#%{&filetype == 'fugitive' ? g:MyStlFugitive : ''}"
+
+  if a:statusline_contents['GitBranch']
+   "let s:stl .= "%#hl_func_name_stl# %{FugitiveStatusline()}"
+   "let s:stl .= "%#hl_func_name_stl# %{FugitiveHead(7)}"
+    let s:stl .= "%#hl_func_name_stl# %{FugitiveHead(7)} "
+  endif
+
   if a:statusline_contents['Fullpath']
     let s:stl .= "%<"
     let s:stl .= "%##%#SLFileName# %F "
@@ -1259,12 +1274,16 @@ let g:StatuslineContents = {}
 
 let g:StatuslineContents['Fullpath'] = v:false
 let g:StatuslineContents['CurrentLineColumn'] = v:false
+let g:StatuslineContents['GitBranch'] = v:false
 
 com! StlFullpath let g:StatuslineContents['Fullpath'] = !g:StatuslineContents['Fullpath'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 nnoremap <silent> <Leader>- :<C-u>StlFullpath<CR>
 
 com! StlCurrentLineColumn let g:StatuslineContents['CurrentLineColumn'] = !g:StatuslineContents['CurrentLineColumn'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 nnoremap <silent> <Leader>_ :<C-u>StlCurrentLineColumn<CR>
+
+com! StlGitBranch let g:StatuslineContents['GitBranch'] = !g:StatuslineContents['GitBranch'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
+nnoremap <silent> <Leader>. :<C-u>StlGitBranch<CR>
 
 " 初期設定のために1回は呼び出す。
 call s:SetDefaultStatusline(g:StatuslineContents)
