@@ -1356,20 +1356,13 @@ nmap <expr> <S-Space> winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Up)'   :
 
 " Mru {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-" MRU Plugin ----------------------------------------------------------------------------------------------
 augroup MyVimrc_MRU
-    au!
+  au!
   au VimEnter,VimResized * let MRU_Window_Height = max([8, &lines / 3 ])
 augroup end
-" nnoremap <silent> <leader>o :<C-u>MRU<CR>
+
+"nnoremap <silent> <leader>o :<C-u>MRU<CR>
 nnoremap <Leader>o :<C-u>MRU<Space>
-
-
-" My MRU --------------------------------------------------------------------------------------------------
-" TODO My MRU : Emergency
-command! -nargs=* MRU2 exe 'browse filter %\c' . substitute(<q-args>, '[ *]', '.*', 'g') . '% oldfiles'
-" nnoremap <Leader>o  :<C-u>/ oldfiles<Home>browse filter /\c
-
 
 " Mru }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
