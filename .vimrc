@@ -1667,7 +1667,12 @@ cmap     <C-r>f <C-r><C-f>
 
 
 
-" Util {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+" Util Functions {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+
+
+function! IsEmptyBuf()
+  return bufname('')=='' && &buftype=='' && !&modified
+endfunction
 
 
 function! TitleCase(str)
@@ -1709,23 +1714,63 @@ function! Factorial(n)
 endfunction
 
 
-" Util }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+" 返り値
+"   CursorがWordの上:       正整数
+"   CursorがWordの上でない: 0
+function! IsCursorOnWord()
+  return search('\%#\k', 'cnz')
+endfunction
+
+
+" 返り値
+"   CursorがWordの先頭:             -1
+"   CursorがWordの上(先頭でなはい):  1
+"   CursorがWordの上でない:          0
+function! CursorWord()
+  if search('\<\%#\k', 'cnz')
+    return -1
+  elseif search('\%#\k', 'cnz')
+    return 1
+  endif
+  return 0
+endfunction
+
+function! CursorWord()
+  return search('\<\%#\k', 'cnz') ? -1 : search('\%#\k', 'cnz') ? 1 : 0
+endfunction
+
+" TODO rename CursorWord() -> CursorOnWord()
+
+" Util Funtions }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
-">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-com! Tab2Space :setlocal   expandtab | retab<CR>
-com! Space2Tab :setlocal noexpandtab | retab!<CR>
+" Util Commands {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-" Windowsでの設定例です。Mac他の場合は外部コマンド部分を読み替えてください。
-au FileType plantuml command! OpenUml :!/cygdrive/c/Program\ Files/Google/Chrome/Application/chrome.exe %
+
+com! AR :setl autoread!
+
+
+com! Tab2Space setlocal   expandtab | retab<CR>
+com! Space2Tab setlocal noexpandtab | retab!<CR>
+com! T2S Tab2Space
+com! S2T Space2Tab
+
 
 com! FL help function-list<CR>
 
+
+com! -nargs=1 Unicode exe 'normal! o<C-v>u' . tolower('<args>') . '<Esc>'
+
+
 com! XMLShape :%s/></>\r</g | filetype indent on | setf xml | normal gg=G
 
-com! AR :setl autoread!
-"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+" Windowsでの設定例です。他の場合は外部コマンド部分を読み替えてください。
+au FileType plantuml com! OpenUml :!/cygdrive/c/Program\ Files/Google/Chrome/Application/chrome.exe %
+
+
+" Util Commands }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
@@ -1783,21 +1828,6 @@ nnoremap ( zh
 nnoremap ) zl
 nnoremap g4 g$
 nnoremap g6 g^
-
-
-
-function! CursorOnWord()
-  return search('\%#\k', 'cnz')
-endfunction
-function! CursorWord()
-  if search('\<\%#\k', 'cnz')
-    return -1
-  elseif search('\%#\k', 'cnz')
-    return 1
-  endif
-  return 0
-endfunction
-
 
 
 function! ZZ()
