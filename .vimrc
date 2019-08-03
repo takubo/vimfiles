@@ -1171,6 +1171,10 @@ let TimerTabline = timer_start(s:UpdateTablineInterval, 'UpdateTabline', {'repea
 " Statusline {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 "----------------------------------------------------------------------------------------
+" Battery (Battery.vimが存在しない場合に備えて。)
+let g:BatteryInfo = '? ---% [--:--:--]'
+
+"----------------------------------------------------------------------------------------
 " Set Statusline
 
 function! s:SetStatusline(stl, local, time)
@@ -1349,15 +1353,6 @@ nnoremap <silent> <C-v> :<C-u>call RestoreDefaultStatusline(v:false)<CR><C-v>
 
 
 
-" Battery {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-
-" Battery.vimが存在しない場合に備えて。
-let g:BatteryInfo = '? ---% [--:--:--]'
-
-" Battery }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
-
-
 " Unified-Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 "
 nmap <expr> <Space>   winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Down)' : '<Plug>(MyVimrc-SkipTerm-Inc)'
@@ -1374,7 +1369,6 @@ augroup MyVimrc_MRU
   au VimEnter,VimResized * let MRU_Window_Height = max([8, &lines / 3 ])
 augroup end
 
-"nnoremap <silent> <leader>o :<C-u>MRU<CR>
 nnoremap <Leader>o :<C-u>MRU<Space>
 
 " Mru }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
