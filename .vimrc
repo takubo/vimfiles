@@ -1146,7 +1146,7 @@ function! s:ToggleTabline(arg)
 endfunction
 
 " 初期設定
-silent call <SID>ToggleTabline(s:TablineStatusNum - 1)
+silent call <SID>ToggleTabline(5)
 
 nnoremap <silent> <leader>= :<C-u>call <SID>ToggleTabline('')<CR>
 com! -nargs=1 Tabline call <SID>ToggleTabline(<args>)
