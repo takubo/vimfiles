@@ -1889,6 +1889,13 @@ command! HighlightInfo call s:get_highlight_info()
 "-------------------------------------------------------------------
 
 
+nmap <Tab>   <Plug>(ComfortableMotion-Flick-Down)
+nmap <S-Tab> <Plug>(ComfortableMotion-Flick-Up)
+nmap m <Plug>(ComfortableMotion-Flick-Down)
+nmap M <Plug>(ComfortableMotion-Flick-Up)
+
+
+
 " Basic {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Cursor Move, CursorLine, CursorColumn, and Scroll {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Emacs {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
