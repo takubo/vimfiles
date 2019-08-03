@@ -580,16 +580,25 @@ augroup MyVimrc_TagMatch
 augroup end
 
 function! TagHighlightDelete(dummy)
+  call timer_stop(a:dummy)
+
   "echo a:dummy
   "sleep 5
   "call matchdelete(g:TagMatch)
   call matchdelete(g:TagMatchI[a:dummy])
   call remove(g:TagMatchI, a:dummy . '')
   "echo g:TagMatchI
+
+  if a:dummy == g:TimerTagMatch0
+    au! ZZZZ0
+  endif
+  if a:dummy == g:TimerTagMatch
+    au! ZZZZ
+  endif
 endfunction
 
 let g:TagMatchI = {}
-let s:TagHighlightTime = 1000  " [ms]
+let s:TagHighlightTime = 1500  " [ms]
 
 " TODO
 "   ラベルならf:b
@@ -608,6 +617,10 @@ function! JumpToDefine(mode)
   let g:TagMatch0 = matchadd('TagMatch', '\<'.w.'\>')
   let g:TimerTagMatch0 = timer_start(s:TagHighlightTime, 'TagHighlightDelete')
   let g:TagMatchI[g:TimerTagMatch0] = g:TagMatch0
+  augroup ZZZZ0
+    au!
+    au WinLeave * call TagHighlightDelete(g:TimerTagMatch0)
+  augroup end
   redraw
 
   for i in range(2 + 2)
@@ -624,6 +637,10 @@ function! JumpToDefine(mode)
       let g:TagMatch = matchadd('TagMatch', '\<'.w.'\>')
       let g:TimerTagMatch = timer_start(s:TagHighlightTime, 'TagHighlightDelete')
       let g:TagMatchI[g:TimerTagMatch] = g:TagMatch
+      augroup ZZZZ
+	au!
+	au WinLeave * call TagHighlightDelete(g:TimerTagMatch)
+      augroup end
       return 0
     catch /:E426:/
       if w0 =~ '^_'
