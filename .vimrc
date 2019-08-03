@@ -1723,7 +1723,9 @@ nnoremap <silent> <C-\> ]c^:FuncNameStl<CR>
 nnoremap <silent> <C-]> g;:FuncNameStl<CR>
 nnoremap <silent> <C-\> g,:FuncNameStl<CR>
 
-nnoremap U                         <C-w>n
+nnoremap <silent> U     :<C-u>new<CR>
+nnoremap <silent> <C-u> :<C-u>new<CR>
+nnoremap <silent> <C-d> :<C-u>vnew<CR>
 
 nnoremap ( zh
 nnoremap ) zl
