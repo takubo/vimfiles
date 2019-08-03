@@ -1609,8 +1609,18 @@ exe 'set transparency=' . g:my_transparency
 
 
 function! Func_Name_Stl(alt_stl_time)
-  let stl="   %m   %#hl_func_name_stl#   " . cfi#format("%s ()", "... ()") . "   %##"
+  if 0
+    let func_name = cfi#format('%s ()', '')
+    if func_name != ''
+      let stl = '   %m   %#hl_func_name_stl#   ' . func_name . '   %##'
+      call SetAltStatusline(stl, 'l', a:alt_stl_time)
+    else
+      call RestoreDefaultStatusline(v:true)
+    endif
+  else
+    let stl = '   %m   %#hl_func_name_stl#   ' . cfi#format('%s ()', '... ()') . '   %##'
   call SetAltStatusline(stl, 'l', a:alt_stl_time)
+  endif
 endfunction
 
 
