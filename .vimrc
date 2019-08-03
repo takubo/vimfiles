@@ -997,7 +997,7 @@ nnoremap <A-b> :exe tabpagenr() == 1              ? 'tabmove $' : 'tabmove -1'<C
 
 function! s:make_tabpage_label(n)
   " カレントタブページかどうかでハイライトを切り替える
-  let hi = a:n is tabpagenr() ? '%#TabLineDate#' : '%#TabLine#'
+  let hi = a:n is tabpagenr() ? '%#TabLineSel#' : '%#TabLine#'
 
   if s:TablineStatus == 1
     return hi . ' [ ' . a:n . ' ] %#TabLineFill#'
