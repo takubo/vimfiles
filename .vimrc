@@ -1581,8 +1581,6 @@ endfunction
 
 com! SwapSelect call s:swap_select()
 
-"nnoremap <Leader>E :<C-u>call <SID>swap_select()<CR>
-
 " Swap Exists }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
