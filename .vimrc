@@ -1194,6 +1194,9 @@ function! s:SetDefaultStatusline(statusline_contents)
   let s:stl .= "%## %3p%% [%4L] "
  "let s:stl .= "%## %3p%%  %5L  "
   if a:statusline_contents['CurrentLineColumn']
+    let s:stl .= "%## %3v,%3c "
+  endif
+  if 0
     let s:stl .= "%## %4lL, %3v(%3c)C "
   endif
   if 0
@@ -1215,6 +1218,7 @@ com! StlFullpath let g:StatuslineContents['Fullpath'] = !g:StatuslineContents['F
 nnoremap <silent> <Leader>- :<C-u>StlFullpath<CR>
 
 com! StlCurrentLineColumn let g:StatuslineContents['CurrentLineColumn'] = !g:StatuslineContents['CurrentLineColumn'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
+nnoremap <silent> <Leader>_ :<C-u>StlCurrentLineColumn<CR>
 
 " 初期設定のために1回は呼び出す。
 call s:SetDefaultStatusline(g:StatuslineContents)
