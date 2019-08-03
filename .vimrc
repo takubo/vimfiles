@@ -160,13 +160,21 @@ cnoremap <expr> : getcmdline() =~# '^:*$' ? ';' : ':'
 nnoremap <silent> ZZ <Nop>
 nnoremap <silent> ZQ <Nop>
 
-nnoremap cr caw
+" nnoremap cr caw
+" nnoremap dr daw
+" nnoremap yr yiw
+" 
+" nnoremap cs ciw
+" nnoremap ds diw
+" nnoremap ys yaw
+
+nnoremap cr ciw
 nnoremap dr daw
 nnoremap yr yiw
 
 nnoremap cs ciw
-nnoremap ds diw
-nnoremap ys yaw
+nnoremap ds daw
+nnoremap ys yiw
 
 " 検索時に/, ?を楽に入力する
 cnoremap <expr> / getcmdtype() == '/' ? '\/' : '/'
@@ -1125,6 +1133,9 @@ function! s:ToggleTabline(arg)
   let s:TablineStatus = ( s:TablineStatus + 1 ) % s:TablineStatusNum
   elseif a:arg < s:TablineStatusNum
     let s:TablineStatus = a:arg
+  else
+    echoerr 'Tabline:Invalid argument.'
+    return
   endif
   if s:TablineStatus == 0
     set showtabline=0
