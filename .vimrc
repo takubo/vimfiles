@@ -1253,34 +1253,31 @@ let g:BatteryInfo = '? ---% [--:--:--]'
 
 
 
-" Unified_Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+" Unified-Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 "
 nmap <expr> <Space>   winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Down)' : '<Plug>(MyVimrc-SkipTerm-Inc)'
 nmap <expr> <S-Space> winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Up)'   : '<Plug>(MyVimrc-SkipTerm-Dec)'
 
-" Unified_Space }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+" Unified-Space }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
 " Mru {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 " MRU Plugin ----------------------------------------------------------------------------------------------
-"let MRU_Window_Height = min([20, &lines / 4 ])
-"let MRU_Window_Height = max([8, &lines / 4 ])
-let MRU_Window_Height = 25
 augroup MyVimrc_MRU
     au!
-    "au VimResized * let MRU_Window_Height = min([25, &lines / 3 ])
   au VimEnter,VimResized * let MRU_Window_Height = max([8, &lines / 3 ])
 augroup end
 " nnoremap <silent> <leader>o :<C-u>MRU<CR>
+nnoremap <Leader>o :<C-u>MRU<Space>
+
 
 " My MRU --------------------------------------------------------------------------------------------------
+" TODO My MRU : Emergency
 command! -nargs=* MRU2 exe 'browse filter %\c' . substitute(<q-args>, '[ *]', '.*', 'g') . '% oldfiles'
 " nnoremap <Leader>o  :<C-u>/ oldfiles<Home>browse filter /\c
 
-" Common --------------------------------------------------------------------------------------------------
-nnoremap <Leader>o :<C-u>MRU<Space>
 
 " Mru }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
