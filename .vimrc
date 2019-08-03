@@ -1240,6 +1240,11 @@ function! s:SetDefaultStatusline(statusline_contents)
     let s:stl .= "%<"
   endif
 
+  if a:statusline_contents['FuncName']
+    let s:stl .= "%#hl_func_name_stl# %{cfi#format('%s()', '')}"
+  endif
+
+
   " ===== Separate Left Right =====
   let s:stl .= "%#SLFileName#%="
   " ===== Separate Left Right =====
@@ -1275,6 +1280,7 @@ let g:StatuslineContents = {}
 let g:StatuslineContents['Fullpath'] = v:false
 let g:StatuslineContents['CurrentLineColumn'] = v:false
 let g:StatuslineContents['GitBranch'] = v:false
+let g:StatuslineContents['FuncName'] = v:false
 
 com! StlFullpath let g:StatuslineContents['Fullpath'] = !g:StatuslineContents['Fullpath'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 nnoremap <silent> <Leader>- :<C-u>StlFullpath<CR>
@@ -1284,6 +1290,9 @@ nnoremap <silent> <Leader>_ :<C-u>StlCurrentLineColumn<CR>
 
 com! StlGitBranch let g:StatuslineContents['GitBranch'] = !g:StatuslineContents['GitBranch'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 nnoremap <silent> <Leader>. :<C-u>StlGitBranch<CR>
+
+com! StlFuncName let g:StatuslineContents['FuncName'] = !g:StatuslineContents['FuncName'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
+nnoremap <silent> <Leader>, :<C-u>StlFuncName<CR>
 
 " 初期設定のために1回は呼び出す。
 call s:SetDefaultStatusline(g:StatuslineContents)
