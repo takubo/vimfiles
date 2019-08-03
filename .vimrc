@@ -89,8 +89,6 @@ set isfname-=:
 set sessionoptions+=unix,slash
 " set_end set end
 
-set showtabline=0
-
 set display+=lastline
 
 set visualbell t_vb=
@@ -1041,8 +1039,9 @@ nnoremap <A-b> :exe tabpagenr() == 1              ? 'tabmove $' : 'tabmove -1'<C
 
 " Tabline {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
+
 "----------------------------------------------------------------------------------------
-" Make TabLine
+" Make TabLabel
 
 function! s:make_tabpage_label(n)
   " カレントタブページかどうかでハイライトを切り替える
@@ -1052,14 +1051,8 @@ function! s:make_tabpage_label(n)
     return hi . ' [ ' . a:n . ' ] %#TabLineFill#'
   endif
 
-  " タブ番号
-  let no = '[' . a:n . ']'
-
   " タブ内のバッファのリスト
   let bufnrs = tabpagebuflist(a:n)
-
-  " バッファ数
-  let num = '(' . len(bufnrs) . ')'
 
   " タブ内に変更ありのバッファがあったら '+' を付ける
   let mod = len(filter(copy(bufnrs), 'getbufvar(v:val, "&modified")')) ? ' +' : ''
@@ -1068,20 +1061,32 @@ function! s:make_tabpage_label(n)
     return hi . ' [ ' . a:n . ' ' . mod . ' ] %#TabLineFill#'
   endif
 
+  " バッファ数
+  let num = '(' . len(bufnrs) . ')'
+
   if s:TablineStatus == 3
     return hi . ' [ ' . a:n . ' ' . num . mod . ' ] %#TabLineFill#'
   endif
 
+  " タブ番号
+  let no = '[' . a:n . ']'
+
   " カレントバッファ
   let curbufnr = bufnrs[tabpagewinnr(a:n) - 1]  " tabpagewinnr() は 1 origin
-  let fname = ( s:TablineStatus == 4 || s:TablineStatus == 5  || s:TablineStatus == 6 ? expand('#' . curbufnr . ':t') : pathshorten(bufname(curbufnr)) )
- "let fname = pathshorten(expand('#' . curbufnr . ':p'))
-  let fname = fname == '' ? 'No Name' : fname  " 無名バッファは、バッファ名が出ない。
 
-  let label = no . (s:TablineStatus != 4 ? (' ' . num) : '' ) . (s:TablineStatus == 6 || s:TablineStatus == 8 ? mod : '') . ' '  . fname
+  let buf_name = ( s:TablineStatus =~ '[456]' ? expand('#' . curbufnr . ':t') : pathshorten(bufname(curbufnr)) )
+ "let buf_name = pathshorten(expand('#' . curbufnr . ':p'))
+
+  let buf_name = buf_name == '' ? 'No Name' : buf_name  " 無名バッファは、バッファ名が出ない。
+
+  let label = no . (s:TablineStatus != 4 ? (' ' . num) : '') . (s:TablineStatus =~ '[68]' ? mod : '') . ' '  . buf_name
 
   return '%' . a:n . 'T' . hi . '  ' . label . '%T  %#TabLineFill#'
 endfunction
+
+
+"----------------------------------------------------------------------------------------
+" Make TabLineStr
 
 function! TabLineStr()
   " Tab Label
@@ -1099,13 +1104,51 @@ function! TabLineStr()
   let right = ''
   let right .= "%#TabLineDate#  "
   let right .= "%#SLFileName# %{'[ '. substitute(&diffopt, ',', ', ', 'g') . ' ]'} "
- "let right .= '%#TabLineDate#  ' . strftime('%Y/%m/%d (%a) %X')
   let right .= '%#TabLineDate#  ' . s:TablineStatus . '/' . (s:TablineStatusNum - 1)
- "let right .= '%#TabLineDate#  ' . printf("%2d", &l:ts)
   let right .= '%#TabLineDate#  '
 
   return left . '%##    %<' . tabpages . '%=  ' . right
 endfunction
+
+
+"----------------------------------------------------------------------------------------
+" Switch TabLine Status
+
+function! s:ToggleTabline(arg)
+  if (a:arg . '') == ''
+    let s:TablineStatus = ( s:TablineStatus + 1 ) % s:TablineStatusNum
+  elseif a:arg < s:TablineStatusNum
+    let s:TablineStatus = a:arg
+  else
+    echoerr 'Tabline:Invalid argument.'
+    return
+  endif
+
+  let &showtabline = ( s:TablineStatus == 0 ? 0 : 2 )
+  call UpdateTabline(0)
+endfunction
+
+nnoremap <silent> <leader>= :<C-u>call <SID>ToggleTabline('')<CR>
+com! -nargs=1 Tabline call <SID>ToggleTabline(<args>)
+
+
+"----------------------------------------------------------------------------------------
+" Initial Setting
+
+let s:TablineStatusNum = 9
+" 0
+" 1  タブ番号
+" 2  タブ番号            Mod
+" 3  タブ番号 バッファ数 Mod
+" 4  タブ番号                バッファ名
+" 5  タブ番号 バッファ数     バッファ名
+" 6  タブ番号 バッファ数 Mod バッファ名
+" 7  タブ番号 バッファ数     フルバッファ名
+" 8  タブ番号 バッファ数 Md  フルバッファ名
+
+" 初期設定
+silent call <SID>ToggleTabline(4)
+
 
 "----------------------------------------------------------------------------------------
 " TabLine Timer
@@ -1115,41 +1158,11 @@ function! UpdateTabline(dummy)
 endfunction
 
 " 旧タイマの削除  vimrcを再読み込みする際、古いタイマを削除しないと、どんどん貯まっていってしまう。
-if exists('TimerTabline')
-  call timer_stop(TimerTabline)
-endif
+if exists('TimerTabline') | call timer_stop(TimerTabline) | endif
 
 let s:UpdateTablineInterval = 1000
 let TimerTabline = timer_start(s:UpdateTablineInterval, 'UpdateTabline', {'repeat': -1})
 
-"----------------------------------------------------------------------------------------
-" Switch TabLine Status
-
-let s:TablineStatusNum = 9
-"let s:TablineStatus = 7 - 1  " 初回のToggleTabline呼び出しがあるので、ここは本来値-1を設定。
-
-function! s:ToggleTabline(arg)
-  if a:arg == ''
-  let s:TablineStatus = ( s:TablineStatus + 1 ) % s:TablineStatusNum
-  elseif a:arg < s:TablineStatusNum
-    let s:TablineStatus = a:arg
-  else
-    echoerr 'Tabline:Invalid argument.'
-    return
-  endif
-  if s:TablineStatus == 0
-    set showtabline=0
-  else
-    set showtabline=2
-  endif
-  call UpdateTabline(0)
-endfunction
-
-" 初期設定
-silent call <SID>ToggleTabline(5)
-
-nnoremap <silent> <leader>= :<C-u>call <SID>ToggleTabline('')<CR>
-com! -nargs=1 Tabline call <SID>ToggleTabline(<args>)
 
 " Tabline }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
