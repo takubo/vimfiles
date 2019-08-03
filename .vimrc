@@ -1522,16 +1522,18 @@ endif
 " Configuration {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 
-let g:vimrc_path  = '~/.vimrc'
-let g:gvimrc_path = '~/.gvimrc'
-let g:colors_path = '~/vimfiles/colors/'
+let g:vimrc_path  = has('win32') ? '~/vimfiles/.vimrc' : '~/.vimrc'
+let g:gvimrc_path = has('win32') ? '~/vimfiles/.gvimrc' : '~/.gvimrc'
+let g:colors_dir = '~/vimfiles/colors/'
+
+
+com! ReVimrc :exe 'so ' . g:vimrc_path
 
 
 com! EVIMRC  :exe 'e      ' . g:vimrc_path
 com! SVIMRC  :exe 'sp     ' . g:vimrc_path
 com! TVIMRC  :exe 'tabnew ' . g:vimrc_path
 com! VVIMRC  :exe 'vs     ' . g:vimrc_path
-"com! VIMRC   :exe <SID>WindowRatio() >= 0 ? 'VVIMRC' : 'SVIMRC'
 com! VIMRC   :exe IsEmptyBuf() ? ':EVIMRC' : <SID>WindowRatio() >= 0 ? 'VVIMRC' : 'SVIMRC'
 com! Vimrc   :VIMRC
 
@@ -1539,40 +1541,30 @@ com! EGVIMRC :exe 'e      ' . g:gvimrc_path
 com! SGVIMRC :exe 'sp     ' . g:gvimrc_path
 com! TGVIMRC :exe 'tabnew ' . g:gvimrc_path
 com! VGVIMRC :exe 'vs     ' . g:gvimrc_path
-"com! GVIMRC  :exe <SID>WindowRatio() >= 0 ? 'VGVIMRC' : 'SGVIMRC'
 com! GVIMRC  :exe IsEmptyBuf() ? ':EGVIMRC' : <SID>WindowRatio() >= 0 ? 'VGVIMRC' : 'SGVIMRC'
 com! Gvimrc  :Gvimrc
 
-com! EEditColor :exe 'e      ' . g:colors_path . g:colors_name . '.vim'
-com! SEditColor :exe 'sp     ' . g:colors_path . g:colors_name . '.vim'
-com! TEditColor :exe 'tabnew ' . g:colors_path . g:colors_name . '.vim'
-com! VEditColor :exe 'vs     ' . g:colors_path . g:colors_name . '.vim'
-"com! EditColor  :exe <SID>WindowRatio() >= 0 ? 'VEditColor' : 'SEditColor'
+com! EEditColor :exe 'e      ' . g:colors_dir . g:colors_name . '.vim'
+com! SEditColor :exe 'sp     ' . g:colors_dir . g:colors_name . '.vim'
+com! TEditColor :exe 'tabnew ' . g:colors_dir . g:colors_name . '.vim'
+com! VEditColor :exe 'vs     ' . g:colors_dir . g:colors_name . '.vim'
 com! EditColor  :exe IsEmptyBuf() ? ':EEditColor' : <SID>WindowRatio() >= 0 ? 'VEditColor' : 'SEditColor'
 
 
 let g:vimrc_buf_name  = '^' . g:vimrc_path
 let g:gvimrc_buf_name = '^' . g:gvimrc_path
-let g:color_buf_name  = '^' . g:colors_path
-let g:color_file_ext = '.vim$'
 
 nnoremap <expr> <silent> <Leader>v
-				 \ ( len(win_findbuf(bufnr(g:vimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) > 0 ) ?
-				 \  ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':VIMRC<CR>'
-				"\  ( bufname('')=='' && &buftype=='' && !&modified ) ? ':EVIMRC<CR>' : ':VIMRC<CR>'
+	 \ ( len(win_findbuf(bufnr(g:vimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) > 0 ) ?
+	 \  ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':VIMRC<CR>'
 
 nnoremap <expr> <silent> <Leader><C-v>
-				 \  ( len(win_findbuf(bufnr(g:gvimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:gvimrc_buf_name)))[0]) > 0 ) ?
-				 \  ( win_id2win(reverse(win_findbuf(bufnr(g:gvimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':GVIMRC<CR>'
-				"\  ( bufname('')=='' && &buftype=='' && !&modified ) ? ':EGVIMRC<CR>' : ':GVIMRC<CR>'
+	 \  ( len(win_findbuf(bufnr(g:gvimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:gvimrc_buf_name)))[0]) > 0 ) ?
+	 \  ( win_id2win(reverse(win_findbuf(bufnr(g:gvimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':GVIMRC<CR>'
 
 nnoremap <expr> <silent> <Leader>V
-				 \ ( len(win_findbuf(bufnr(g:color_buf_name . g:colors_name . g:color_file_ext))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:color_buf_name . g:colors_name . g:color_file_ext)))[0]) > 0 ) ?
-				 \  ( win_id2win(win_findbuf(bufnr(g:color_buf_name . g:colors_name . g:color_file_ext))[0]) . '<C-w><C-w>' ) : ':EditColor<CR>'
-				"\  ( bufname('')=='' && &buftype=='' && !&modified ) ? ':EEditColor<CR>' : ':EditColor<CR>'
-
-
-com! ReVimrc :exe 'so ' . g:vimrc_path
+	 \ ( len(win_findbuf(bufnr(g:colors_dir . g:colors_name . '.vim$'))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:colors_dir . g:colors_name . '.vim$')))[0]) > 0 ) ?
+	 \  ( win_id2win(win_findbuf(bufnr(g:colors_dir . g:colors_name . '.vim$'))[0]) . '<C-w><C-w>' ) : ':EditColor<CR>'
 
 
 " Configuration }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
