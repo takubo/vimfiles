@@ -1269,6 +1269,10 @@ function! s:SetDefaultStatusline(statusline_contents)
     let s:stl .= "%#SLFileName# "
   endif
 
+  if a:statusline_contents['TabStop']
+    let s:stl .= "%## %{&l:tabstop} "
+  endif
+
   call RestoreDefaultStatusline(v:true)
 endfunction
 
@@ -1279,6 +1283,7 @@ let g:StatuslineContents = {}
 
 let g:StatuslineContents['Fullpath'] = v:false
 let g:StatuslineContents['CurrentLineColumn'] = v:false
+let g:StatuslineContents['TabStop'] = v:false
 let g:StatuslineContents['GitBranch'] = v:false
 let g:StatuslineContents['FuncName'] = v:false
 
@@ -1287,6 +1292,8 @@ nnoremap <silent> <Leader>- :<C-u>StlFullpath<CR>
 
 com! StlCurrentLineColumn let g:StatuslineContents['CurrentLineColumn'] = !g:StatuslineContents['CurrentLineColumn'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 nnoremap <silent> <Leader>_ :<C-u>StlCurrentLineColumn<CR>
+
+com! StlTabStop let g:StatuslineContents['TabStop'] = !g:StatuslineContents['TabStop'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 
 com! StlGitBranch let g:StatuslineContents['GitBranch'] = !g:StatuslineContents['GitBranch'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 nnoremap <silent> <Leader>. :<C-u>StlGitBranch<CR>
