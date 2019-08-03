@@ -1868,6 +1868,10 @@ nnoremap <silent> <Right> <C-w>l
 nmap gt ggt
 nmap gT GT
 
+"nnoremap <C-d> :<C-u>terminal<CR><C-w>p
+nnoremap <C-d> :<C-u>call OpenTerm()<CR>
+
+
 "-------------------------------------------------------------------
 " カーソル下のhighlight情報を表示する {{{
 function! s:get_syn_id(transparent)
