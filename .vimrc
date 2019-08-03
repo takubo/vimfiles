@@ -591,9 +591,12 @@ function! TagHighlightDelete(dummy)
 
   if a:dummy == g:TimerTagMatch0
     au! ZZZZ0
+    "ここでreturnしないと、この下のif文でg:TimerTagMatchが未定義エラーになる。
+    return
   endif
   if a:dummy == g:TimerTagMatch
     au! ZZZZ
+    return
   endif
 endfunction
 
@@ -623,7 +626,7 @@ function! JumpToDefine(mode)
   augroup end
   redraw
 
-  for i in range(2 + 2)
+  for i in range(2)
     try
       if a:mode =~? 's'
 	exe (a:mode =~? 'p' ? 'p' : (a:mode =~? 'w' ? 's' : '')) . "tselect " . w
@@ -651,6 +654,7 @@ function! JumpToDefine(mode)
 	let w = '_' . w0
       endif
       if i == 0
+	" エラーメッセージ表示用にオリジナル単語でのエラー文字列を保存
       let exception = v:exception
       endif
     catch /:E433:/
