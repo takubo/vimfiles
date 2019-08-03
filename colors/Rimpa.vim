@@ -18,7 +18,9 @@ let colors_name = "Rimpa"
 hi Normal	guifg=#f6f3f0	guibg=#202020	gui=none	ctermfg=254	ctermbg=235
 hi Normal	guifg=#f6f3f0	guibg=#282828	gui=none	ctermfg=254	ctermbg=235
 hi NonText	guifg=#808080	guibg=#303030	gui=none	ctermfg=242	ctermbg=237
-hi Visual	guifg=#ffffd7	guibg=#444444	gui=none	ctermfg=186	ctermbg=238
+"hi Visual	gui=reverse
+"hi Visual	guifg=#ffffd7	guibg=#444444	gui=none	ctermfg=186	ctermbg=238
+hi Visual	guifg=NONE	guibg=#444444	gui=none	ctermfg=186	ctermbg=238
 hi FoldColumn	guifg=#ff5d28	guibg=#444444
 hi Folded	guifg=#c0c0c0	guibg=#252525	gui=none
 hi SignColumn	guifg=White	guibg=Red
@@ -29,8 +31,16 @@ hi CursorLine	guifg=NONE	guibg=NONE	gui=underline			ctermbg=NONE	cterm=underline
 hi CursorColumn	guifg=NONE	guibg=#121212	gui=NONE			ctermbg=236
 hi CursorColumn	guifg=NONE	guibg=#202020	gui=NONE			ctermbg=236
 hi CursorColumn	guifg=NONE	guibg=#1A1A1A	gui=NONE			ctermbg=236
-hi CursorLineNr	guifg=#ffffff	guibg=#000000	gui=NONE	ctermfg=yellow			cterm=bold,underline
+"hi CursorLineNr	guifg=#ffffff	guibg=#000000	gui=NONE	ctermfg=yellow			cterm=bold,underline
+"hi CursorLineNr	guifg=#ffffff	guibg=#121212	gui=NONE	ctermfg=yellow			cterm=bold,underline
 hi LineNr	guifg=#5c5a4f	guibg=#121212	gui=none	ctermfg=239	ctermbg=232
+"hi CursorLineNr	guibg=#5c5a4f	guifg=#121212	gui=none	ctermfg=239	ctermbg=232
+"hi CursorLineNr	guibg=#5c5a5f	guifg=#ffffff	gui=none	ctermfg=239	ctermbg=232
+"hi CursorLineNr	guibg=#5c5a5f	guifg=#121212	gui=none	ctermfg=239	ctermbg=232
+"hi CursorLineNr	guibg=#ff302d	guifg=#121212	gui=none	ctermfg=239	ctermbg=232
+hi CursorLineNr	guibg=#cf302d	guifg=#121212	gui=none	ctermfg=239	ctermbg=232
+"hi CursorLineNr	guibg=#121212	guifg=#cf302d	gui=none	ctermfg=239	ctermbg=232
+"hi CursorLineNr	guibg=#000000	guifg=#cf302d	gui=none	ctermfg=239	ctermbg=232
 hi Search	guifg=white	guibg=#b7282e
 hi MatchParen	guifg=#f6f3e8	guibg=#857b6f	gui=bold	ctermbg=59
 hi Title	guifg=#f6f3e8	guibg=NONE	gui=bold
@@ -54,17 +64,33 @@ hi StatusLineTermNC	guifg=#8f7368	guibg=#6d2006	gui=none
 
 hi WildMenu		guifg=#ffffff	guibg=#000000
 
-hi VertSplit		guifg=#121212	guibg=#300a03	gui=none
-hi VertSplit		guifg=#7f1f1a	guibg=black	gui=none
-hi VertSplit		guifg=#7f1f1a	guibg=#121212	gui=none
+"hi VertSplit		guifg=#121212	guibg=#300a03	gui=none
+"hi VertSplit		guifg=#7f1f1a	guibg=black	gui=none
+"hi VertSplit		guifg=#7f1f1a	guibg=#121212	gui=none
+"hi VertSplit		guifg=#7f1f1a	guibg=#282828	gui=none
+"hi VertSplit		guifg=#282828	guibg=#282828	gui=none	ctermfg=254	ctermbg=235
 hi VertSplit		guifg=#121212	guibg=#121212	gui=none
-hi VertSplit		guifg=#282828	guibg=#282828	gui=none	ctermfg=254	ctermbg=235
+"hi VertSplit		guifg=#282828	guibg=#282828	gui=none
+
+
+if 1
+  hi LineNr	guifg=#5c5a4f	guibg=#282828	gui=none
+  hi LineNr	guifg=#7c7a6f	guibg=#282828	gui=none
+  hi VertSplit	guifg=#282828	guibg=#121212	gui=none
+  hi VertSplit	guifg=#282828	guibg=#000000	gui=none
+ "hi VertSplit	guifg=#121212	guibg=#282828	gui=none
+
+ "hi LineNr	guifg=#7c7a6f	guibg=#282828	gui=none
+ "hi VertSplit	guifg=#000000	guibg=#282828	gui=bold
+endif
+
 
 hi TabLine		guifg=#eeddcc	guibg=black	gui=none
 hi TabLine		guifg=#eeddcc	guibg=black	gui=underline
 hi TabLineSel		guifg=#efd3b8	guibg=#7f1f1a	gui=none
 hi TabLineSel		guifg=#a63318	guibg=#111111	gui=underline
 hi TabLineSel		guifg=#a63318	guibg=#111111	gui=none
+hi TabLineSel		guifg=indianred
 hi TabLineFill		guifg=#343434	guibg=black
 hi TabLineDate		guifg=#efd3b8	guibg=#7f1f1a	gui=none
 
@@ -80,14 +106,43 @@ hi Constant 	guifg=#acf0f2	gui=none	ctermfg=159
 hi String 	guifg=#ff5d28	gui=none	ctermfg=202
 hi Identifier 	guifg=#ff5d28	gui=none	ctermfg=202
 hi Function 	guifg=#cdd129	gui=none	ctermfg=184
-hi Type 	guifg=#cdd129	gui=none	ctermfg=184
+hi Type 	guifg=#ffad68	gui=none	ctermfg=202
+hi Type 	guifg=#fdbd89	gui=none	ctermfg=184
+hi Type 	guifg=#adb110	gui=none	ctermfg=184
+hi Type 	guifg=#ff5d28	gui=none	ctermfg=184
+hi Type 	guifg=#ffa678	gui=none	ctermfg=184
+hi Type 	guifg=#bdbd89	gui=none	ctermfg=184
+hi Type 	guifg=#bab889	gui=none	ctermfg=184
+hi Type 	guifg=#beb589	gui=none	ctermfg=184
+hi Type 	guifg=#cea589	gui=none	ctermfg=184
+hi Type 	guifg=#d3ca94	gui=none	ctermfg=184
+hi Type 	guifg=#f0c589	gui=none	ctermfg=184
+hi Type 	guifg=#d8c589	gui=none	ctermfg=184
+hi Type 	guifg=#cec589	gui=none	ctermfg=184
+hi Type 	guifg=#d0c589	gui=none	ctermfg=184
+"hi Type 	guifg=gold	gui=none	ctermfg=184
 hi Statement 	guifg=#af5f5f	gui=none	ctermfg=131
 hi Keyword	guifg=#cdd129	gui=none	ctermfg=184
 hi PreProc 	guifg=#ede39e	gui=none	ctermfg=187
+hi PreProc	guifg=indianred
+hi PreProc 	guifg=#ff5d28	gui=none	ctermfg=202
+hi PreProc	guifg=#9999bb
+
+hi String 	guifg=indianred
+hi String	guifg=#bdbd89	gui=none	ctermfg=184
+hi String 	guifg=#ffa678	gui=none	ctermfg=184
+hi String 	guifg=#ff9678	gui=none	ctermfg=184
+hi String 	guifg=#df9678	gui=none	ctermfg=184
+"hi String 	guifg=#af5f5f	gui=none	ctermfg=131
+"hi Statement	guifg=indianred
+hi Number	guifg=indianred
+hi Number 	guifg=#ff5d28	gui=none	ctermfg=202
+hi Number 	guifg=#8cf2a0	gui=none	ctermfg=159
 hi Number	guifg=#ede39e	gui=none	ctermfg=187
+hi Number 	guifg=#acf0f2	gui=none	ctermfg=159
 hi Special	guifg=#acf0f2	gui=none	ctermfg=159
 
-if 1
+if 0
   " COMMON COLORS AND SETTINGS
   highlight PreProc guifg=#dfaf87 guibg=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
   highlight Function guifg=#875f5f guibg=NONE gui=NONE ctermfg=95 ctermbg=NONE cterm=NONE
@@ -108,7 +163,7 @@ if 1
   highlight cssClassName guifg=#dfaf87 guibg=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
   highlight Structure guifg=#875f5f guibg=NONE gui=NONE ctermfg=95 ctermbg=NONE cterm=NONE
   highlight Typedef guifg=#875f5f guibg=NONE gui=NONE ctermfg=95 ctermbg=NONE cterm=NONE
-  "highlight Repeat guifg=#878787 guibg=NONE gui=NONE ctermfg=102 ctermbg=NONE cterm=NONE
+  highlight Repeat guifg=#878787 guibg=NONE gui=NONE ctermfg=102 ctermbg=NONE cterm=NONE
   highlight Keyword guifg=#878787 guibg=NONE gui=NONE ctermfg=102 ctermbg=NONE cterm=NONE
   highlight Exception guifg=#878787 guibg=NONE gui=NONE ctermfg=102 ctermbg=NONE cterm=NONE
   highlight Number guifg=#af5f00 guibg=NONE gui=NONE ctermfg=130 ctermbg=NONE cterm=NONE
@@ -118,7 +173,6 @@ if 1
   highlight Include guifg=#dfaf87 guibg=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
   highlight Define guifg=#dfaf87 guibg=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
   "highlight Comment guifg=#87875f guibg=NONE gui=NONE ctermfg=101 ctermbg=NONE cterm=NONE
-  highlight Statement guifg=#87875f guibg=NONE gui=NONE ctermfg=101 ctermbg=NONE cterm=NONE
   highlight Repeat guifg=#87875f guibg=NONE gui=NONE ctermfg=101 ctermbg=NONE cterm=NONE
   highlight Conditional guifg=#87875f guibg=NONE gui=NONE ctermfg=101 ctermbg=NONE cterm=NONE
 
