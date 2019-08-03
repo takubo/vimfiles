@@ -1942,6 +1942,11 @@ nmap M <Plug>(ComfortableMotion-Flick-Up)
 
 
 
+nnoremap <Leader>4 :<C-u>setl noscrollbind<CR>
+nnoremap <Leader>4 :<C-u>setl scrollbind!<CR>
+
+
+
 " Basic {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Cursor Move, CursorLine, CursorColumn, and Scroll {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Emacs {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
