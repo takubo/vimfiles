@@ -721,7 +721,8 @@ nmap     <silent> <Leader><CR> <Leader><Leader><CR>
 
 " Diff {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-set diffopt+=iwhite
+"set diffopt+=iwhite
+set diffopt=filler,iwhite
 
 " diff Close
 nnoremap dc    :<C-u>diffoff<CR>
@@ -787,6 +788,9 @@ nnoremap <expr> d<CR>
 " Block Diff
 vmap <leader>1 <Plug>(BlockDiff-GetBlock1)
 vmap <leader>2 <Plug>(BlockDiff-GetBlock2andExe)
+
+nnoremap d<CR> :<C-u>tab split<CR>:Gdiffsplit<CR>
+nnoremap <expr> d<CR> ':<C-u>' . ( winnr('$') > 1 ? 'tab split<CR>:' : '' ) . 'Gdiffsplit<CR>'
 
 " Diff }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
