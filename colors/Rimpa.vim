@@ -215,6 +215,22 @@ function! s:SetStatusLineColor(mode)
   endif
 endfunction
 
+let s:sss = 1
+
+if s:sss
+function! s:SetStatusLineColor(mode)
+  if a:mode == 'Insert'
+    "silent highlight	CursorLineNr	guifg=White	guibg=#1a1f7f	gui=NONE	ctermfg=Blue			cterm=bold,underline
+    "silent highlight	CursorLineNr	guifg=#aaccff	guibg=#1a1f7f	gui=NONE	ctermfg=Blue			cterm=bold,underline
+    "silent highlight	CursorLineNr	guifg=black	guibg=darkyellow	gui=NONE	ctermfg=Blue			cterm=bold,underline
+    silent highlight	CursorLineNr	guifg=#aaccff	guibg=#0000ff	gui=NONE	ctermfg=Blue			cterm=bold,underline
+  else
+    highlight clear CursorLineNr
+    silent exec s:slhlcmdd
+  endif
+endfunction
+endif
+
 function! s:GetHighlight(hi)
   redir => hl
   exec 'highlight '.a:hi
@@ -226,6 +242,7 @@ endfunction
 
 silent! let s:slhlcmd = 'highlight ' . s:GetHighlight('StatusLine')
 
+silent! let s:slhlcmdd = 'highlight ' . s:GetHighlight('CursorLineNr')
 
 
 
