@@ -1471,6 +1471,29 @@ nnoremap <expr> <Leader>V  ( len(win_findbuf(buffer_number(g:color_buf_name . g:
 
 
 
+" Swap Exists {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+
+let s:swap_select = v:false
+
+augroup MyVimrc_SwapExists
+  au!
+  au SwapExists * if s:swap_select | let v:swapchoice = '' | else | let v:swapchoice = 'o' | endif
+augroup END
+
+function! s:swap_select()
+  let s:swap_select = v:true
+  edit %
+  let s:swap_select = v:false
+endfunction
+
+com! SwapSelect call s:swap_select()
+
+"nnoremap <Leader>E :<C-u>call <SID>swap_select()<CR>
+
+" Swap Exists }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+
+
 " Other Key-Maps {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 nnoremap <leader>w :<C-u>w<CR>
