@@ -972,6 +972,7 @@ function! OpenTerm()
     exe (minval + winnr() - 1) % (winnr('$')) + 1 . ' wincmd w'
   else
     terminal
+    exe "normal! \<C-w>p"
   endif
 endfunction
 
