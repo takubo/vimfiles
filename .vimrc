@@ -1038,51 +1038,6 @@ nnoremap <A-b> :exe tabpagenr() == 1              ? 'tabmove $' : 'tabmove -1'<C
 
 
 "----------------------------------------------------------------------------------------
-" Make TabLabel
-
-function! s:make_tabpage_label(n)
-  " カレントタブページかどうかでハイライトを切り替える
-  let hi = a:n is tabpagenr() ? '%#TabLineSel#' : '%#TabLine#'
-
-  if s:TablineStatus == 1
-    return hi . ' [ ' . a:n . ' ] %#TabLineFill#'
-  endif
-
-  " タブ内のバッファのリスト
-  let bufnrs = tabpagebuflist(a:n)
-
-  " タブ内に変更ありのバッファがあったら '+' を付ける
-  let mod = len(filter(copy(bufnrs), 'getbufvar(v:val, "&modified")')) ? ' +' : ''
-
-  if s:TablineStatus == 2
-    return hi . ' [ ' . a:n . ' ' . mod . ' ] %#TabLineFill#'
-  endif
-
-  " バッファ数
-  let num = '(' . len(bufnrs) . ')'
-
-  if s:TablineStatus == 3
-    return hi . ' [ ' . a:n . ' ' . num . mod . ' ] %#TabLineFill#'
-  endif
-
-  " タブ番号
-  let no = '[' . a:n . ']'
-
-  " カレントバッファ
-  let curbufnr = bufnrs[tabpagewinnr(a:n) - 1]  " tabpagewinnr() は 1 origin
-
-  let buf_name = ( s:TablineStatus =~ '[456]' ? expand('#' . curbufnr . ':t') : pathshorten(bufname(curbufnr)) )
- "let buf_name = pathshorten(expand('#' . curbufnr . ':p'))
-
-  let buf_name = buf_name == '' ? 'No Name' : buf_name  " 無名バッファは、バッファ名が出ない。
-
-  let label = no . (s:TablineStatus != 4 ? (' ' . num) : '') . (s:TablineStatus =~ '[68]' ? mod : '') . ' '  . buf_name
-
-  return '%' . a:n . 'T' . hi . '  ' . label . '%T  %#TabLineFill#'
-endfunction
-
-
-"----------------------------------------------------------------------------------------
 " Make TabLineStr
 
 function! TabLineStr()
@@ -1109,6 +1064,44 @@ endfunction
 
 
 "----------------------------------------------------------------------------------------
+" Make TabLabel
+
+function! s:make_tabpage_label(n)
+  " カレントタブページかどうかでハイライトを切り替える
+  let hi = a:n is tabpagenr() ? '%#TabLineSel#' : '%#TabLine#'
+
+  if s:TablineStatus == 1 | return hi . ' [ ' . a:n . ' ] %#TabLineFill#' | endif
+
+  " タブ内のバッファのリスト
+  let bufnrs = tabpagebuflist(a:n)
+
+  " タブ内に変更ありのバッファがあったら '+' を付ける
+  let mod = len(filter(copy(bufnrs), 'getbufvar(v:val, "&modified")')) ? ' +' : ''
+
+  if s:TablineStatus == 2 | return hi . ' [ ' . a:n . ' ' . mod . ' ] %#TabLineFill#' | endif
+
+  " バッファ数
+  let num = '(' . len(bufnrs) . ')'
+
+  if s:TablineStatus == 3 | return hi . ' [ ' . a:n . ' ' . num . mod . ' ] %#TabLineFill#' | endif
+
+  " タブ番号
+  let no = '[' . a:n . ']'
+
+  " カレントバッファ
+  let curbufnr = bufnrs[tabpagewinnr(a:n) - 1]  " tabpagewinnr() は 1 origin
+
+  let buf_name = ( s:TablineStatus =~ '[456]' ? expand('#' . curbufnr . ':t') : pathshorten(bufname(curbufnr)) )  " let buf_name = pathshorten(expand('#' . curbufnr . ':p'))
+
+  let buf_name = buf_name == '' ? 'No Name' : buf_name  " 無名バッファは、バッファ名が出ない。
+
+  let label = no . (s:TablineStatus != 4 ? (' ' . num) : '') . (s:TablineStatus =~ '[68]' ? mod : '') . ' '  . buf_name
+
+  return '%' . a:n . 'T' . hi . '  ' . label . '%T  %#TabLineFill#'
+endfunction
+
+
+"----------------------------------------------------------------------------------------
 " Switch TabLine Status
 
 function! s:ToggleTabline(arg)
@@ -1122,6 +1115,7 @@ function! s:ToggleTabline(arg)
   endif
 
   let &showtabline = ( s:TablineStatus == 0 ? 0 : 2 )
+
   call UpdateTabline(0)
 endfunction
 
@@ -1167,19 +1161,18 @@ let TimerTabline = timer_start(s:UpdateTablineInterval, 'UpdateTabline', {'repea
 
 " Statusline {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
+
 "----------------------------------------------------------------------------------------
 " Battery (Battery.vimが存在しない場合に備えて。)
 let g:BatteryInfo = '? ---% [--:--:--]'
 
+
 "----------------------------------------------------------------------------------------
-" Set Statusline
+" Alt Statusline
 
 function! s:SetStatusline(stl, local, time)
   " 旧タイマの削除
-  if a:time > 0 && exists('s:TimerUsl')
-     call timer_stop(s:TimerUsl)
-     unlet s:TimerUsl
-  endif
+  if a:time > 0 && exists('s:TimerUsl') | call timer_stop(s:TimerUsl) | unlet s:TimerUsl | endif
 
   " Local Statusline の保存。および、WinLeaveイベントの設定。
   if a:local == 'l'
@@ -1190,48 +1183,45 @@ function! s:SetStatusline(stl, local, time)
       au WinLeave * au! MyVimrc_Restore_LocalStl
     augroup end
   else
-    let cur_win = winnr()
-    "windo if !exists('w:stl') | let w:stl = &l:stl | endif
-    "windo let w:stl = !exists('w:stl') ? &l:stl : w:stl
+    let save_cur_win = winnr()
     windo let w:stl = getwinvar(winnr(), 'stl', &l:stl)
-    silent exe cur_win . 'wincmd w'
-    augroup MyVimrc_Restore_LocalStl
-      au!
-    augroup end
+    silent exe save_cur_win . 'wincmd w'
+    au! MyVimrc_Restore_LocalStl
   endif
 
   " Statusline の設定
   exe 'set' . a:local . ' stl=' . substitute(a:stl, ' ', '\\ ', 'g')
 
   " タイマスタート
-  if a:time > 0
-    let s:TimerUsl = timer_start(a:time, 'RestoreDefaultStatusline', {'repeat': v:false})
-  endif
+  if a:time > 0 | let s:TimerUsl = timer_start(a:time, 'RestoreDefaultStatusline', {'repeat': v:false}) | endif
 endfunction
 
 function! RestoreDefaultStatusline(force)
-  " 旧タイマの削除
-  if !exists('s:TimerUsl') && !a:force
-    return
-  elseif exists('s:TimerUsl')
-    call timer_stop(s:TimerUsl)
-    unlet s:TimerUsl
-  endif
+  " AltStlになっていないときは、強制フラグが立っていない限りDefaultへ戻さない。
+  if !exists('s:TimerUsl') && !a:force | return | endif
 
+  " 旧タイマの削除
+  if exists('s:TimerUsl') | call timer_stop(s:TimerUsl) | unlet s:TimerUsl | endif
+
+  " TODO これの呼び出し意図確認
   call s:SetStatusline(s:stl, '', -1)
-  let cur_win = winnr()
-  windo if exists('w:stl') | let &l:stl = w:stl | unlet w:stl | endif
+
+  let save_cur_win = winnr()
+
   " Localしか設定してないときは、全WindowのStlを再設定するより、if existsの方が速いか？
   "windo let &l:stl = getwinvar(winnr(), 'stl', '')
-  silent exe cur_win . 'wincmd w'
+  windo if exists('w:stl') | let &l:stl = w:stl | unlet w:stl | endif
+
+  silent exe save_cur_win . 'wincmd w'
 endfunction
 
 augroup MyVimrc_Stl
   au!
   " このイベントがないと、AltStlが設定されているWindowを分割して作ったWindowの&l:stlに、
-  " (分割元Windowの)AltStlの内容が設定されっぱなしになってしまう。
+  " 分割元WindowのAltStlの内容が設定されっぱなしになってしまう。
   au WinEnter * let &l:stl = ''
 augroup end
+
 
 "----------------------------------------------------------------------------------------
 " Make Default Statusline
@@ -1301,6 +1291,7 @@ function! s:SetDefaultStatusline(statusline_contents)
   call RestoreDefaultStatusline(v:true)
 endfunction
 
+
 "----------------------------------------------------------------------------------------
 " Switch Statusline Contents
 
@@ -1329,6 +1320,7 @@ nnoremap <silent> <Leader>, :<C-u>StlFuncName<CR>
 " 初期設定のために1回は呼び出す。
 call s:SetDefaultStatusline(g:StatuslineContents)
 
+
 "----------------------------------------------------------------------------------------
 " Alt Statusline API
 
@@ -1340,11 +1332,13 @@ function! AddAltStatusline(stl, local, time)
   call s:SetStatusline((a:local == 'l' ? &l:stl : &stl) . a:stl, a:local, a:time)
 endfunction
 
+
 "----------------------------------------------------------------------------------------
 " Alt Statusline Enter Visual Mode (TODO)
 nnoremap <silent> v     :<C-u>call RestoreDefaultStatusline(v:false)<CR>v
 nnoremap <silent> V     :<C-u>call RestoreDefaultStatusline(v:false)<CR>V
 nnoremap <silent> <C-v> :<C-u>call RestoreDefaultStatusline(v:false)<CR><C-v>
+
 
 " Statusline }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -1889,13 +1883,6 @@ endfunction
 let plugin_dicwin_disable = v:true
 
 ru! ftplugin/man.vim
-
-
-
-"augroup MyVimrcGui
-"  au!
-"  au CursorHold * normal! <C-l>
-"augroup end
 
 
 nmap gt ggt
