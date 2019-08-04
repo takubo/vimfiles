@@ -851,29 +851,15 @@ nnoremap <BS> <C-w>
 
 " Auto
 nnoremap <silent> <expr> <BS><BS>         ( <SID>WindowRatio() >= 0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
-"nnoremap <silent> <expr> <Leader><Leader> ( <SID>WindowRatio() >= 0 ? ":\<C-u>vnew\<CR>" : "\<C-w>n" )
 nnoremap <silent> <expr> <Leader><Leader> ( <SID>WindowRatio() <  0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
-"nnoremap <BS><CR> " Tag, Jump, and Unified CR を参照。
-"nnoremap <Leader><CR> " Tag, Jump, and Unified CR を参照。
+" Tag, Jump, and Unified CR を参照。
 
 " Manual
-"nnoremap gu                        <C-w>s:setl noscrollbind<CR>
 nnoremap <silent> _                <C-w>s:setl noscrollbind<CR>
-nnoremap <silent> g_               <C-w>n
+nnoremap <silent> g_               <C-w>s
+nnoremap <silent> U                :<C-u>new<CR>
 nnoremap <silent> <Bar>            <C-w>v:setl noscrollbind<CR>
 nnoremap <silent> g<Bar>           :<C-u>vnew<CR>
-
-"----------------------------------------------------------------------------------------
-" Reopen as Tab
-
-nnoremap <C-o>      :<C-u>tab split<CR>
-nnoremap <C-w><C-w> <C-w>T
-nnoremap <C-w><C-w> :<C-u>tab split<CR>
-nnoremap <C-w><C-t> <C-w>T
-
-tnoremap <C-w><C-t> <C-w>T
-
-" TODO diffのバッファも再現する。
 
 "----------------------------------------------------------------------------------------
 " Close
@@ -887,24 +873,24 @@ nnoremap <silent> <C-q>/ q/
 nnoremap <silent> <C-q>? q?
 
 " ウィンドウレイアウトを崩さないでバッファを閉じる   (http://nanasi.jp/articles/vim/kwbd_vim.html)
-com! Kwbd let s:kwbd_bn = bufnr('%') | enew | exe 'bdel '. s:kwbd_bn | unlet s:kwbd_bn
-nnoremap <silent> <C-q><C-q> :<C-u>Kwbd<CR>
+com! CloseWindow let s:kwbd_bn = bufnr('%') | enew | exe 'bdel '. s:kwbd_bn | unlet s:kwbd_bn
+nnoremap <silent> <C-q><C-q> :<C-u>CloseWindow<CR>
 
 "----------------------------------------------------------------------------------------
 " Focus
 
 " Basic
-"nnoremap <silent> <Space>   <Esc>:exe <SID>SkipTerm(+1) . ' wincmd w'<CR>
-"nnoremap <silent> <S-Space> <Esc>:exe <SID>SkipTerm(-1) . ' wincmd w'<CR>
 nnoremap <silent> <Plug>(MyVimrc-SkipTerm-Inc) <Esc>:exe <SID>SkipTerm(+1) . ' wincmd w'<CR>
 nnoremap <silent> <Plug>(MyVimrc-SkipTerm-Dec) <Esc>:exe <SID>SkipTerm(-1) . ' wincmd w'<CR>
+" Unified_Spaceを参照。
 
-" Previouse
-"nnoremap <Tab> <C-w>p
+" Move
+nnoremap <silent> <Left>  <C-w>h
+nnoremap <silent> <Down>  <C-w>j
+nnoremap <silent> <Up>    <C-w>k
+nnoremap <silent> <Right> <C-w>l
 
-" Terminal Windowから抜ける。
-nnoremap        <C-Tab> <C-w>p
-" Windowが１つしかないなら、Tabを抜ける。
+" Terminal Windowから抜ける。 (Windowが１つしかないなら、Tabを抜ける。)
 tnoremap <expr> <C-Tab> winnr('$') == 1 ? '<C-w>:tabNext<CR>' : '<C-w>p'
 
 "----------------------------------------------------------------------------------------
@@ -941,7 +927,7 @@ tnoremap <silent> <C-left>  1<C-w><bar>:<C-u>call	<SID>best_scrolloff()<CR>
 tnoremap <silent> <C-right>  <C-w><bar>:<C-u>call	<SID>best_scrolloff()<CR>
 
 "----------------------------------------------------------------------------------------
-" Move
+" Window Move
 
 nnoremap <silent> <A-h> <C-w>H:<C-u>call		<SID>best_scrolloff()<CR>
 nnoremap <silent> <A-j> <C-w>J:<C-u>call		<SID>best_scrolloff()<CR>
@@ -952,6 +938,17 @@ tnoremap <silent> <A-left>  <C-w>H:<C-u>call		<SID>best_scrolloff()<CR>
 tnoremap <silent> <A-down>  <C-w>J:<C-u>call		<SID>best_scrolloff()<CR>
 tnoremap <silent> <A-up>    <C-w>K:<C-u>call		<SID>best_scrolloff()<CR>
 tnoremap <silent> <A-right> <C-w>L:<C-u>call		<SID>best_scrolloff()<CR>
+
+"----------------------------------------------------------------------------------------
+" Reopen as Tab
+" TODO diffのバッファも再現する。
+
+nnoremap <C-o>      :<C-u>tab split<CR>
+nnoremap <C-w><C-w> <C-w>T
+nnoremap <C-w><C-w> :<C-u>tab split<CR>
+nnoremap <C-w><C-t> <C-w>T
+
+tnoremap <C-w><C-t> <C-w>T
 
 " Window }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -1353,12 +1350,12 @@ nnoremap <silent> <C-v> :<C-u>call RestoreDefaultStatusline(v:false)<CR><C-v>
 
 
 
-" Unified-Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+" Unified_Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 "
 nmap <expr> <Space>   winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Down)' : '<Plug>(MyVimrc-SkipTerm-Inc)'
 nmap <expr> <S-Space> winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Up)'   : '<Plug>(MyVimrc-SkipTerm-Dec)'
 
-" Unified-Space }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+" Unified_Space }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
@@ -1510,7 +1507,7 @@ inoremap <expr> <plug>(I_Esc_Write) IEscPre() . "\<Esc>" . ':w<CR>'
 
 " Snippets {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-"source D:/bin/vim74-kaoriya-win32/vim74/plugin/snipMate.vim
+" ru snipMate.vim
 if exists('*TriggerSnippet')
   inoremap <silent> <Tab>   <C-R>=<SID>TriggerSnippet()<CR>
 endif
@@ -1555,16 +1552,16 @@ let g:vimrc_buf_name  = '^' . g:vimrc_path
 let g:gvimrc_buf_name = '^' . g:gvimrc_path
 
 nnoremap <expr> <silent> <Leader>v
-	 \ ( len(win_findbuf(bufnr(g:vimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) > 0 ) ?
-	 \  ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':VIMRC<CR>'
+	\ ( len(win_findbuf(bufnr(g:vimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) > 0 ) ?
+	\  ( win_id2win(reverse(win_findbuf(bufnr(g:vimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':VIMRC<CR>'
 
 nnoremap <expr> <silent> <Leader><C-v>
-	 \  ( len(win_findbuf(bufnr(g:gvimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:gvimrc_buf_name)))[0]) > 0 ) ?
-	 \  ( win_id2win(reverse(win_findbuf(bufnr(g:gvimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':GVIMRC<CR>'
+	\  ( len(win_findbuf(bufnr(g:gvimrc_buf_name))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:gvimrc_buf_name)))[0]) > 0 ) ?
+	\  ( win_id2win(reverse(win_findbuf(bufnr(g:gvimrc_buf_name)))[0]) . '<C-w><C-w>' ) : ':GVIMRC<CR>'
 
 nnoremap <expr> <silent> <Leader>V
-	 \ ( len(win_findbuf(bufnr(g:colors_dir . g:colors_name . '.vim$'))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:colors_dir . g:colors_name . '.vim$')))[0]) > 0 ) ?
-	 \  ( win_id2win(win_findbuf(bufnr(g:colors_dir . g:colors_name . '.vim$'))[0]) . '<C-w><C-w>' ) : ':EditColor<CR>'
+	\ ( len(win_findbuf(bufnr(g:colors_dir . g:colors_name . '.vim$'))) > 0 ) && ( win_id2win(reverse(win_findbuf(bufnr(g:colors_dir . g:colors_name . '.vim$')))[0]) > 0 ) ?
+	\  ( win_id2win(win_findbuf(bufnr(g:colors_dir . g:colors_name . '.vim$'))[0]) . '<C-w><C-w>' ) : ':EditColor<CR>'
 
 
 " Configuration }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -1872,7 +1869,6 @@ nnoremap <silent> <C-\> ]c^:FuncNameStl<CR>
 nnoremap <silent> <C-]> g;:FuncNameStl<CR>
 nnoremap <silent> <C-\> g,:FuncNameStl<CR>
 
-nnoremap <silent> U     :<C-u>new<CR>
 nnoremap <silent> <C-u> :<C-u>new<CR>
 nnoremap <silent> <C-d> :<C-u>vnew<CR>
 
@@ -1900,16 +1896,6 @@ ru! ftplugin/man.vim
 "  au!
 "  au CursorHold * normal! <C-l>
 "augroup end
-
-
-"----------------------------------------------------------------------------------------
-" Move
-
-nnoremap <silent> <Left>  <C-w>h
-nnoremap <silent> <Down>  <C-w>j
-nnoremap <silent> <Up>    <C-w>k
-nnoremap <silent> <Right> <C-w>l
-
 
 
 nmap gt ggt
@@ -1965,7 +1951,7 @@ nnoremap <Leader>4 :<C-u>setl scrollbind!<CR>
 " Tabline {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Statusline {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Battery {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-" Unified-Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+" Unified_Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Mru {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Completion {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " i_Esc {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
@@ -1984,7 +1970,7 @@ nnoremap <Leader>4 :<C-u>setl scrollbind!<CR>
 
 " Cursor Move, CursorLine, CursorColumn, and Scroll {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Tag, Jump, and Unified CR {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-" Unified-Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+" Unified_Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 " Tabline {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 " Statusline {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
