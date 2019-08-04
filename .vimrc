@@ -1303,16 +1303,15 @@ let g:StatuslineContents['LineColumn'] = v:false
 let g:StatuslineContents['Path'] = v:false
 let g:StatuslineContents['TabStop'] = v:false
 
-com! StlFullpath let g:StatuslineContents['Path'] = !g:StatuslineContents['Path'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
-com! StlLineColumn let g:StatuslineContents['LineColumn'] = !g:StatuslineContents['LineColumn'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
-com! StlTabStop let g:StatuslineContents['TabStop'] = !g:StatuslineContents['TabStop'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
-com! StlGitBranch let g:StatuslineContents['GitBranch'] = !g:StatuslineContents['GitBranch'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
-com! StlFuncName let g:StatuslineContents['FuncName'] = !g:StatuslineContents['FuncName'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
+function! CompletionStlContents(ArgLead, CmdLine, CusorPos)
+  return join(keys(g:StatuslineContents),"\n")
+endfunction
+com! -nargs=1 -complete=custom,CompletionStlContents Stl let g:StatuslineContents['<args>'] = !g:StatuslineContents['<args>'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 
-nnoremap <silent> <Leader>. :<C-u>StlGitBranch<CR>
-nnoremap <silent> <Leader>, :<C-u>StlFuncName<CR>
-nnoremap <silent> <Leader>_ :<C-u>StlLineColumn<CR>
-nnoremap <silent> <Leader>- :<C-u>StlPath<CR>
+nnoremap <silent> <Leader>. :<C-u>Stl GitBranch<CR>
+nnoremap <silent> <Leader>, :<C-u>Stl FuncName<CR>
+nnoremap <silent> <Leader>_ :<C-u>Stl LineColumn<CR>
+nnoremap <silent> <Leader>- :<C-u>Stl Path<CR>
 
 
 "----------------------------------------------------------------------------------------
