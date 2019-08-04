@@ -1232,19 +1232,12 @@ function! s:SetDefaultStatusline(statusline_contents)
   let s:stl .= "%#SLFileName#[ %{winnr()} ]%## ( %n ) "
   let s:stl .= "%##%m%r%{(!&autoread&&!&l:autoread)?'[AR]':''}%h%w "
 
- "let s:stl .= "%#hl_func_name_stl#%{bufname('') =~ '^fugitive' ? ' fugitive:' : ''}"
- "let s:stl .= "%#hl_func_name_stl#%{&filetype == 'fugitive' ? ' fugitive:' : ''}"
- "let s:stl .= "%#hl_func_name_stl#%{bufname('') =~ '^fugitive' ? ' [fugitive]' : ''}"
- "let s:stl .= "%#hl_func_name_stl#%{&filetype == 'fugitive' ? ' [fugitive]' : ''}"
-
   let g:MyStlFugitive = a:statusline_contents['GitBranch'] ? ' [fugitive]' : ' fugitive'
   let s:stl .= "%#hl_func_name_stl#%{bufname('') =~ '^fugitive' ? g:MyStlFugitive : ''}"
   let s:stl .= "%#hl_func_name_stl#%{&filetype == 'fugitive' ? g:MyStlFugitive : ''}"
 
   if a:statusline_contents['GitBranch']
-   "let s:stl .= "%#hl_func_name_stl# %{FugitiveStatusline()}"
-   "let s:stl .= "%#hl_func_name_stl# %{FugitiveHead(7)}"
-    let s:stl .= "%#hl_func_name_stl# %{FugitiveHead(7)} "
+    let s:stl .= "%#hl_func_name_stl# %{FugitiveHead(7)}"
   endif
 
   if a:statusline_contents['Path']
@@ -1267,21 +1260,19 @@ function! s:SetDefaultStatusline(statusline_contents)
   let s:stl .= "%## %-4{&ft==''?'    ':&ft}  %-5{&fenc==''?'     ':&fenc}  %4{&ff} "
 
   let s:stl .= "%#SLFileName# %{&l:scrollbind?'$':'@'} "
- "let s:stl .= "%#SLFileName# %1{stridx(&isk,'.')<0?' ':'.'} %1{stridx(&isk,'_')<0?' ':'_'} "
+  if a:statusline_contents['Keyboards']
+    let s:stl .= "%#SLFileName# %1{stridx(&isk,'.')<0?' ':'.'} %1{stridx(&isk,'_')<0?' ':'_'} "
+  endif
   let s:stl .= "%1{c_jk_local!=0?'L':'G'} %1{&l:wrap?'==':'>>'} %{g:clever_f_use_migemo?'(M)':'(F)'} %4{&iminsert?'Jpn':'Code'} "
 
   let s:stl .= "%#SLFileName#  %{repeat(' ',winwidth(0)-178)}"
 
   let s:stl .= "%## %3p%% [%4L] "
- "let s:stl .= "%## %3p%%  %5L  "
+
   if a:statusline_contents['LineColumn']
-    let s:stl .= "%## %3v,%3c "
-  endif
-  if 0
     let s:stl .= "%## %4lL, %3v(%3c)C "
-  endif
-  if 0
-    let s:stl .= "%#SLFileName# "
+  elseif a:statusline_contents['Column']
+    let s:stl .= "%## %3v,%3c "
   endif
 
   if a:statusline_contents['TabStop']
@@ -1297,8 +1288,10 @@ endfunction
 
 let g:StatuslineContents = {}
 
+let g:StatuslineContents['Column'] = v:false
 let g:StatuslineContents['GitBranch'] = v:false
 let g:StatuslineContents['FuncName'] = v:false
+let g:StatuslineContents['Keyboards'] = v:false
 let g:StatuslineContents['LineColumn'] = v:false
 let g:StatuslineContents['Path'] = v:false
 let g:StatuslineContents['TabStop'] = v:false
@@ -1308,9 +1301,9 @@ function! CompletionStlContents(ArgLead, CmdLine, CusorPos)
 endfunction
 com! -nargs=1 -complete=custom,CompletionStlContents Stl let g:StatuslineContents['<args>'] = !g:StatuslineContents['<args>'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 
+nnoremap <silent> <Leader>_ :<C-u>Stl Column<CR>
 nnoremap <silent> <Leader>. :<C-u>Stl GitBranch<CR>
 nnoremap <silent> <Leader>, :<C-u>Stl FuncName<CR>
-nnoremap <silent> <Leader>_ :<C-u>Stl LineColumn<CR>
 nnoremap <silent> <Leader>- :<C-u>Stl Path<CR>
 
 
