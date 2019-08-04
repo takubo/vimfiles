@@ -1257,12 +1257,16 @@ function! s:SetDefaultStatusline(statusline_contents)
   let s:stl .= "%#SLFileName#%="
   " ===== Separate Left Right =====
 
+  if a:statusline_contents['Keywords']
+   "let s:stl .= " %1{stridx(&isk,'.')<0?' ':'.'} %1{stridx(&isk,'_')<0?' ':'_'} "
+   "let s:stl .= " %{&isk} "
+   "let s:stl .= " %{substitute(substitute(&isk, '\\\\d\\\\+-\\\\d\\\\+', '', 'g'), ',,\\\\+', ',', 'g')} "
+    let s:stl .= " %{substitute(substitute(&isk, '\\\\d\\\\+-\\\\d\\\\+', '', 'g'), ',\\\\+', ' ', 'g')} "
+  endif
+
   let s:stl .= "%## %-4{&ft==''?'    ':&ft}  %-5{&fenc==''?'     ':&fenc}  %4{&ff} "
 
   let s:stl .= "%#SLFileName# %{&l:scrollbind?'$':'@'} "
-  if a:statusline_contents['Keyboards']
-    let s:stl .= "%#SLFileName# %1{stridx(&isk,'.')<0?' ':'.'} %1{stridx(&isk,'_')<0?' ':'_'} "
-  endif
   let s:stl .= "%1{c_jk_local!=0?'L':'G'} %1{&l:wrap?'==':'>>'} %{g:clever_f_use_migemo?'(M)':'(F)'} %4{&iminsert?'Jpn':'Code'} "
 
   let s:stl .= "%#SLFileName#  %{repeat(' ',winwidth(0)-178)}"
@@ -1291,7 +1295,7 @@ let g:StatuslineContents = {}
 let g:StatuslineContents['Column'] = v:false
 let g:StatuslineContents['GitBranch'] = v:false
 let g:StatuslineContents['FuncName'] = v:false
-let g:StatuslineContents['Keyboards'] = v:false
+let g:StatuslineContents['Keywords'] = v:false
 let g:StatuslineContents['LineColumn'] = v:false
 let g:StatuslineContents['Path'] = v:false
 let g:StatuslineContents['TabStop'] = v:false
