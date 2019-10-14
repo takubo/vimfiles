@@ -1422,9 +1422,11 @@ endfunction
 
 "----------------------------------------------------------------------------------------
 " Alt Statusline Enter Visual Mode (TODO)
-nnoremap <silent> v     :<C-u>call RestoreDefaultStatusline(v:false)<CR>v
-nnoremap <silent> V     :<C-u>call RestoreDefaultStatusline(v:false)<CR>V
-nnoremap <silent> <C-v> :<C-u>call RestoreDefaultStatusline(v:false)<CR><C-v>
+if 0
+  nnoremap <silent> v     :<C-u>call RestoreDefaultStatusline(v:false)<CR>v
+  nnoremap <silent> V     :<C-u>call RestoreDefaultStatusline(v:false)<CR>V
+  nnoremap <silent> <C-v> :<C-u>call RestoreDefaultStatusline(v:false)<CR><C-v>
+endif
 
 
 " Statusline }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -2080,13 +2082,6 @@ function! s:get_highlight_info()
 endfunction
 command! HighlightInfo call s:get_highlight_info()
 "-------------------------------------------------------------------
-
-
-nmap <Tab>   <Plug>(ComfortableMotion-Flick-Down)
-nmap <S-Tab> <Plug>(ComfortableMotion-Flick-Up)
-nmap m <Plug>(ComfortableMotion-Flick-Down)
-nmap M <Plug>(ComfortableMotion-Flick-Up)
-
 
 
 nnoremap <Leader>4 :<C-u>setl noscrollbind<CR>
