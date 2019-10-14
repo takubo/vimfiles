@@ -2455,6 +2455,34 @@ let g:submode_timeoutlen = 5000
 
 
 
+" {{{
+
+let s:IsSpaceFree = v:false
+
+if s:IsSpaceFree
+
+  nnoremap <Space>w :<C-u>w<CR>
+  nnoremap <Space>o :<C-u>MRU<Space>
+
+  nmap <Space>v <Leader>v
+  nmap <Space>V <Leader>V
+
+  nmap <Leader>e <Nop>
+  nmap <silent> <Space>e <Leader>e
+
+  nmap <Space>- <Leader>-
+  nmap <Space>_ <Leader>_
+
+  nmap <Space>t <Leader>t
+
+  nmap <Space><Space> <Leader><Space>
+
+endif
+
+" }}}
+
+
+
 " Window Temp }}}}}}}}}}}}}}}}}}}}}}}
 
 
