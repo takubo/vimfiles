@@ -238,6 +238,46 @@ onoremap ad a"
 
 
 
+" Visual_Mode {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+
+vnoremap <nowait> <silent> <Plug>(Visual-I) <Esc>:call feedkeys('gv' . ( line("'<") != line("'>") ? 'I' : 'i'), 'nt')<CR>
+vnoremap <nowait> <Plug>(Visual-i) i
+
+vnoremap <silent> <Plug>(Visual-A) <Esc>:call feedkeys('gv' . ( line("'<") != line("'>") ? 'A' : 'a'), 'nt')<CR>
+vnoremap <Plug>(Visual-a) a
+
+if 0
+  vmap <expr> <nowait> i mode() == "\<C-v>" ? "<Plug>(Visual-I)" : "<Plug>(Visual-i)"
+  vmap <expr> <nowait> a mode() == "\<C-v>" ? "<Plug>(Visual-A)" : "<Plug>(Visual-a)"
+elseif 0
+  augroup MyVimrc_VVV
+    au!
+    au BufNew * vmap <expr> <buffer> <nowait> i mode() == "\<C-v>" ? "<Plug>(Visual-I)" : "<Plug>(Visual-i)"
+    au BufNew * vmap <expr> <buffer> <nowait> a mode() == "\<C-v>" ? "<Plug>(Visual-A)" : "<Plug>(Visual-a)"
+  augroup end
+else
+"elseif 0
+  vnoremap <nowait> <silent> <Plug>(Visual-I) <Esc>:vunmap <buffer> i<CR>:call feedkeys('gv' . ( line("'<") != line("'>") ? 'I' : 'i'), 't')<CR>
+  vnoremap <nowait> <silent> <Plug>(Visual-A) <Esc>:vunmap <buffer> a<CR>:call feedkeys('gv' . ( line("'<") != line("'>") ? 'A' : 'a'), 't')<CR>
+  " 22 は、<C-v>
+  " <buffer>と<nowait>により、各omapより優先させる。
+ "nnoremap v     :<C-u>call RestoreDefaultStatusline(v:false)<CR>:vmap <expr> <buffer> <nowait> i mode() == nr2char(22) ? "<Plug>(Visual-I)" : "<Plug>(Visual-i)"<CR><C-v>
+  nnoremap <silent> v     :<C-u>call RestoreDefaultStatusline(v:false)<CR>:vmap <expr> <buffer> <nowait> i mode() == nr2char(22) ? "<Plug>(Visual-I)" : "<Plug>(Visual-i)"<CR>:vmap <expr> <buffer> <nowait> a mode() == nr2char(22) ? "<Plug>(Visual-A)" : "<Plug>(Visual-a)"<CR><C-v>
+ "nnoremap v     :<C-u>call RestoreDefaultStatusline(v:false)<CR>:vmap <buffer> <nowait> i <Plug>(Visual-I)<CR><C-v>
+  if 0
+    "vnoremap <nowait> <Plug>(Visual-I) <Esc>:echo 90<CR>
+    "vnoremap <nowait> <Plug>(Visual-i) <Esc>:echo 80<CR>
+    "nnoremap v     :<C-u>call RestoreDefaultStatusline(v:false)<CR>:vmap <expr> <buffer> <nowait> i mode() == "<C-v><C-v>" ? "<Plug>(Visual-I)" : "<Plug>(Visual-i)"<CR><C-v>
+    "nnoremap @     :nnoremap <expr> ! ":echo '00<CR>'"<CR>
+    "nnoremap @     :nnoremap <expr> ! ":echo '<C-v><C-v>'"
+    echo nr2char(22)
+  endif
+endif
+
+" Visual_Mode }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+
+
 " Cursor Move, CursorLine, CursorColumn, and Scroll {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 
