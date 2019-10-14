@@ -141,6 +141,7 @@ augroup end
 
 ru macros/PushposPopPos.vim
 ru macros/EscEsc.vim
+packadd vim-submode-master
 
 
 
@@ -243,7 +244,7 @@ onoremap ad a"
 "----------------------------------------------------------------------------------------
 " Vertical Move
 
-set noshowcmd
+"set noshowcmd
 
 nnoremap j  gj
 nnoremap k  gk
@@ -255,12 +256,12 @@ vnoremap k  gk
 "----------------------------------------------------------------------------------------
 " Horizontal Move
 
-" ^に、|の機能を重畳
+" ^に、|の機能を付加
 nnoremap <silent> ^ <Esc>:exe v:prevcount ? ('normal! ' . v:prevcount . '<Bar>') : 'normal! ^'<CR>
 
 
 "----------------------------------------------------------------------------------------
-" Scroll
+" Vertical Scroll
 
 set sidescroll=1
 set sidescrolloff=5
@@ -274,8 +275,8 @@ vnoremap <silent> <S-Space> <C-u>
 let g:comfortable_motion_friction = 253.0
 let g:comfortable_motion_air_drag = 45.0
 let g:comfortable_motion_impulse_multiplier = 38.0
-nnoremap <silent> <Plug>(ComfortableMotion-Flick-Down) :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0)     )<CR>
-nnoremap <silent> <Plug>(ComfortableMotion-Flick-Up)   :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -1)<CR>
+nnoremap <silent> <Plug>(ComfortableMotion-Flick-Down) :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * min([64, winheight(0)])     )<CR>
+nnoremap <silent> <Plug>(ComfortableMotion-Flick-Up)   :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * min([64, winheight(0)]) * -1)<CR>
 
 nmap gj <Plug>(ComfortableMotion-Flick-Down)
 nmap gk <Plug>(ComfortableMotion-Flick-Up)
@@ -283,6 +284,30 @@ nmap gk <Plug>(ComfortableMotion-Flick-Up)
 vnoremap gj <C-d>
 vnoremap gk <C-u>
 
+
+"----------------------------------------------------------------------------------------
+" Horizontal Scroll
+
+call submode#enter_with('HorizScroll', 'n', '', 'zl', 'zl')
+call submode#enter_with('HorizScroll', 'n', '', 'zh', 'zh')
+call submode#map(       'HorizScroll', 'n', '', 'l' , 'zl')
+call submode#map(       'HorizScroll', 'n', '', 'h' , 'zh')
+
+call submode#enter_with('HorizScroll', 'n', '', 'zj', '<c-e>')
+call submode#enter_with('HorizScroll', 'n', '', 'zk', '<c-y>')
+call submode#map(       'HorizScroll', 'n', '', 'j' , '<c-e>')
+call submode#map(       'HorizScroll', 'n', '', 'k' , '<c-y>')
+
+"sidescrolloffが1以上のとき、タブ文字(または多バイト文字)上にカーソルがあると、水平スクロールできないバグ(?)があるので、カーソルを動かせるようにしておく。
+if 0
+  call submode#map(       'HorizScroll', 'n', '', 'w' , 'w')
+  call submode#map(       'HorizScroll', 'n', '', 'b' , 'w')
+else
+  set sidescrolloff=0
+ "call submode#map(       'HorizScroll', 'n', '', 'l' , ':set virtualedit=all<CR>zl:set virtualedit=block<CR>')
+ "call submode#map(       'HorizScroll', 'n', '', 'l' , ':set sidescrolloff=0<CR>zl:set sidescrolloff=5<CR>')
+ "call submode#map(       'HorizScroll', 'n', '', 'h' , 'zh')
+endif
 
 "----------------------------------------------------------------------------------------
 " Cursorline & Cursorcolumn
