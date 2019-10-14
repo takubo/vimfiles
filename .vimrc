@@ -158,22 +158,6 @@ cnoremap <expr> : getcmdline() =~# '^:*$' ? ';' : ':'
 nnoremap <silent> ZZ <Nop>
 nnoremap <silent> ZQ <Nop>
 
-" nnoremap cr caw
-" nnoremap dr daw
-" nnoremap yr yiw
-" 
-" nnoremap cs ciw
-" nnoremap ds diw
-" nnoremap ys yaw
-
-nnoremap cr ciw
-nnoremap dr daw
-nnoremap yr yiw
-
-nnoremap cs ciw
-nnoremap ds daw
-nnoremap ys yiw
-
 " 検索時に/, ?を楽に入力する
 cnoremap <expr> / getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr> ? getcmdtype() == '?' ? '\?' : '?'
@@ -224,6 +208,32 @@ vnoremap af ][<ESC>V[[
 vnoremap if ][k<ESC>V[[j
 
 " Basic }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+
+
+" Text_Objects {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+
+nnoremap cr ciw
+nnoremap dr diw
+nnoremap yr yiw
+
+nnoremap cs caw
+nnoremap ds daw
+nnoremap ys yaw
+
+"nnoremap cu ciw
+"nnoremap du daw
+"nnoremap yu yiw
+
+" 括弧(Kakko)
+onoremap ik i(
+onoremap ak a(
+
+" Double Quote
+onoremap id i"
+onoremap ad a"
+
+" Text_Objects }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
