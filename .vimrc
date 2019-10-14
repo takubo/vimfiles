@@ -359,6 +359,11 @@ augroup MyVimrc_Cursor
   au!
   au WinEnter,BufEnter * setl cursorline   cursorcolumn
   au WinLeave          * setl nocursorline nocursorcolumn
+
+  if 1
+    au CursorHold  * setl nocursorcolumn
+    au CursorMoved * setl cursorcolumn
+  endif
 augroup end
 
 nnoremap <silent> <Leader>c :<C-u>setl cursorline!<CR>
