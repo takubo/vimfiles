@@ -1888,6 +1888,13 @@ com! XMLShape :%s/></>\r</g | filetype indent on | setf xml | normal gg=G
 au FileType plantuml com! OpenUml :!/cygdrive/c/Program\ Files/Google/Chrome/Application/chrome.exe %
 
 
+" ifdefを閉じる
+com! FoldIfdef setl foldmarker=#if,#endif | setl foldmethod=marker | normal! zM
+
+
+com! Branch echo FugitiveHead(7)
+
+
 " Util Commands }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
