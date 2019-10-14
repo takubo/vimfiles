@@ -1737,6 +1737,38 @@ let NERDTreeShowHidden = 1
 
 
 
+" EasyMotionn {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+
+let g:EasyMotion_smartcase = 1
+
+let g:EasyMotion_use_migemo = 1
+
+let g:EasyMotion_do_shade = 1
+let g:EasyMotion_do_shade = 0
+
+if 0
+  nmap <Space>J <Plug>(easymotion-j)
+  nmap <Space>K <Plug>(easymotion-k)
+endif
+
+if 0
+  nmap <tab> <Plug>(easymotion-overwin-line)
+  "nmap <Space><Space> <Plug>(easymotion-overwin-f2)
+  "nmap M <Plug>(easymotion-overwin-f2)
+  nmap <tab> <Plug>(easymotion-overwin-f2)
+  nmap <tab> <Plug>(easymotion-overwin-w)
+endif
+
+if 0
+  packadd vim-easymotion-master
+  nmap <C-j> <Plug>(easymotion-overwin-w)
+  nmap <Space> <Plug>(easymotion-overwin-w)
+endif
+
+" EasyMotionn }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+
+
 " Transparency {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 let g:my_transparency = 229
