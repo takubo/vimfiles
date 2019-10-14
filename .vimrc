@@ -1715,6 +1715,16 @@ endfunction
 
 
 
+" NERDTree {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+
+let g:NERDTreeMapActivateNode = ''
+let g:NERDTreeMapOpenInTab = 'o'
+let NERDTreeShowHidden = 1
+
+" NERDTree }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+
+
 " Transparency {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 let g:my_transparency = 229
