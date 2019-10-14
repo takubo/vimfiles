@@ -1117,13 +1117,15 @@ nnoremap <Leader>Z :<C-u>bdel!
 
 " Tab {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-nnoremap <C-t> :<C-u>tabnew<Space>
+nnoremap <silent>  <C-t>  :<C-u>tabnew<CR>
+nnoremap <silent> g<C-t>  :<C-u>tabnew<Space>
+"nnoremap <silent> z<C-t>  :<C-u>tab split<CR>
 
 nnoremap <C-f> gt
 nnoremap <C-b> gT
 
-nnoremap <A-f> :exe tabpagenr() == tabpagenr('$') ? 'tabmove 0' : 'tabmove +1'<CR>
-nnoremap <A-b> :exe tabpagenr() == 1              ? 'tabmove $' : 'tabmove -1'<CR>
+nnoremap <silent> <A-f> :exe tabpagenr() == tabpagenr('$') ? 'tabmove 0' : 'tabmove +1'<CR>
+nnoremap <silent> <A-b> :exe tabpagenr() == 1              ? 'tabmove $' : 'tabmove -1'<CR>
 
 " Tab }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
