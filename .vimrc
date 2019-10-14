@@ -1919,8 +1919,45 @@ nnoremap <Leader><Space> :<C-u>let &iminsert = (&iminsert ? 0 : 2) <Bar> exe "co
 nnoremap <Leader>j       :<C-u>let &iminsert = (&iminsert ? 0 : 2) <Bar> exe "colorscheme " . (&iminsert ? "Asche" : "Rimpa") <CR>
 nnoremap        g<Space> :<C-u>let &iminsert = (&iminsert ? 0 : 2) <Bar> exe "colorscheme " . (&iminsert ? "Asche" : "Rimpa") <CR>
 
-" Refactoring
-nnorema <silent> <Leader>d :<C-u>PushPos<CR>:g$.$s    /<C-r>//<C-r><C-w>/g<CR>:PopPos<CR>:let @/='<C-r><C-w>'<CR>
+
+
+" Refactoring  {{{
+
+" 関数内のシンボルだけを置換
+function!  RefactorLocalSymbol()
+  let srch = @/
+  let word = expand('<cword>')
+
+  call PushPos()
+
+  " 2jは、関数の先頭に居た時用
+  " 2kは、関数定義行を含むため
+  " いずれも暫定
+  keepjumps normal! 2j[[2k
+  let fl = line('.')
+  keepjumps normal! ][
+  let ll = line('.')
+
+  let c_l = fl . ',' . ll
+  "echo c_l
+
+  let c_c = 's/' . srch . '/' . word . '/g'
+  "echo c_c
+
+  let c_u = c_l . c_c
+  "echo c_u
+  exe c_u
+
+  call PopPos()
+endfunction
+
+"nnorema <silent> <Leader>d :<C-u>PushPos<CR>:g$.$s    /<C-r>//<C-r><C-w>/g<CR>:PopPos<CR>:let @/='<C-r><C-w>'<CR>
+nnoremap <silent> <Leader>d :<C-u>call RefactorLocalSymbol()<CR>
+nnorema <silent> <Leader>D :<C-u>PushPos<CR>:g$.$s    /<C-r>//<C-r><C-w>/g<CR>:PopPos<CR>:let @/='<C-r><C-w>'<CR>
+
+" Refactoring  }}}
+
+
 
 nnoremap <C-@> g-
 nnoremap <C-^> g+
