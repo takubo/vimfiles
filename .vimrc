@@ -11,6 +11,7 @@ if !isdirectory($HOME . "/vim_swap")
   call mkdir($HOME . "/vim_swap")
 endif
 
+set nocompatible
 set autochdir
 set autoindent
 " バックスペースでインデントや改行を削除できるようにする
@@ -20,12 +21,10 @@ set directory=$HOME/vim_swap
 set clipboard=unnamed
 " コマンドラインの高さ (Windows用gvim使用時はgvimrcを編集すること)
 set cmdheight=2
-set nocompatible
-set cursorline
-set cursorcolumn
 set encoding=utf-8
 " テキスト挿入中の自動折り返しを日本語に対応させる
 set formatoptions+=mM
+set formatoptions-=o
 set gp=grep\ -n
 set guicursor=n-v-c:block-Cursor/lCursor,ve:ver35-Cursor,o:hor50-Cursor,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor,a:blinkon0
 set hidden
@@ -42,6 +41,7 @@ set tagcase=match
 set incsearch
 set mps+=<:>
 set nowrapscan
+set nostartofline
 
 set number
 set norelativenumber
@@ -276,6 +276,9 @@ vnoremap gk <C-u>
 
 "----------------------------------------------------------------------------------------
 " Cursorline & Cursorcolumn
+
+set cursorline
+set cursorcolumn
 
 augroup MyVimrc_Cursor
   au!
@@ -1048,7 +1051,7 @@ function! TabLineStr()
 
   " Left
   let left = ''
-  let left .= '%#TabLineDate#  ' . strftime('%Y/%m/%d (%a) %X') . '  '
+  let left .= '%#TabLineDate#  ' . strftime('%X') . '  '
   let left .= '%#SLFileName# ' . g:BatteryInfo . ' '
   let left .= '%#TabLineDate#  '
 
