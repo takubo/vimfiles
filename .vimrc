@@ -2338,7 +2338,7 @@ nnoremap <silent> <Leader><Leader> :<C-u>call SetOptimalWinWidth()<CR>
 
 " Equal Window Height Only {{{
 
-function! Tate()
+function! WindowHeightOnlyEqual()
   windo let w:cur_fix_width = &l:winfixwidth
   windo let &l:winfixwidth = 1
   wincmd =
@@ -2353,18 +2353,34 @@ nnoremap <silent> @ :<C-u>call Tate()<CR>
 " Window Wrap Move {{{
 
 function! WinWrapMove(m)
+  if winnr('$') < 3
+    "Windowの数が3未満なら、もう一方へ移動することは自明。
+    wincmd w
+    return
+  endif
+
   let cur = winnr()
   exe 'wincmd ' . a:m
 
   if cur == winnr()
     let rev = {'h' : 'l', 'j' : 'k', 'k' : 'j', 'l' : 'h'}
+
+    let num_move = 0
+
     while 1
       let cur = winnr()
       exe 'wincmd ' . rev[a:m]
       if cur == winnr()
 	break
       endif
+
+      let num_move += 1
+
     endwhile
+  endif
+
+  if num_move == 0 && winnr('$') > 2
+    call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
   endif
 endfunction
 
@@ -2386,7 +2402,7 @@ endif
 
 if 1
   nnoremap <silent> H :<C-u>call WinWrapMove('h')<CR>
-  if 0
+  if 1
     nnoremap <silent> J :<C-u>call WinWrapMove('j')<CR>
     nnoremap <silent> K :<C-u>call WinWrapMove('k')<CR>
   else
