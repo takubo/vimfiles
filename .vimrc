@@ -590,12 +590,24 @@ nnoremap <Leader>g :<C-u>vim "\<<C-r><C-w>\>" *.c<CR>
 
 let c_jk_local = 0
 
+nnoremap <silent> <Plug>(MyVimrc-Toggle-Qf-Ll) :<C-u>let c_jk_local = !c_jk_local<CR>
+
 "例外をキャッチしないと、最初と最後の要素の次に移動しようとして例外で落ちる。
-nnoremap <silent> m         :<C-u>try <Bar> exe (c_jk_local ? ":lnext" : "cnext") <Bar> catch <Bar> endtry<CR>:FuncNameStl<CR>
-nnoremap <silent> M         :<C-u>try <Bar> exe (c_jk_local ? ":lprev" : "cprev") <Bar> catch <Bar> endtry<CR>:FuncNameStl<CR>
-nnoremap <silent> <Leader>m :<C-u>exe (c_jk_local ? ":lfirst" : "cfirst")<CR>:FuncNameStl<CR>
-nnoremap <silent> <Leader>M :<C-u>exe (c_jk_local ? ":llast" : "clast")<CR>:FuncNameStl<CR>
-nnoremap <silent> <A-m>     :<C-u>let c_jk_local = !c_jk_local<CR>
+nnoremap <silent> <Plug>(MyVimrc-CNext) :<C-u>try <Bar> exe (c_jk_local ? ":lnext" : "cnext") <Bar> catch <Bar> endtry<CR>:FuncNameStl<CR>
+nnoremap <silent> <Plug>(MyVimrc-CPrev) :<C-u>try <Bar> exe (c_jk_local ? ":lprev" : "cprev") <Bar> catch <Bar> endtry<CR>:FuncNameStl<CR>
+
+"例外をキャッチしないと、最初と最後の要素の次に移動しようとして例外で落ちる。
+nnoremap <silent> <Plug>(MyVimrc-QfNext) :<C-u>try <Bar> cnext <Bar> catch <Bar> endtry<CR>:FuncNameStl<CR>
+nnoremap <silent> <Plug>(MyVimrc-QfPrev) :<C-u>try <Bar> cprev <Bar> catch <Bar> endtry<CR>:FuncNameStl<CR>
+
+"例外をキャッチしないと、最初と最後の要素の次に移動しようとして例外で落ちる。
+nnoremap <silent> <Plug>(MyVimrc-LlNext) :<C-u>try <Bar> lnext <Bar> catch <Bar> endtry<CR>:FuncNameStl<CR>
+nnoremap <silent> <Plug>(MyVimrc-LlPrev) :<C-u>try <Bar> lprev <Bar> catch <Bar> endtry<CR>:FuncNameStl<CR>
+
+nmap <silent> <A-i> <Plug>(MyVimrc-QfNext)
+nmap <silent> <A-o> <Plug>(MyVimrc-QfPrev)
+nmap <silent> <A-n> <Plug>(MyVimrc-LlNext)
+nmap <silent> <A-m> <Plug>(MyVimrc-LlPrev)
 
 " Quickfix & Locationlist }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
