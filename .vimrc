@@ -954,22 +954,29 @@ endfunction
 "----------------------------------------------------------------------------------------
 " Trigger
 
-nnoremap <BS> <C-w>
+nmap <BS> <C-w>
 
 "----------------------------------------------------------------------------------------
 " Split
 
-" Auto
-nnoremap <silent> <expr> <BS><BS>         ( <SID>WindowRatio() >= 0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
-nnoremap <silent> <expr> <Leader><Leader> ( <SID>WindowRatio() <  0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
+" Auto Split
+nnoremap <silent> <expr> <Plug>(MyVimrc-Window-AutoSplit)     ( <SID>WindowRatio() >= 0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
+nnoremap <silent> <expr> <Plug>(MyVimrc-Window-AutoSplit-Rev) ( <SID>WindowRatio() <  0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
+
+nmap <BS><BS>         <Plug>(MyVimrc-Window-AutoSplit)
+nmap <Leader><Leader> <Plug>(MyVimrc-Window-AutoSplit-Rev)
+
 " Tag, Jump, and Unified CR を参照。
 
 " Manual
 nnoremap <silent> _                <C-w>s:setl noscrollbind<CR>
-nnoremap <silent> g_               <C-w>s
+nnoremap <silent> g_               <C-w>n
 nnoremap <silent> U                :<C-u>new<CR>
 nnoremap <silent> <Bar>            <C-w>v:setl noscrollbind<CR>
 nnoremap <silent> g<Bar>           :<C-u>vnew<CR>
+
+" Auto New
+nnoremap <silent> <expr> <Plug>(MyVimrc-Window-AutoNew) ( winwidth(0) > (&columns * 7 / 10) && <SID>WindowRatio() >=  0 ) ? ':<C-u>vnew<CR>' : '<C-w>n'
 
 "----------------------------------------------------------------------------------------
 " Close
@@ -978,13 +985,13 @@ nnoremap <silent> q         <C-w><C-c>
 nnoremap <silent> <Leader>q :<C-u>q<CR>
 
 " 補償
+nnoremap <silent> <C-q>  q
 nnoremap <silent> <C-q>; q:
 nnoremap <silent> <C-q>/ q/
 nnoremap <silent> <C-q>? q?
 
 " ウィンドウレイアウトを崩さないでバッファを閉じる   (http://nanasi.jp/articles/vim/kwbd_vim.html)
 com! CloseWindow let s:kwbd_bn = bufnr('%') | enew | exe 'bdel '. s:kwbd_bn | unlet s:kwbd_bn
-nnoremap <silent> <C-q><C-q> :<C-u>CloseWindow<CR>
 
 "----------------------------------------------------------------------------------------
 " Focus
@@ -2398,8 +2405,8 @@ if 1
     nmap <silent> <C-p>         <Plug>(BrowserJump-Back)
     nmap <silent> <C-n>         <Plug>(BrowserJump-Foward)
 
-    nmap <silent> <BS><C-p>     <Plug>(MyVimrc-WindowSplitAuto)<Plug>(MyVimrc-WinCmd-p)<C-p>
-    nmap <silent> <BS><C-n>     <Plug>(MyVimrc-WindowSplitAuto)<Plug>(MyVimrc-WinCmd-p)<C-n>
+    nmap <silent> <BS><C-p>     <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-p>
+    nmap <silent> <BS><C-n>     <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-n>
     "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     nmap <silent> <C-h> <C-w>+
