@@ -552,6 +552,7 @@ set grepprg=git\ grep\ --no-index\ -I\ --line-number
 nnoremap !             :<C-u>grep ''<Left>
 nnoremap <Leader>g     :<C-u>grep '<C-R>/'<CR>
 nnoremap <silent> <C-g><C-g> :<C-u>grep '\<<C-R><C-W>\>'<CR>
+nnoremap <silent> <C-g><C-g> :<C-u>grep '\<<C-R><C-W>\>' -- ':!.svn/' ':!tags'<CR>
 
 "========================================================
 
@@ -644,11 +645,13 @@ nmap <silent> L         <Plug>(BrowserJump-Foward)
 "nmap <silent> <Leader>L <Plug>(BrowserJump-ToggleOrgPos)
 
 " 補償
-noremap zh H
-noremap zl L
+"noremap zh H
+"noremap zl L
 "nnoremap zm M
 "nnoremap <expr> zh &wrap ? 'H' : 'zh'
 "nnoremap <expr> zl &wrap ? 'L' : 'zl'
+" HorizScroll  noremap zk H
+" HorizScroll  noremap zj L
 
 " 補償の補償
 "noremap <C-@> zh
@@ -828,8 +831,8 @@ nnoremap <silent> <S-CR>       <Esc>:call Unified_CR('sp')<CR>
 nnoremap <silent> <C-S-CR>     <Esc>:call Unified_CR('sw')<CR>
 nnoremap          <C-S-CR>     <Esc>:tags<CR>;pop
 
-nmap     <silent> <BS><CR>     <BS><BS><CR>
-nmap     <silent> <Leader><CR> <Leader><Leader><CR>
+nmap <BS><CR>     <Plug>(MyVimrc-Window-AutoSplit)<CR>
+nmap <Leader><CR> <Plug>(MyVimrc-Window-AutoSplit-Rev)<CR>
 
 " Tag, Jump, and Unified CR }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -905,8 +908,16 @@ nnoremap <expr> d<CR>
 vmap <leader>1 <Plug>(BlockDiff-GetBlock1)
 vmap <leader>2 <Plug>(BlockDiff-GetBlock2andExe)
 
-nnoremap d<CR> :<C-u>tab split<CR>:Gdiffsplit<CR>
-nnoremap <expr> d<CR> ':<C-u>' . ( winnr('$') > 1 ? 'tab split<CR>:' : '' ) . 'Gdiffsplit<CR>'
+" Git Diff
+"nnoremap d<CR> :<C-u>tab split<CR>:Gdiffsplit<CR>
+" Windowが1つだけならそのタブで、そうでなければ新しいタブで実行。
+"nnoremap <expr> d<CR> ':<C-u>' . ( winnr('$') > 1 ? 'tab split<CR>:' : '' ) . 'Gdiffsplit<CR>'
+" Focusを元のWindowへ戻す。
+"nnoremap <expr> d<CR> ':<C-u>' . ( winnr('$') > 1 ? 'tab split<CR>:' : '' ) . 'Gdiffsplit<CR>' . ':wincmd p'
+" なぜかfeedkeysにしないと、ウィンドウ移動できない。マップ中にウィンドウを作成すると、それを認識できないようだ。
+"nnoremap d<CR> :<C-u>exe ( winnr('$') > 1 ? 'tab split' : '' ) <Bar> Gdiffsplit <Bar> call feedkeys('<C-v><C-w>p', 'nt')<CR>
+" Gdiffsplit実行中は、コマンドラインにGdiffsplitが見えるようにする。
+nnoremap d<CR> :<C-u>exe ( winnr('$') > 1 ? 'tab split' : '' )<CR>:Gdiffsplit<CR>:call feedkeys('<C-v><C-w>p', 'nt')<CR>
 
 " Diff }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
