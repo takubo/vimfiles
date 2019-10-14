@@ -2369,8 +2369,13 @@ endif
 
 if 1
   nnoremap <silent> H :<C-u>call WinWrapMove('h')<CR>
-  nnoremap <silent> J :<C-u>call WinWrapMove('j')<CR>
-  nnoremap <silent> K :<C-u>call WinWrapMove('k')<CR>
+  if 0
+    nnoremap <silent> J :<C-u>call WinWrapMove('j')<CR>
+    nnoremap <silent> K :<C-u>call WinWrapMove('k')<CR>
+  else
+    nmap J <Plug>(MyVimrc-SkipTerm-Inc)
+    nmap K <Plug>(MyVimrc-SkipTerm-Dec)
+  endif
   nnoremap <silent> L :<C-u>call WinWrapMove('l')<CR>
 
   if 1
