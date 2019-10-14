@@ -551,7 +551,7 @@ set grepprg=git\ grep\ --no-index\ -I\ --line-number
 
 nnoremap !             :<C-u>grep ''<Left>
 nnoremap <Leader>g     :<C-u>grep '<C-R>/'<CR>
-nnoremap <silent> <C-g> :<C-u>grep '\<<C-R><C-W>\>'<CR>
+nnoremap <silent> <C-g><C-g> :<C-u>grep '\<<C-R><C-W>\>'<CR>
 
 "========================================================
 
@@ -1748,6 +1748,17 @@ function! s:clever_f_use_migemo_toggle()
 endfunction
 
 " Clever-f }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+
+
+" Vertical-f {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
+
+com! -nargs=1 VerticalF let @m=<q-args> | call search('^\s*'. @m)
+com! -nargs=1 VerticalFBack let @m=<q-args> | call search('^\s*'. @m, 'b')
+nnoremap <C-g>j :VerticalF<Space>
+nnoremap <C-g>k :VerticalFBack<Space>
+
+" Vertical-f }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
 
