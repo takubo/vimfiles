@@ -2390,10 +2390,12 @@ function! WinWrapMove(m)
       let num_move += 1
 
     endwhile
-  endif
 
-  if num_move == 0 && winnr('$') > 2
-    call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
+    " 適当に押しても、なるべく移動する。
+    " Windowが2以上ないと、無限再起に陥る。
+    if num_move == 0 && winnr('$') > 2
+      call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
+    endif
   endif
 endfunction
 
