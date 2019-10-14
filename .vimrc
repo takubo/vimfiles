@@ -141,7 +141,7 @@ augroup end
 
 ru macros/PushposPopPos.vim
 ru macros/EscEsc.vim
-packadd vim-submode-master
+packadd vim-submode
 
 
 
@@ -1728,25 +1728,35 @@ nnoremap <silent> gf :<C-u>aboveleft sp<CR>gF
 
 " Clever-f {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-let g:clever_f_smart_case=1			"
-let g:clever_f_use_migemo=1			"
-"let g:clever_f_fix_key_direction=1		"
-let g:clever_f_chars_match_any_signs = '\\'	" 任意の記号にマッチする文字を設定する
-"let g:clever_f_chars_match_any_signs = ';'	" 任意の記号にマッチする文字を設定する
-"let g:clever_f_chars_match_any_signs = ';'	" 任意の記号にマッチする文字を設定する
-if 1
-  hi MyCfC guifg=yellow guibg=black
-  let g:clever_f_mark_cursor_color = 'MyCfC'
-  "let g:clever_f_mark_char_color   = 'MyCfC'
-  let g:clever_f_mark_cursor = 1
-  "let g:clever_f_mark_char = 1
-endif
+let g:clever_f_smart_case = 1
 
-nnoremap <Leader>k :<C-u>call <SID>clever_f_use_migemo_toggle()<CR>
-function! s:clever_f_use_migemo_toggle()
-  let g:clever_f_use_migemo = !g:clever_f_use_migemo
-  echo g:clever_f_use_migemo ? 'clever_f_use_migemo' : 'No clever_f_use_migemo'
-endfunction
+let g:clever_f_use_migemo = 1
+
+com! CleverfUseMigemoToggle let g:clever_f_use_migemo = !g:clever_f_use_migemo | echo g:clever_f_use_migemo ? 'clever-f Use Migemo' : 'clever-f No Migemo'
+
+" fは必ず右方向に移動，Fは必ず左方向に移動する
+"let g:clever_f_fix_key_direction = 1
+
+" 任意の記号にマッチする文字を設定する
+let g:clever_f_chars_match_any_signs = "\<BS>"
+
+" 過去の入力の再利用
+"let g:clever_f_repeat_last_char_inputs = ["\<CR>"]	" ["\<CR>", "\<Tab>"]
+
+" タイムアウト
+let g:clever_f_timeout_ms = 3000
+
+augroup MyVimrc_cleverf
+  au!
+  au ColorScheme * hi My_cleverf_Cursor guifg=yellow guibg=black
+  au ColorScheme * hi My_cleverf_Char   guifg=#cff412 guibg=black
+  "au ColorScheme * hi My_cleverf_Cursor guifg=cyan guibg=black
+  "au ColorScheme * hi My_cleverf_Char   guifg=yellow guibg=black
+augroup end
+let g:clever_f_mark_cursor_color = 'My_cleverf_Cursor'
+let g:clever_f_mark_char_color   = 'My_cleverf_Char'
+"let g:clever_f_mark_cursor = 1
+"let g:clever_f_mark_char = 1
 
 " Clever-f }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
