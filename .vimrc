@@ -651,8 +651,8 @@ noremap zl L
 "nnoremap <expr> zl &wrap ? 'L' : 'zl'
 
 " 補償の補償
-noremap <C-@> zh
-noremap <C-^> zl
+"noremap <C-@> zh
+"noremap <C-^> zl
 
 " ---------------
 " Unified CR
@@ -882,7 +882,7 @@ nnoremap <silent> T [c^:FuncNameStl<CR>
 " 最初に gg , G , [c , ]c すると、FuncNameStlが実行されない不具合あり。対策として、t,Tをnmap。
 
 " Top Hunk
-nmap      <silent> <Leader>t ggtT
+"nmap      <silent> <Leader>t ggtT
 "nnoremap <silent> <Leader>t gg]c[c^zz:FuncNameStl<CR>
 
 " Bottom Hunk
@@ -1715,7 +1715,8 @@ inoremap <C-e>	<End>
 "inoremap <CR> <C-]><C-G>u<CR>
 inoremap <C-H> <C-G>u<C-H>
 
-nnoremap <silent><expr> gl &l:wrap ? ':setl nowrap<CR>' : ':setl wrap<CR>'
+nnoremap <silent> gl :setl nowrap!<CR>
+nnoremap <silent> <Leader><CR> :setl nowrap!<CR>
 
 nnoremap gG G
 
@@ -1807,6 +1808,7 @@ endif
 " Transparency {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 let g:my_transparency = 229
+let g:my_transparency = 227
 let g:my_transparency = 235
 augroup MyVimrc_GUI
   au!
@@ -1817,6 +1819,9 @@ augroup MyVimrc_GUI
 augroup end
 nnoremap <silent> <S-PageUp>   :<C-u>ScreenMode 5<CR>
 nnoremap <silent> <S-PageDown> :<C-u>ScreenMode 4<CR>
+nnoremap <silent> <A-PageUp>   :<C-u>ScreenMode 5<CR>:Thinkpad<CR>
+nnoremap <silent> <A-PageDown> :<C-u>ScreenMode 4<CR>:Thinkpad<CR>
+
 
 nnoremap <silent><expr> <PageUp>   ':<C-u>se transparency=' .    ( &transparency + 1      ) . '<Bar> Transparency <CR>'
 nnoremap <silent><expr> <PageDown> ':<C-u>se transparency=' . max([&transparency - 1,   1]) . '<Bar> Transparency <CR>'   | " transparencyは、0以下を設定すると255になってしまう。
@@ -1955,7 +1960,8 @@ endfunction
 " Util Commands {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 
-com! AR :setl autoread!
+"com! AR setl autoread!
+com! AR let &l:autoread = !&l:autoread
 
 
 com! Tab2Space setlocal   expandtab | retab<CR>
@@ -2011,9 +2017,7 @@ augroup end
 
 
 
-nnoremap <Leader><Space> :<C-u>let &iminsert = (&iminsert ? 0 : 2) <Bar> exe "colorscheme " . (&iminsert ? "Asche" : "Rimpa") <CR>
 nnoremap <Leader>j       :<C-u>let &iminsert = (&iminsert ? 0 : 2) <Bar> exe "colorscheme " . (&iminsert ? "Asche" : "Rimpa") <CR>
-nnoremap        g<Space> :<C-u>let &iminsert = (&iminsert ? 0 : 2) <Bar> exe "colorscheme " . (&iminsert ? "Asche" : "Rimpa") <CR>
 
 
 
@@ -2117,8 +2121,47 @@ command! HighlightInfo call s:get_highlight_info()
 "-------------------------------------------------------------------
 
 
-nnoremap <Leader>4 :<C-u>setl noscrollbind<CR>
-nnoremap <Leader>4 :<C-u>setl scrollbind!<CR>
+nnoremap <Leader>$ :<C-u>setl scrollbind!<CR>
+nmap <Leader>4 <Leader>$
+
+
+
+" {{{
+function! SurroundLineBrace() range
+" echo a:firstline a:lastline
+" red
+" sleep 2
+  exe a:lastline
+  normal! o}
+  exe a:firstline
+  normal! O{
+  normal! j>i{>a{
+endfunction
+
+com! -range Brace <line1>,<line2>call SurroundLineBrace()
+vnoremap J :Brace<CR>
+" }}}
+
+
+
+" TODO 
+" BrowserJump  Orgへのジャンプもキーバインドを提供する
+
+
+
+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+if 0
+  nnoremap <C-i> g;
+  nnoremap <C-o> g,
+
+  nmap ' \
+
+  set whichwrap+=hl
+
+  set grepprg=git\ grep\ -I\ --line-number
+
+endif
+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -2318,6 +2361,10 @@ if 0
   nnoremap <silent> <C-j> :<C-u>call WinWrapMove('j')<CR>
   nnoremap <silent> <C-k> :<C-u>call WinWrapMove('k')<CR>
   nnoremap <silent> <C-l> :<C-u>call WinWrapMove('l')<CR>
+
+  nnoremap H <C-w>+
+  nnoremap L <C-w>-
+
 endif
 
 if 1
@@ -2396,7 +2443,8 @@ nnoremap gL L
 
 
 
-nnoremap go :MRU 
+nnoremap go :<C-u>MRU<Space>
+nnoremap gO :<C-u>MRU<CR>
 nnoremap gw :<C-u>w<CR>
 nmap ge <Leader>e
 nmap gt <Plug>(PrjTree-MyExplore)
@@ -2408,5 +2456,28 @@ let g:submode_timeoutlen = 5000
 
 
 " Window Temp }}}}}}}}}}}}}}}}}}}}}}}
+
+
+
+" Line
+" 	1080
+" 	90
+" 
+" 	768
+" 	64
+" 
+" Col
+" 	1920
+" 	320
+" 
+" 	1024
+" 	170.666667
+" 
+" set lines=64 columns0171
+com! XGA set lines=64 columns=171
+
+" Thinkpad
+com! Thinkpad set lines=75 columns=267 | winpos 150 110
+
 
 
