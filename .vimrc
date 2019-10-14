@@ -639,25 +639,29 @@ nmap <silent> <A-m> <Plug>(MyVimrc-LlPrev)
 " Tag, Jump, and Unified CR {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 " Browse
-"nnoremap H <C-o>
-"nnoremap L <C-i>
-nmap <silent> H         <Plug>(BrowserJump-Back)
-nmap <silent> L         <Plug>(BrowserJump-Foward)
-"nmap <silent> <Leader>H <Plug>(BrowserJump-Disp)
-"nmap <silent> <Leader>L <Plug>(BrowserJump-ToggleOrgPos)
+if 0
+  "nnoremap H <C-o>
+  "nnoremap L <C-i>
 
-" 補償
-"noremap zh H
-"noremap zl L
-"nnoremap zm M
-"nnoremap <expr> zh &wrap ? 'H' : 'zh'
-"nnoremap <expr> zl &wrap ? 'L' : 'zl'
-" HorizScroll  noremap zk H
-" HorizScroll  noremap zj L
+  "nmap H <Plug>(BrowserJump-Back)
+  "nmap L <Plug>(BrowserJump-Foward)
 
-" 補償の補償
-"noremap <C-@> zh
-"noremap <C-^> zl
+  "nnoremap <silent> H :<C-u>pop<CR>
+  "nnoremap <silent> L :<C-u>tag<CR>
+
+  "nmap <BS>H  <Plug>(MyVimrc-WindowSplitAuto)<C-w>p<Plug>(BrowserJump-Back)
+  "nmap <BS>L  <Plug>(MyVimrc-WindowSplitAuto)<C-w>p<Plug>(BrowserJump-Foward)
+
+  "nmap <BS>H  <Plug>(MyVimrc-WindowSplitAuto)<Plug>(MyVimrc-WinCmd-p)<Plug>(BrowserJump-Back)
+  "nmap <BS>L  <Plug>(MyVimrc-WindowSplitAuto)<Plug>(MyVimrc-WinCmd-p)<Plug>(BrowserJump-Foward)
+else
+  nmap <C-p>      <Plug>(BrowserJump-Back)
+  nmap <C-n>      <Plug>(BrowserJump-Foward)
+
+  nmap <BS><C-p>  <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-p>
+  nmap <BS><C-n>  <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-n>
+endif
+
 
 " ---------------
 " Unified CR
@@ -872,9 +876,9 @@ nnoremap d<S-Space> :<C-u>diffoff<CR>
 
 " diff accept (obtain and next, obtain and previouse) (dotは、repeat'.')
 nnoremap d. do1gs]c^
-nnoremap d, do1gs[c^
-nnoremap dO do1gs]c^
-nnoremap dP do1gs[c^
+nnoremap d, dp1gs]c^
+nnoremap dO do1gs[c^
+nnoremap dP dp1gs[c^
 
 " Next Hunk
 "nnoremap <silent> t ]c^zz:FuncNameStl<CR>
@@ -1079,6 +1083,10 @@ nnoremap <C-w><C-w> :<C-u>tab split<CR>
 nnoremap <C-w><C-t> <C-w>T
 
 tnoremap <C-w><C-t> <C-w>T
+
+"----------------------------------------------------------------------------------------
+" Plug
+nnoremap <Plug>(MyVimrc-WinCmd-p) <C-w>p
 
 " Window }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -2429,16 +2437,15 @@ if 1
   if 1
     " 補償
 
-    "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    "nnoremap <silent> <C-p> :<C-u>pop<CR>
-    "nnoremap <silent> <C-n> :<C-u>tag<CR>
+    "noremap zh H
+    "noremap zl L
+    "noremap zm M
+    "noremap zk H
+    "noremap zj L
+    nnoremap gM M
+    nnoremap gH H
+    nnoremap gL L
 
-    nmap <silent> <C-p>         <Plug>(BrowserJump-Back)
-    nmap <silent> <C-n>         <Plug>(BrowserJump-Foward)
-
-    nmap <silent> <BS><C-p>     <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-p>
-    nmap <silent> <BS><C-n>     <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-n>
-    "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     nmap <silent> <C-h> <C-w>+
     nmap <silent> <C-l> <C-w>-
@@ -2487,12 +2494,6 @@ nnoremap <silent> <C-i> ]c^:FuncNameStl<CR>
 nnoremap <silent> <C-o> [c^:FuncNameStl<CR>
 nnoremap <silent> <S-Tab> [c^:FuncNameStl<CR>
 "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-nnoremap gM M
-nnoremap gH H
-nnoremap gL L
 
 
 
