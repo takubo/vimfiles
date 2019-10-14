@@ -208,6 +208,21 @@ nnoremap g[]  []
 vnoremap af ][<ESC>V[[
 vnoremap if ][k<ESC>V[[j
 
+
+nnoremap ]3 ]#
+nnoremap [3 [#
+
+nnoremap ]8 ]*
+nnoremap [8 [*
+
+
+nmap <silent> W <Plug>CamelCaseMotion_w
+nmap <silent> B <Plug>CamelCaseMotion_b
+"nmap <silent> e <Plug>CamelCaseMotion_e
+"nmap <silent> ge <Plug>CamelCaseMotion_ge
+nnoremap E ge
+
+
 " Basic }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
 
