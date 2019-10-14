@@ -2193,3 +2193,220 @@ nnoremap <Leader>4 :<C-u>setl scrollbind!<CR>
 
 " Util {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
+
+
+" Window Temp {{{{{{{{{{{{{{{{{{{{{{{
+
+
+" Submode Window Size {{{
+
+if 0
+  call submode#enter_with('WinSize', 'n', '', '<Space>l', '<C-w>>')
+  call submode#enter_with('WinSize', 'n', '', '<Space>h', '<C-w><')
+  call submode#enter_with('WinSize', 'n', '', '<Space>j', '<C-w>+')
+  call submode#enter_with('WinSize', 'n', '', '<Space>k', '<C-w>-')
+  call submode#map(       'WinSize', 'n', '', 'l', '<C-w>>')
+  call submode#map(       'WinSize', 'n', '', 'h', '<C-w><')
+  call submode#map(       'WinSize', 'n', '', 'j', '<C-w>+')
+  call submode#map(       'WinSize', 'n', '', 'k', '<C-w>-')
+
+  let g:submode_timeoutlen = 5000
+endif
+
+if 1
+  call submode#enter_with('WinSize', 'n', '', '<C-w>>', '<C-w>>')
+  call submode#enter_with('WinSize', 'n', '', '<C-w><', '<C-w><')
+  call submode#enter_with('WinSize', 'n', '', '<C-w>+', '<C-w>+')
+  call submode#enter_with('WinSize', 'n', '', '<C-w>-', '<C-w>-')
+  call submode#map(       'WinSize', 'n', '', '>', '<C-w>>')
+  call submode#map(       'WinSize', 'n', '', '<', '<C-w><')
+  call submode#map(       'WinSize', 'n', '', '+', '<C-w>+')
+  call submode#map(       'WinSize', 'n', '', '=', '<C-w>+') " Typo対策
+  call submode#map(       'WinSize', 'n', '', '-', '<C-w>-')
+  if 0
+    call submode#map(       'WinSize', 'n', '', 'h', '<C-w>h')
+    call submode#map(       'WinSize', 'n', '', 'j', '<C-w>j')
+    call submode#map(       'WinSize', 'n', '', 'k', '<C-w>k')
+    call submode#map(       'WinSize', 'n', '', 'l', '<C-w>l')
+  else
+    call submode#enter_with('WinSize2', 'n', '', '<C-w>l', '<C-w>>')
+    call submode#enter_with('WinSize2', 'n', '', '<C-w>h', '<C-w><')
+    call submode#enter_with('WinSize2', 'n', '', '<C-w>j', '<C-w>+')
+    call submode#enter_with('WinSize2', 'n', '', '<C-w>k', '<C-w>-')
+    call submode#map(       'WinSize2', 'n', '', 'h', '<C-w><')
+    call submode#map(       'WinSize2', 'n', '', 'j', '<C-w>+')
+    call submode#map(       'WinSize2', 'n', '', 'k', '<C-w>-')
+    call submode#map(       'WinSize2', 'n', '', 'l', '<C-w>>')
+  endif
+
+  let g:submode_timeoutlen = 5000
+endif
+
+" Submode Window Size }}}
+
+
+
+" Optimal Window Width {{{
+
+function! SetOptimalWinWidth()
+  let top = line('w0')
+  let bot = line('w$')
+
+  let max = 0
+  for i in range(top, bot)
+    "echo i virtcol([i, '$'])
+    let max = max([max, virtcol([i, '$'])])
+  endfor
+  echo 'Width: ' . max
+
+  ""let range(top, bot)
+  "let lines = map( , virtcol([i, '$']) )
+  "echo lines
+
+  if bufname(0) =~ '^NERD_tree'
+    let max -= 2
+  endif
+
+  exe max + (&number || &l:number || &relativenumber || &l:relativenumber ? 5 : 0) . ' wincmd |'
+endfunction
+
+nnoremap <silent> <Leader><Leader> :<C-u>call SetOptimalWinWidth()<CR>
+
+" Optimal Window Width }}}
+
+
+
+" Equal Window Height Only {{{
+
+function! Tate()
+  windo let w:cur_fix_width = &l:winfixwidth
+  windo let &l:winfixwidth = 1
+  wincmd =
+  windo let &l:winfixwidth = w:cur_fix_width
+endfunction
+nnoremap <silent> @ :<C-u>call Tate()<CR>
+
+" Equal Window Height Only }}}
+
+
+
+" Window Wrap Move {{{
+
+function! WinWrapMove(m)
+  let cur = winnr()
+  exe 'wincmd ' . a:m
+
+  if cur == winnr()
+    let rev = {'h' : 'l', 'j' : 'k', 'k' : 'j', 'l' : 'h'}
+    while 1
+      let cur = winnr()
+      exe 'wincmd ' . rev[a:m]
+      if cur == winnr()
+	break
+      endif
+    endwhile
+  endif
+endfunction
+
+" nnoremap <Plug>(WinWrapMove-h) :<C-u>call WinWrapMove('h')<CR>
+" nnoremap <Plug>(WinWrapMove-j) :<C-u>call WinWrapMove('j')<CR>
+" nnoremap <Plug>(WinWrapMove-k) :<C-u>call WinWrapMove('k')<CR>
+" nnoremap <Plug>(WinWrapMove-l) :<C-u>call WinWrapMove('l')<CR>
+
+if 0
+  nnoremap <silent> <C-h> :<C-u>call WinWrapMove('h')<CR>
+  nnoremap <silent> <C-j> :<C-u>call WinWrapMove('j')<CR>
+  nnoremap <silent> <C-k> :<C-u>call WinWrapMove('k')<CR>
+  nnoremap <silent> <C-l> :<C-u>call WinWrapMove('l')<CR>
+endif
+
+if 1
+  nnoremap <silent> H :<C-u>call WinWrapMove('h')<CR>
+  nnoremap <silent> J :<C-u>call WinWrapMove('j')<CR>
+  nnoremap <silent> K :<C-u>call WinWrapMove('k')<CR>
+  nnoremap <silent> L :<C-u>call WinWrapMove('l')<CR>
+
+  if 1
+    " 補償
+
+    "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    "nnoremap <silent> <C-p> :<C-u>pop<CR>
+    "nnoremap <silent> <C-n> :<C-u>tag<CR>
+
+    nmap <silent> <C-p>         <Plug>(BrowserJump-Back)
+    nmap <silent> <C-n>         <Plug>(BrowserJump-Foward)
+
+    nmap <silent> <BS><C-p>     <Plug>(MyVimrc-WindowSplitAuto)<Plug>(MyVimrc-WinCmd-p)<C-p>
+    nmap <silent> <BS><C-n>     <Plug>(MyVimrc-WindowSplitAuto)<Plug>(MyVimrc-WinCmd-p)<C-n>
+    "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    nmap <silent> <C-h> <C-w>+
+    nmap <silent> <C-l> <C-w>-
+
+    nnoremap ( <C-w><
+    nnoremap ) <C-w>>
+
+    nnoremap <C-k> :<C-u>ls <CR>:b<Space>
+
+    nnoremap m     J
+    nnoremap gm    gJ
+    vnoremap m     J
+    vnoremap gm    gJ
+
+    if 0
+      nnoremap M     J
+      nnoremap gM    gJ
+      vnoremap M     J
+      vnoremap gM    gJ
+    else
+      nnoremap M <C-w>n
+      nmap U *
+      nmap M <Plug>(MyVimrc-Window-AutoNew)
+      "nnoremap <silent> <Leader>U :<C-u>vnew<CR>
+    endif
+
+  endif
+endif
+
+" Window Wrap Move }}}
+
+
+
+nmap t <Plug>(MyVimrc-SkipTerm-Inc)
+nmap T <Plug>(MyVimrc-SkipTerm-Dec)
+
+
+
+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+" Next Hunk
+"nnoremap <silent> <C-i> ]c^zz:FuncNameStl<CR>
+nnoremap <silent> <C-i> ]c^:FuncNameStl<CR>
+
+" Previouse Hunk
+"nnoremap <silent> <C-o> [c^zz:FuncNameStl<CR>
+nnoremap <silent> <C-o> [c^:FuncNameStl<CR>
+nnoremap <silent> <S-Tab> [c^:FuncNameStl<CR>
+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+nnoremap gM M
+nnoremap gH H
+nnoremap gL L
+
+
+
+nnoremap go :MRU 
+nnoremap gw :<C-u>w<CR>
+nmap ge <Leader>e
+nmap gt <Plug>(PrjTree-MyExplore)
+
+
+
+let g:submode_timeoutlen = 5000
+
+
+
+" Window Temp }}}}}}}}}}}}}}}}}}}}}}}
+
+
