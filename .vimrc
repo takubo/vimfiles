@@ -2362,36 +2362,83 @@ function! WinWrapMove(m)
     return
   endif
 
-  let cur = winnr()
-  exe 'wincmd ' . a:m
+  let org = winnr()
 
-  if cur == winnr()
-    let rev = {'h' : 'l', 'j' : 'k', 'k' : 'j', 'l' : 'h'}
+  while 1
+    let old = winnr()
+    exe 'wincmd ' . a:m
+    let new = winnr()
 
-    let num_move = 0
+    if new == old
+      exe org 'wincmd w'
+      break
+    endif
 
-    while 1
-      let new = winnr()
-      exe 'wincmd ' . rev[a:m]
-      if new == winnr()
+    if &l:buftype !~ 'terminal' || term_getstatus(winbufnr(new)) =~ 'normal'
+      " 一旦戻って、直接移動にしないと、前Window(<C-w>p)が意図しないものとなる。
+      exe org 'wincmd w'
+      exe new 'wincmd w'
+      return
+    endif
+  endwhile
+
+
+  let rev = {'h' : 'l', 'j' : 'k', 'k' : 'j', 'l' : 'h'}
+
+  while 1
+    let old = winnr()
+    exe 'wincmd ' . rev[a:m]
+    let new = winnr()
+
+    if &l:buftype !~ 'terminal' || term_getstatus(winbufnr(new)) =~ 'normal'
+      " 一度も動かなかったときのために、この位置とする。
+      let last_not_term_win = winnr()
+    endif
+
+    if new == old
+      if org != last_not_term_win
+	" 一旦戻って、直接移動にしないと、前Window(<C-w>p)が意図しないものとなる。
+	exe org 'wincmd w'
+	exe last_not_term_win 'wincmd w'
+	return
+      else
 	break
       endif
-
-      let num_move += 1
-
-    endwhile
-
-    " 適当に押しても、なるべく移動する。
-    " Windowが2以上ないと、無限再起に陥る。
-    if num_move == 0 && winnr('$') > 2
-      call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
-    else
-      " 一旦戻って、直接移動にしないと、前Window(<C-w>p)が意図しないものとなる。
-      exe cur 'wincmd w'
-      exe new 'wincmd w'
     endif
+  endwhile
+
+  " 適当に押しても、なるべく移動する。
+  " 有効なWindowが2以上ないと、無限再起に陥る。
+  if (winnr('$') - s:get_num_not_normal_terminal()) > 2
+    call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
   endif
 endfunction
+
+function! Get_num_not_normal_terminal()
+  let n = 0
+  for win in term_list()
+    if term_getstatus(winbufnr(win)) !~ 'normal'
+      let n += 1
+    endif
+  endfor
+  return n
+endfunction
+
+function! s:get_num_not_normal_terminal()
+  let n = 0
+
+  let terms = term_list()
+
+  for win in range(1, winnr('$'))
+    let nr = winbufnr(win)
+    if count(terms, nr) > 1 && term_getstatus(nr) =~# 'normal'
+      let n += 1
+    endif
+  endfor
+  return n
+endfunction
+
+
 
 " nnoremap <Plug>(WinWrapMove-h) :<C-u>call WinWrapMove('h')<CR>
 " nnoremap <Plug>(WinWrapMove-j) :<C-u>call WinWrapMove('j')<CR>
