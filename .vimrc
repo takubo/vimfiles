@@ -2371,9 +2371,9 @@ function! WinWrapMove(m)
     let num_move = 0
 
     while 1
-      let cur = winnr()
+      let new = winnr()
       exe 'wincmd ' . rev[a:m]
-      if cur == winnr()
+      if new == winnr()
 	break
       endif
 
@@ -2385,6 +2385,10 @@ function! WinWrapMove(m)
     " Windowが2以上ないと、無限再起に陥る。
     if num_move == 0 && winnr('$') > 2
       call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
+    else
+      " 一旦戻って、直接移動にしないと、前Window(<C-w>p)が意図しないものとなる。
+      exe cur 'wincmd w'
+      exe new 'wincmd w'
     endif
   endif
 endfunction
