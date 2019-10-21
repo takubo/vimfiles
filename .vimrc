@@ -924,6 +924,7 @@ nnoremap d<CR> :<C-u>exe ( winnr('$') > 1 ? 'tab split' : '' )<CR>:Gdiffsplit<CR
 
 set noequalalways
 
+
 "----------------------------------------------------------------------------------------
 " Window Ratio
 "
@@ -935,13 +936,15 @@ function! s:WindowRatio()
   return (w / h - 178.0 / 78.0)
 endfunction
 
+
 "----------------------------------------------------------------------------------------
 " Trigger
 
 nmap <BS> <C-w>
 
+
 "----------------------------------------------------------------------------------------
-" Split
+" Split & New
 
 " Auto Split
 nnoremap <silent> <expr> <Plug>(MyVimrc-Window-AutoSplit)     ( <SID>WindowRatio() >= 0 ? "\<C-w>v" : "\<C-w>s" ) . ':diffoff<CR>'
@@ -962,17 +965,20 @@ nnoremap <silent> g<Bar>           :<C-u>vnew<CR>
 " Auto New
 nnoremap <silent> <expr> <Plug>(MyVimrc-Window-AutoNew) ( winwidth(0) > (&columns * 7 / 10) && <SID>WindowRatio() >=  0 ) ? ':<C-u>vnew<CR>' : '<C-w>n'
 
+
 "----------------------------------------------------------------------------------------
 " Close
 
+" TODO NERDTreeも閉じられるようにする。
 nnoremap <silent> q         <C-w><C-c>
 nnoremap <silent> <Leader>q :<C-u>q<CR>
 
 " 補償
-nnoremap <silent> <C-q>  q
-nnoremap <silent> <C-q>; q:
-nnoremap <silent> <C-q>/ q/
-nnoremap <silent> <C-q>? q?
+nnoremap <C-q>  q
+nnoremap <C-q>: q:
+nnoremap <C-q>; q:
+nnoremap <C-q>/ q/
+nnoremap <C-q>? q?
 
 " ウィンドウレイアウトを崩さないでバッファを閉じる   (http://nanasi.jp/articles/vim/kwbd_vim.html)
 com! CloseWindow let s:kwbd_bn = bufnr('%') | enew | exe 'bdel '. s:kwbd_bn | unlet s:kwbd_bn
@@ -991,75 +997,80 @@ nmap J <Plug>(Window-Focus-WrapMove-j)
 nmap K <Plug>(Window-Focus-WrapMove-k)
 nmap L <Plug>(Window-Focus-WrapMove-l)
 
+" 補償
+nnoremap gM M
+nnoremap gH H
+nnoremap gL L
+if 1
+  noremap m   J
+  noremap gm gJ
+else
+  noremap M   J
+  noremap gM gJ
+endif
+
 " Direction Focus (Terminal)
-" tnoremap <Left>  <C-w>h
-" tnoremap <Down>  <C-w>j
-" tnoremap <Up>    <C-w>k
-" tnoremap <Right> <C-w>l
+tnoremap <S-Left>  <C-w>h
+tnoremap <S-Down>  <C-w>j
+tnoremap <S-Up>    <C-w>k
+tnoremap <S-Right> <C-w>l
 
 " Terminal Windowから抜ける。 (Windowが１つしかないなら、Tabを抜ける。)
 tnoremap <expr> <C-Tab> winnr('$') == 1 ? '<C-w>:tabNext<CR>' : '<C-w>p'
+
 
 "----------------------------------------------------------------------------------------
 " Resize
 
 " 漸次
-nnoremap <silent> <C-j> <esc>1<C-w>+:<C-u>call <SID>best_scrolloff()<CR>
-nnoremap <silent> <C-k> <esc>1<C-w>-:<C-u>call <SID>best_scrolloff()<CR>
-nnoremap <silent> <C-h> <esc>3<C-w><
-nnoremap <silent> <C-l> <esc>3<C-w>>
+"nnoremap <silent> <C-j> <esc>1<C-w>+:<C-u>call <SID>best_scrolloff()<CR>
+"nnoremap <silent> <C-k> <esc>1<C-w>-:<C-u>call <SID>best_scrolloff()<CR>
+"nnoremap <silent> <C-h> <esc>3<C-w><
+"nnoremap <silent> <C-l> <esc>3<C-w>>
 
-tnoremap <silent> <up>	  <C-w>1+:<C-u>call <SID>best_scrolloff()<CR>
-tnoremap <silent> <down>  <C-w>1-:<C-u>call <SID>best_scrolloff()<CR>
-tnoremap <silent> <left>  <C-w>3<
-tnoremap <silent> <right> <C-w>3>
-
-tnoremap <silent> <S-up>    <C-w>+:<C-u>
-tnoremap <silent> <S-down>  <C-w>-:<C-u>
-tnoremap <silent> <S-left>  <C-w><
-tnoremap <silent> <S-right> <C-w>>
+tnoremap <silent> <C-up>    <C-w>+:<C-u>call <SID>best_scrolloff()<CR>
+tnoremap <silent> <C-down>  <C-w>-:<C-u>call <SID>best_scrolloff()<CR>
+tnoremap <silent> <C-left>  <C-w><
+tnoremap <silent> <C-right> <C-w>>
 
 " 補償
 nnoremap <silent> <A-o> <C-l>
 
 " 最小化・最大化
-nnoremap <silent> g<C-j> <esc><C-w>_:<C-u>call <SID>best_scrolloff()<CR>
-nnoremap <silent> g<C-k> <esc>1<C-w>_:<C-u>call <SID>best_scrolloff()<CR>
-nnoremap <silent> g<C-h> <esc>1<C-w>|
-nnoremap <silent> g<C-l> <esc><C-w>|
-
-tnoremap <silent> <C-up>     <C-w>_:<C-u>call		<SID>best_scrolloff()<CR>
-tnoremap <silent> <C-down>  1<C-w>_:<C-u>call		<SID>best_scrolloff()<CR>
-tnoremap <silent> <C-left>  1<C-w><bar>:<C-u>call	<SID>best_scrolloff()<CR>
-tnoremap <silent> <C-right>  <C-w><bar>:<C-u>call	<SID>best_scrolloff()<CR>
+"nnoremap <silent> g<C-j> <esc><C-w>_:<C-u>call <SID>best_scrolloff()<CR>
+"nnoremap <silent> g<C-k> <esc>1<C-w>_:<C-u>call <SID>best_scrolloff()<CR>
+"nnoremap <silent> g<C-h> <esc>1<C-w>|
+"nnoremap <silent> g<C-l> <esc><C-w>|
 
 "----------------------------------------------------------------------------------------
 " Window Move
 
-nnoremap <silent> <A-h> <C-w>H:<C-u>call		<SID>best_scrolloff()<CR>
-nnoremap <silent> <A-j> <C-w>J:<C-u>call		<SID>best_scrolloff()<CR>
-nnoremap <silent> <A-k> <C-w>K:<C-u>call		<SID>best_scrolloff()<CR>
-nnoremap <silent> <A-l> <C-w>L:<C-u>call		<SID>best_scrolloff()<CR>
+nnoremap <silent> <A-h> <C-w>H:<C-u>call <SID>best_scrolloff()<CR>
+nnoremap <silent> <A-j> <C-w>J:<C-u>call <SID>best_scrolloff()<CR>
+nnoremap <silent> <A-k> <C-w>K:<C-u>call <SID>best_scrolloff()<CR>
+nnoremap <silent> <A-l> <C-w>L:<C-u>call <SID>best_scrolloff()<CR>
 
-tnoremap <silent> <A-left>  <C-w>H:<C-u>call		<SID>best_scrolloff()<CR>
-tnoremap <silent> <A-down>  <C-w>J:<C-u>call		<SID>best_scrolloff()<CR>
-tnoremap <silent> <A-up>    <C-w>K:<C-u>call		<SID>best_scrolloff()<CR>
-tnoremap <silent> <A-right> <C-w>L:<C-u>call		<SID>best_scrolloff()<CR>
+tnoremap <silent> <A-left>  <C-w>H:<C-u>call <SID>best_scrolloff()<CR>
+tnoremap <silent> <A-down>  <C-w>J:<C-u>call <SID>best_scrolloff()<CR>
+tnoremap <silent> <A-up>    <C-w>K:<C-u>call <SID>best_scrolloff()<CR>
+tnoremap <silent> <A-right> <C-w>L:<C-u>call <SID>best_scrolloff()<CR>
+
 
 "----------------------------------------------------------------------------------------
 " Reopen as Tab
 " TODO diffのバッファも再現する。
 
-nnoremap <C-o>      :<C-u>tab split<CR>
-nnoremap <C-w><C-w> <C-w>T
 nnoremap <C-w><C-w> :<C-u>tab split<CR>
 nnoremap <C-w><C-t> <C-w>T
 
 tnoremap <C-w><C-t> <C-w>T
 
+
 "----------------------------------------------------------------------------------------
-" Plug
+" Plug WinCmd
+
 nnoremap <Plug>(MyVimrc-WinCmd-p) <C-w>p
+
 
 " Window }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -2290,7 +2301,6 @@ endif
 " Submode Window Size }}}
 
 
-
 " Optimal Window Width {{{
 
 function! SetOptimalWinWidth()
@@ -2320,7 +2330,6 @@ nnoremap <silent> <Leader><Leader> :<C-u>call SetOptimalWinWidth()<CR>
 " Optimal Window Width }}}
 
 
-
 " Equal Window Height Only {{{
 
 function! WindowHeightOnlyEqual()
@@ -2334,62 +2343,34 @@ nnoremap <silent> @ :<C-u>call Tate()<CR>
 " Equal Window Height Only }}}
 
 
-
 " Window Wrap Focus 補償 {{{
 
-if 0
-  nnoremap H <C-w>+
-  nnoremap L <C-w>-
-endif
+"noremap zh H
+"noremap zl L
+"noremap zm M
+"noremap zk H
+"noremap zj L
 
-if 1
-
-  if 1
-    " 補償
-
-    "noremap zh H
-    "noremap zl L
-    "noremap zm M
-    "noremap zk H
-    "noremap zj L
-    nnoremap gM M
-    nnoremap gH H
-    nnoremap gL L
+"nnoremap <C-h> H
+"nnoremap <C-l> L
+"nnoremap <C-j> M
 
 
-    nmap <silent> <C-h> <C-w>+
-    nmap <silent> <C-l> <C-w>-
+"nmap <silent> <C-h> <C-w>+
+"nmap <silent> <C-l> <C-w>-
 
-    nnoremap ( <C-w><
-    nnoremap ) <C-w>>
+nnoremap ( <C-w><
+nnoremap ) <C-w>>
 
-    nnoremap <C-k> :<C-u>ls <CR>:b<Space>
-
-    nnoremap m     J
-    nnoremap gm    gJ
-    vnoremap m     J
-    vnoremap gm    gJ
-
-    if 0
-      nnoremap M     J
-      nnoremap gM    gJ
-      vnoremap M     J
-      vnoremap gM    gJ
-    else
-      nnoremap M <C-w>n
-      nmap U *
-      nmap M <Plug>(MyVimrc-Window-AutoNew)
-      "nnoremap <silent> <Leader>U :<C-u>vnew<CR>
-    endif
-
-  endif
-endif
-
-" }}}
+nnoremap <C-k> :<C-u>ls <CR>:b<Space>
 
 
+nnoremap M <C-w>n
+nmap U *
+nmap M <Plug>(MyVimrc-Window-AutoNew)
 
 
+" Window Wrap Focus 補償 }}}
 
 
 "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2402,6 +2383,12 @@ nnoremap <silent> <C-i> ]c^:FuncNameStl<CR>
 nnoremap <silent> <C-o> [c^:FuncNameStl<CR>
 nnoremap <silent> <S-Tab> [c^:FuncNameStl<CR>
 "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+" Window Temp }}}}}}}}}}}}}}}}}}}}}}}
+
+
+
 
 
 
@@ -2445,7 +2432,6 @@ endif
 
 
 
-" Window Temp }}}}}}}}}}}}}}}}}}}}}}}
 
 
 
