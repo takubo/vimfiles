@@ -2390,7 +2390,7 @@ function! WinWrapMove(m)
       exe new 'wincmd w'
       return
     else
-      " 移動できた最後のwindowを憶えておく。 (直行移動で使う。)
+      " 移動できた最後のwindowを憶えておく。 (直交移動で使う。)
       let last_moved_win = new
     endif
   endwhile
@@ -2426,7 +2426,7 @@ function! WinWrapMove(m)
 	return
       else
 	if last_moved_win == org
-	  " 移動できた最後のwindowを憶えておく。 (直行移動で使う。)
+	  " 移動できた最後のwindowを憶えておく。 (直交移動で使う。)
 	  let last_moved_win = new
 	endif
 	break
@@ -2435,38 +2435,29 @@ function! WinWrapMove(m)
   endwhile
 
 
-  "++++++++++++ 直行移動 (水平、垂直を入れ替えて動く。) ++++++++++++
+  "++++++++++++ 直交移動 (水平、垂直を入れ替えて動く。) ++++++++++++
   " 適当に押しても、なるべく移動するため。
 
   " 以降の処理は、terminalでないwindowが2個以上ないと、無限再起に陥る。
-  if (winnr('$') - s:get_num_not_normal_terminal()) > 2
+  if (winnr('$') - s:get_num_of_not_normal_terminal()) > 2
     if last_moved_win != org
-      " 移動できた最後のwindowに移動してから、直行移動を行う方が、本来意図に近い。
+      " 移動できた最後のwindowに移動してから、直交移動を行う方が、本来意図に近い。
       exe last_moved_win 'wincmd w'
       call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
       if org != winnr()
 	return
       endif
-      " それがダメなら、orgに戻ってから、直行移動を行う。
+      " それがダメなら、orgに戻ってから、直交移動を行う。
       exe org 'wincmd w'
     endif
 
-    " orgを起点とした直行移動
+    " orgを起点とした直交移動
     call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
   endif
 endfunction
 
-function! Get_num_not_normal_terminal()
-  let n = 0
-  for win in term_list()
-    if term_getstatus(winbufnr(win)) !~ 'normal'
-      let n += 1
-    endif
-  endfor
-  return n
-endfunction
-
-function! s:get_num_not_normal_terminal()
+" normal mode になっていない terminal window の数を返す。
+function! s:get_num_of_not_normal_terminal()
   let n = 0
 
   let terms = term_list()
