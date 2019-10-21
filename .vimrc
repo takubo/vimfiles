@@ -873,11 +873,11 @@ nnoremap dP dp1gs[c^
 
 " Next Hunk
 "nnoremap <silent> t ]c^zz:FuncNameStl<CR>
-nnoremap <silent> t ]c^:FuncNameStl<CR>
+"nnoremap <silent> t ]c^:FuncNameStl<CR>
 
 " Previouse Hunk
 "nnoremap <silent> T [c^zz:FuncNameStl<CR>
-nnoremap <silent> T [c^:FuncNameStl<CR>
+"nnoremap <silent> T [c^:FuncNameStl<CR>
 
 " 最初に gg , G , [c , ]c すると、FuncNameStlが実行されない不具合あり。対策として、t,Tをnmap。
 
@@ -936,30 +936,6 @@ function! s:WindowRatio()
 endfunction
 
 "----------------------------------------------------------------------------------------
-" Skip Terminal
-
-function! s:SkipTerm(direction)
-  "Window番号を指定されてら、そのWindowへ移動。
-  if v:prevcount | return v:prevcount | endif
-
-  "windowが2つしかないなら、もう一方へ移動することは自明なので、terminalであっても移動を許す。
-  if winnr('$') == 2 | return winnr() == 1 ? 2 : 1 | endif
-
-  let terms = term_list()
-  let next_win = winnr()
-
-  for i in range(winnr('$'))
-    if a:direction >= 0
-      let next_win = ( next_win == winnr('$') ? 1 : next_win + 1 )  "順方向
-    else
-      let next_win = ( next_win == 1 ? winnr('$') : next_win - 1 )  "逆方向
-    endif
-    let nr = winbufnr(next_win)
-    if count(terms, nr) < 1 || term_getstatus(nr) =~# 'normal' | return next_win | endif
-  endfor
-endfunction
-
-"----------------------------------------------------------------------------------------
 " Trigger
 
 nmap <BS> <C-w>
@@ -1005,8 +981,8 @@ com! CloseWindow let s:kwbd_bn = bufnr('%') | enew | exe 'bdel '. s:kwbd_bn | un
 " Focus
 
 " Basic
-nnoremap <silent> <Plug>(MyVimrc-SkipTerm-Inc) <Esc>:exe <SID>SkipTerm(+1) . ' wincmd w'<CR>
-nnoremap <silent> <Plug>(MyVimrc-SkipTerm-Dec) <Esc>:exe <SID>SkipTerm(-1) . ' wincmd w'<CR>
+nmap t <Plug>(Window-Focus-SkipTerm-Inc)
+nmap T <Plug>(Window-Focus-SkipTerm-Dec)
 " Unified_Spaceを参照。
 
 " Direction Focus
@@ -1467,8 +1443,8 @@ endfunction
 
 " Unified_Space {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 "
-nmap <expr> <Space>   winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Down)' : '<Plug>(MyVimrc-SkipTerm-Inc)'
-nmap <expr> <S-Space> winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Up)'   : '<Plug>(MyVimrc-SkipTerm-Dec)'
+nmap <expr> <Space>   winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Down)' : '<Plug>(Window-Focus-SkipTerm-Inc)'
+nmap <expr> <S-Space> winnr('$') == 1 ? '<Plug>(ComfortableMotion-Flick-Up)'   : '<Plug>(Window-Focus-SkipTerm-Dec)'
 
 " Unified_Space }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -2481,9 +2457,6 @@ nmap H <Plug>(WinWrapFocus-h)
 nmap J <Plug>(WinWrapFocus-j)
 nmap K <Plug>(WinWrapFocus-k)
 nmap L <Plug>(WinWrapFocus-l)
-
-nmap t <Plug>(MyVimrc-SkipTerm-Inc)
-nmap T <Plug>(MyVimrc-SkipTerm-Dec)
 
 " Window Wrap Focus }}}
 
