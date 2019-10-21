@@ -1009,7 +1009,7 @@ nnoremap <silent> <Plug>(MyVimrc-SkipTerm-Inc) <Esc>:exe <SID>SkipTerm(+1) . ' w
 nnoremap <silent> <Plug>(MyVimrc-SkipTerm-Dec) <Esc>:exe <SID>SkipTerm(-1) . ' wincmd w'<CR>
 " Unified_Spaceを参照。
 
-" Move
+" Direction Focus
 nnoremap <silent> <Left>  <C-w>h
 nnoremap <silent> <Down>  <C-w>j
 nnoremap <silent> <Up>    <C-w>k
@@ -2353,9 +2353,9 @@ nnoremap <silent> @ :<C-u>call Tate()<CR>
 
 
 
-" Window Wrap Move {{{
+" Window Wrap Focus {{{
 
-function! WinWrapMove(m)
+function! WinWrapFocus(m)
   if winnr('$') < 3
     "Windowの数が3未満なら、もう一方へ移動することは自明。
     wincmd w
@@ -2443,7 +2443,7 @@ function! WinWrapMove(m)
     if last_moved_win != org
       " 移動できた最後のwindowに移動してから、直交移動を行う方が、本来意図に近い。
       exe last_moved_win 'wincmd w'
-      call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
+      call WinWrapFocus({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
       if org != winnr()
 	return
       endif
@@ -2452,7 +2452,7 @@ function! WinWrapMove(m)
     endif
 
     " orgを起点とした直交移動
-    call WinWrapMove({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
+    call WinWrapFocus({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
   endif
 endfunction
 
@@ -2472,33 +2472,30 @@ function! s:get_num_of_not_normal_terminal()
 endfunction
 
 
+nnoremap <silent> <Plug>(WinWrapFocus-h) :<C-u>call WinWrapFocus('h')<CR>
+nnoremap <silent> <Plug>(WinWrapFocus-j) :<C-u>call WinWrapFocus('j')<CR>
+nnoremap <silent> <Plug>(WinWrapFocus-k) :<C-u>call WinWrapFocus('k')<CR>
+nnoremap <silent> <Plug>(WinWrapFocus-l) :<C-u>call WinWrapFocus('l')<CR>
 
-" nnoremap <Plug>(WinWrapMove-h) :<C-u>call WinWrapMove('h')<CR>
-" nnoremap <Plug>(WinWrapMove-j) :<C-u>call WinWrapMove('j')<CR>
-" nnoremap <Plug>(WinWrapMove-k) :<C-u>call WinWrapMove('k')<CR>
-" nnoremap <Plug>(WinWrapMove-l) :<C-u>call WinWrapMove('l')<CR>
+nmap H <Plug>(WinWrapFocus-h)
+nmap J <Plug>(WinWrapFocus-j)
+nmap K <Plug>(WinWrapFocus-k)
+nmap L <Plug>(WinWrapFocus-l)
+
+nmap t <Plug>(MyVimrc-SkipTerm-Inc)
+nmap T <Plug>(MyVimrc-SkipTerm-Dec)
+
+" Window Wrap Focus }}}
+
+" {{{
+" 補償
 
 if 0
-  nnoremap <silent> <C-h> :<C-u>call WinWrapMove('h')<CR>
-  nnoremap <silent> <C-j> :<C-u>call WinWrapMove('j')<CR>
-  nnoremap <silent> <C-k> :<C-u>call WinWrapMove('k')<CR>
-  nnoremap <silent> <C-l> :<C-u>call WinWrapMove('l')<CR>
-
   nnoremap H <C-w>+
   nnoremap L <C-w>-
-
 endif
 
 if 1
-  nnoremap <silent> H :<C-u>call WinWrapMove('h')<CR>
-  if 1
-    nnoremap <silent> J :<C-u>call WinWrapMove('j')<CR>
-    nnoremap <silent> K :<C-u>call WinWrapMove('k')<CR>
-  else
-    nmap J <Plug>(MyVimrc-SkipTerm-Inc)
-    nmap K <Plug>(MyVimrc-SkipTerm-Dec)
-  endif
-  nnoremap <silent> L :<C-u>call WinWrapMove('l')<CR>
 
   if 1
     " 補償
@@ -2541,12 +2538,10 @@ if 1
   endif
 endif
 
-" Window Wrap Move }}}
+" }}}
 
 
 
-nmap t <Plug>(MyVimrc-SkipTerm-Inc)
-nmap T <Plug>(MyVimrc-SkipTerm-Dec)
 
 
 
