@@ -986,10 +986,16 @@ nmap T <Plug>(Window-Focus-SkipTerm-Dec)
 " Unified_Spaceを参照。
 
 " Direction Focus
-nnoremap <silent> <Left>  <C-w>h
-nnoremap <silent> <Down>  <C-w>j
-nnoremap <silent> <Up>    <C-w>k
-nnoremap <silent> <Right> <C-w>l
+nmap H <Plug>(Window-Focus-WrapMove-h)
+nmap J <Plug>(Window-Focus-WrapMove-j)
+nmap K <Plug>(Window-Focus-WrapMove-k)
+nmap L <Plug>(Window-Focus-WrapMove-l)
+
+" Direction Focus (Terminal)
+" tnoremap <Left>  <C-w>h
+" tnoremap <Down>  <C-w>j
+" tnoremap <Up>    <C-w>k
+" tnoremap <Right> <C-w>l
 
 " Terminal Windowから抜ける。 (Windowが１つしかないなら、Tabを抜ける。)
 tnoremap <expr> <C-Tab> winnr('$') == 1 ? '<C-w>:tabNext<CR>' : '<C-w>p'
@@ -1111,7 +1117,7 @@ nmap <expr> o &buftype == 'terminal' ? 'i' : 'o'
 
 " Buffer {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-nnoremap K         :<C-u>ls <CR>:b<Space>
+"nnoremap K         :<C-u>ls <CR>:b<Space>
 nnoremap gK        :<C-u>ls!<CR>:b<Space>
 nnoremap <Leader>K :<C-u>ls <CR>:bdel<Space>
 
@@ -2329,139 +2335,7 @@ nnoremap <silent> @ :<C-u>call Tate()<CR>
 
 
 
-" Window Wrap Focus {{{
-
-function! WinWrapFocus(m)
-  if winnr('$') < 3
-    "Windowの数が3未満なら、もう一方へ移動することは自明。
-    wincmd w
-    return
-  endif
-
-
-  let org = winnr()
-
-
-  "++++++++++++ 元々指定された方向に動く ++++++++++++
-
-  let last_moved_win = org
-
-  while 1
-    " terminalを全てSkipする必要があるので、ループする。
-
-    let old = winnr()
-    exe 'wincmd ' . a:m
-    let new = winnr()
-
-    if new == old
-      " もう動けないので、orgに戻って終了。
-      exe org 'wincmd w'
-      break
-    endif
-
-    if &l:buftype !~ 'terminal' || term_getstatus(winbufnr(new)) =~ 'normal'
-      " terminalでないwindowを見つけたので、移動して終了。
-      " 一旦戻って、直接移動にしないと、前Window(<C-w>p)が意図しないものとなる。
-      exe org 'wincmd w'
-      exe new 'wincmd w'
-      return
-    else
-      " 移動できた最後のwindowを憶えておく。 (直交移動で使う。)
-      let last_moved_win = new
-    endif
-  endwhile
-
-
-  "++++++++++++ 元々指定されのと反対方向に動く ++++++++++++
-
-  let rev = {'h' : 'l', 'j' : 'k', 'k' : 'j', 'l' : 'h'}
-
-  " ここでorgで初期化しておかないと、terminal windowへしか動けなったときに変数未定義になる。
-  let last_not_term_win = org
-
-  while 1
-    " 逆端まで動く必要があるのでループする。
-
-    let old = winnr()
-    exe 'wincmd ' . rev[a:m]
-    let new = winnr()
-
-    if &l:buftype !~ 'terminal' || term_getstatus(winbufnr(new)) =~ 'normal'
-      " 移動できた最後のterminalでないwindowを憶えておく。
-      let last_not_term_win = winnr()
-    endif
-
-    if new == old
-      " もう動けない。つまり、逆端まで動ききったということ。
-
-      if org != last_not_term_win
-	" 逆方向にterminalでないwindowがあったので、移動して終了。
-	" 一旦戻って、直接移動にしないと、前Window(<C-w>p)が意図しないものとなる。
-	exe org 'wincmd w'
-	exe last_not_term_win 'wincmd w'
-	return
-      else
-	if last_moved_win == org
-	  " 移動できた最後のwindowを憶えておく。 (直交移動で使う。)
-	  let last_moved_win = new
-	endif
-	break
-      endif
-    endif
-  endwhile
-
-
-  "++++++++++++ 直交移動 (水平、垂直を入れ替えて動く。) ++++++++++++
-  " 適当に押しても、なるべく移動するため。
-
-  " 以降の処理は、terminalでないwindowが2個以上ないと、無限再起に陥る。
-  if (winnr('$') - s:get_num_of_not_normal_terminal()) > 2
-    if last_moved_win != org
-      " 移動できた最後のwindowに移動してから、直交移動を行う方が、本来意図に近い。
-      exe last_moved_win 'wincmd w'
-      call WinWrapFocus({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
-      if org != winnr()
-	return
-      endif
-      " それがダメなら、orgに戻ってから、直交移動を行う。
-      exe org 'wincmd w'
-    endif
-
-    " orgを起点とした直交移動
-    call WinWrapFocus({'h' : 'k', 'j' : 'l', 'k' : 'h', 'l' : 'j'}[a:m])
-  endif
-endfunction
-
-" normal mode になっていない terminal window の数を返す。
-function! s:get_num_of_not_normal_terminal()
-  let n = 0
-
-  let terms = term_list()
-
-  for win in range(1, winnr('$'))
-    let nr = winbufnr(win)
-    if count(terms, nr) > 1 && term_getstatus(nr) =~# 'normal'
-      let n += 1
-    endif
-  endfor
-  return n
-endfunction
-
-
-nnoremap <silent> <Plug>(WinWrapFocus-h) :<C-u>call WinWrapFocus('h')<CR>
-nnoremap <silent> <Plug>(WinWrapFocus-j) :<C-u>call WinWrapFocus('j')<CR>
-nnoremap <silent> <Plug>(WinWrapFocus-k) :<C-u>call WinWrapFocus('k')<CR>
-nnoremap <silent> <Plug>(WinWrapFocus-l) :<C-u>call WinWrapFocus('l')<CR>
-
-nmap H <Plug>(WinWrapFocus-h)
-nmap J <Plug>(WinWrapFocus-j)
-nmap K <Plug>(WinWrapFocus-k)
-nmap L <Plug>(WinWrapFocus-l)
-
-" Window Wrap Focus }}}
-
-" {{{
-" 補償
+" Window Wrap Focus 補償 {{{
 
 if 0
   nnoremap H <C-w>+
