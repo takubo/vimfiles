@@ -384,6 +384,10 @@ function! s:best_scrolloff()
   let &l:scrolloff = (g:BrowsingScroll || (exists('w:BrowsingScroll') && w:BrowsingScroll)) ? 99999 : ( winheight(0) < 10 ? 0 : winheight(0) < 20 ? 2 : 5 )
 endfunction
 
+function! BestScrolloff()
+  call s:best_scrolloff()
+endfunction
+
 let g:BrowsingScroll = v:false
 nnoremap z<Space>  :<C-u> let g:BrowsingScroll = !g:BrowsingScroll
                   \ <Bar> exe g:BrowsingScroll ? 'normal! zz' : ''
@@ -1023,13 +1027,15 @@ tnoremap <expr> <C-Tab> winnr('$') == 1 ? '<C-w>:tabNext<CR>' : '<C-w>p'
 " Resize
 
 " 漸次
-"nnoremap <silent> <C-j> <esc>1<C-w>+:<C-u>call <SID>best_scrolloff()<CR>
-"nnoremap <silent> <C-k> <esc>1<C-w>-:<C-u>call <SID>best_scrolloff()<CR>
-"nnoremap <silent> <C-h> <esc>3<C-w><
-"nnoremap <silent> <C-l> <esc>3<C-w>>
+nnoremap <silent> <C-h> <Esc><C-w>+:call <SID>best_scrolloff()<CR>
+nnoremap <silent> <C-l> <Esc><C-w>-:call <SID>best_scrolloff()<CR>
+nnoremap <silent> <S-BS> <Esc><C-w>+:call <SID>best_scrolloff()<CR>
+nnoremap <silent> <C-BS> <Esc><C-w>-:call <SID>best_scrolloff()<CR>
+nnoremap <silent> (     <Esc><C-w>3<
+nnoremap <silent> )     <Esc><C-w>3>
 
-tnoremap <silent> <C-up>    <C-w>+:<C-u>call <SID>best_scrolloff()<CR>
-tnoremap <silent> <C-down>  <C-w>-:<C-u>call <SID>best_scrolloff()<CR>
+tnoremap <silent> <C-up>    <C-w>+:call <SID>best_scrolloff()<CR>
+tnoremap <silent> <C-down>  <C-w>-:call <SID>best_scrolloff()<CR>
 tnoremap <silent> <C-left>  <C-w><
 tnoremap <silent> <C-right> <C-w>>
 
@@ -1037,23 +1043,57 @@ tnoremap <silent> <C-right> <C-w>>
 nnoremap <silent> <A-o> <C-l>
 
 " 最小化・最大化
-"nnoremap <silent> g<C-j> <esc><C-w>_:<C-u>call <SID>best_scrolloff()<CR>
-"nnoremap <silent> g<C-k> <esc>1<C-w>_:<C-u>call <SID>best_scrolloff()<CR>
+"nnoremap <silent> g<C-j> <esc><C-w>_:call <SID>best_scrolloff()<CR>
+"nnoremap <silent> g<C-k> <esc>1<C-w>_:call <SID>best_scrolloff()<CR>
 "nnoremap <silent> g<C-h> <esc>1<C-w>|
 "nnoremap <silent> g<C-l> <esc><C-w>|
+
+nmap @ <Plug>(Window-Resize-EqualOnlyWidth)
+nmap g@ <Plug>(Window-Resize-EqualOnlyHeight)
+
+nmap <Leader><Leader> <Plug>(Window-Resize-OptimalWidth)
+
+" Submode
+call submode#enter_with('WinSize', 'n', 's', '<C-w>+', '<C-w>+:call BestScrolloff()<CR>')
+call submode#enter_with('WinSize', 'n', 's', '<C-w>-', '<C-w>-:call BestScrolloff()<CR>')
+call submode#enter_with('WinSize', 'n', 's', '<C-w>>', '<C-w>>')
+call submode#enter_with('WinSize', 'n', 's', '<C-w><', '<C-w><')
+call submode#map(       'WinSize', 'n', 's', '+', '<C-w>+:call BestScrolloff()<CR>')
+call submode#map(       'WinSize', 'n', 's', '=', '<C-w>+:call BestScrolloff()<CR>') " Typo対策
+call submode#map(       'WinSize', 'n', 's', '-', '<C-w>-:call BestScrolloff()<CR>')
+call submode#map(       'WinSize', 'n', 's', '>', '<C-w>>')
+call submode#map(       'WinSize', 'n', 's', '<', '<C-w><')
+if 1
+  call submode#enter_with('WinSize', 'n', 's', '<C-w>h', '<C-w><')
+  call submode#enter_with('WinSize', 'n', 's', '<C-w>j', '<C-w>+:call BestScrolloff()<CR>')
+  call submode#enter_with('WinSize', 'n', 's', '<C-w>k', '<C-w>-:call BestScrolloff()<CR>')
+  call submode#enter_with('WinSize', 'n', 's', '<C-w>l', '<C-w>>')
+endif
+if 0
+  call submode#map(       'WinSize', 'n', 's', 'h', '<C-w>h')
+  call submode#map(       'WinSize', 'n', 's', 'j', '<C-w>j')
+  call submode#map(       'WinSize', 'n', 's', 'k', '<C-w>k')
+  call submode#map(       'WinSize', 'n', 's', 'l', '<C-w>l')
+else
+  call submode#map(       'WinSize', 'n', 's', 'h', '<C-w><')
+  call submode#map(       'WinSize', 'n', 's', 'j', '<C-w>+:call BestScrolloff()<CR>')
+  call submode#map(       'WinSize', 'n', 's', 'k', '<C-w>-:call BestScrolloff()<CR>')
+  call submode#map(       'WinSize', 'n', 's', 'l', '<C-w>>')
+endif
+
 
 "----------------------------------------------------------------------------------------
 " Window Move
 
-nnoremap <silent> <A-h> <C-w>H:<C-u>call <SID>best_scrolloff()<CR>
-nnoremap <silent> <A-j> <C-w>J:<C-u>call <SID>best_scrolloff()<CR>
-nnoremap <silent> <A-k> <C-w>K:<C-u>call <SID>best_scrolloff()<CR>
-nnoremap <silent> <A-l> <C-w>L:<C-u>call <SID>best_scrolloff()<CR>
+nnoremap <silent> <A-h> <C-w>H:call <SID>best_scrolloff()<CR>
+nnoremap <silent> <A-j> <C-w>J:call <SID>best_scrolloff()<CR>
+nnoremap <silent> <A-k> <C-w>K:call <SID>best_scrolloff()<CR>
+nnoremap <silent> <A-l> <C-w>L:call <SID>best_scrolloff()<CR>
 
-tnoremap <silent> <A-left>  <C-w>H:<C-u>call <SID>best_scrolloff()<CR>
-tnoremap <silent> <A-down>  <C-w>J:<C-u>call <SID>best_scrolloff()<CR>
-tnoremap <silent> <A-up>    <C-w>K:<C-u>call <SID>best_scrolloff()<CR>
-tnoremap <silent> <A-right> <C-w>L:<C-u>call <SID>best_scrolloff()<CR>
+tnoremap <silent> <A-left>  <C-w>H:call <SID>best_scrolloff()<CR>
+tnoremap <silent> <A-down>  <C-w>J:call <SID>best_scrolloff()<CR>
+tnoremap <silent> <A-up>    <C-w>K:call <SID>best_scrolloff()<CR>
+tnoremap <silent> <A-right> <C-w>L:call <SID>best_scrolloff()<CR>
 
 
 "----------------------------------------------------------------------------------------
@@ -2091,8 +2131,8 @@ nnoremap <silent> <C-\> g,:FuncNameStl<CR>
 nnoremap <silent> <C-u> :<C-u>new<CR>
 nnoremap <silent> <C-d> :<C-u>vnew<CR>
 
-nnoremap ( zh
-nnoremap ) zl
+"nnoremap ( zh
+"nnoremap ) zl
 nnoremap g4 g$
 nnoremap g6 g^
 
@@ -2269,78 +2309,9 @@ if 0
   let g:submode_timeoutlen = 5000
 endif
 
-if 1
-  call submode#enter_with('WinSize', 'n', '', '<C-w>>', '<C-w>>')
-  call submode#enter_with('WinSize', 'n', '', '<C-w><', '<C-w><')
-  call submode#enter_with('WinSize', 'n', '', '<C-w>+', '<C-w>+')
-  call submode#enter_with('WinSize', 'n', '', '<C-w>-', '<C-w>-')
-  call submode#map(       'WinSize', 'n', '', '>', '<C-w>>')
-  call submode#map(       'WinSize', 'n', '', '<', '<C-w><')
-  call submode#map(       'WinSize', 'n', '', '+', '<C-w>+')
-  call submode#map(       'WinSize', 'n', '', '=', '<C-w>+') " Typo対策
-  call submode#map(       'WinSize', 'n', '', '-', '<C-w>-')
-  if 0
-    call submode#map(       'WinSize', 'n', '', 'h', '<C-w>h')
-    call submode#map(       'WinSize', 'n', '', 'j', '<C-w>j')
-    call submode#map(       'WinSize', 'n', '', 'k', '<C-w>k')
-    call submode#map(       'WinSize', 'n', '', 'l', '<C-w>l')
-  else
-    call submode#enter_with('WinSize2', 'n', '', '<C-w>l', '<C-w>>')
-    call submode#enter_with('WinSize2', 'n', '', '<C-w>h', '<C-w><')
-    call submode#enter_with('WinSize2', 'n', '', '<C-w>j', '<C-w>+')
-    call submode#enter_with('WinSize2', 'n', '', '<C-w>k', '<C-w>-')
-    call submode#map(       'WinSize2', 'n', '', 'h', '<C-w><')
-    call submode#map(       'WinSize2', 'n', '', 'j', '<C-w>+')
-    call submode#map(       'WinSize2', 'n', '', 'k', '<C-w>-')
-    call submode#map(       'WinSize2', 'n', '', 'l', '<C-w>>')
-  endif
-
-  let g:submode_timeoutlen = 5000
-endif
+let g:submode_timeoutlen = 5000
 
 " Submode Window Size }}}
-
-
-" Optimal Window Width {{{
-
-function! SetOptimalWinWidth()
-  let top = line('w0')
-  let bot = line('w$')
-
-  let max = 0
-  for i in range(top, bot)
-    "echo i virtcol([i, '$'])
-    let max = max([max, virtcol([i, '$'])])
-  endfor
-  echo 'Width: ' . max
-
-  ""let range(top, bot)
-  "let lines = map( , virtcol([i, '$']) )
-  "echo lines
-
-  if bufname(0) =~ '^NERD_tree'
-    let max -= 2
-  endif
-
-  exe max + (&number || &l:number || &relativenumber || &l:relativenumber ? 5 : 0) . ' wincmd |'
-endfunction
-
-nnoremap <silent> <Leader><Leader> :<C-u>call SetOptimalWinWidth()<CR>
-
-" Optimal Window Width }}}
-
-
-" Equal Window Height Only {{{
-
-function! WindowHeightOnlyEqual()
-  windo let w:cur_fix_width = &l:winfixwidth
-  windo let &l:winfixwidth = 1
-  wincmd =
-  windo let &l:winfixwidth = w:cur_fix_width
-endfunction
-nnoremap <silent> @ :<C-u>call Tate()<CR>
-
-" Equal Window Height Only }}}
 
 
 " Window Wrap Focus 補償 {{{
@@ -2355,12 +2326,6 @@ nnoremap <silent> @ :<C-u>call Tate()<CR>
 "nnoremap <C-l> L
 "nnoremap <C-j> M
 
-
-"nmap <silent> <C-h> <C-w>+
-"nmap <silent> <C-l> <C-w>-
-
-nnoremap ( <C-w><
-nnoremap ) <C-w>>
 
 nnoremap <C-k> :<C-u>ls <CR>:b<Space>
 
