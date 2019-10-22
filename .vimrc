@@ -869,56 +869,36 @@ nmap <Leader><CR> <Plug>(MyVimrc-Window-AutoSplit-Rev)<CR>
 " Diff {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 "set diffopt+=iwhite
-set diffopt=filler,iwhite
 
-" diff Close
+" diff Cancel
 nnoremap dc    :<C-u>diffoff<CR>
 nnoremap d<BS> :<C-u>diffoff<CR>
 
 " diff (all window) Quit
-nnoremap <silent> dq :<C-u>call PushPos_All() <Bar> exe 'windo diffoff' <Bar> call PopPos_All() <Bar> echo 'windo diffoff'<CR>
+nnoremap <silent> dq
+      \ :<C-u>call PushPos_All() <Bar> exe 'windo diffoff' <Bar> call PopPos_All() <Bar> echo 'windo diffoff'<CR>
 
 " diff (all window and buffer) Quit
-nnoremap <silent> dQ :<C-u>call PushPos_All() <Bar> exe 'bufdo diffoff' <Bar> exe 'windo diffoff' <Bar> call PopPos_All()<CR>:echo 'bufdo diffoff <Bar> windo diffoff'<CR>
+nnoremap <silent> dQ
+      \ :<C-u>call PushPos_All() <Bar> exe 'bufdo diffoff' <Bar> exe 'windo diffoff' <Bar> call PopPos_All()<CR>
+      \ :echo 'bufdo diffoff <Bar> windo diffoff'<CR>
 
-" Toggle Scrollbind
-nnoremap dx :<C-u>setl scrollbind!<CR>
-
-" diff update
+" diff Update
 nmap du d<Space>
 
-" diff toggle ignorecase
+" diff I(l)gnorecase
 nnoremap <expr> dl match(&diffopt, 'icase' ) < 0 ? ':<C-u>set diffopt+=icase<CR>'  : ':<C-u>set diffopt-=icase<CR>'
 
-" diff Y(whi)tespace
+" diff whi(Y)tespace
 nnoremap <expr> dy match(&diffopt, 'iwhite') < 0 ? ':<C-u>set diffopt+=iwhite<CR>' : ':<C-u>set diffopt-=iwhite<CR>'
 
-" diff off
-nnoremap d<S-Space> :<C-u>diffoff<CR>
+" diff toggle
+nnoremap <expr> dx
+        \ &diff ? ':<C-u>diffoff<CR>' :
+        \ winnr('$') == 2 ? ':<C-u>call PushPos_All() <Bar> exe "windo diffthis" <Bar> call PopPos_All()<CR>' :
+        \ ':<C-u>diffthis<CR>'
 
-" diff accept (obtain and next, obtain and previouse) (dotは、repeat'.')
-nnoremap d. do1gs]c^
-nnoremap d, dp1gs]c^
-nnoremap dO do1gs[c^
-nnoremap dP dp1gs[c^
-
-" Next Hunk
-"nnoremap <silent> t ]c^zz:FuncNameStl<CR>
-"nnoremap <silent> t ]c^:FuncNameStl<CR>
-
-" Previouse Hunk
-"nnoremap <silent> T [c^zz:FuncNameStl<CR>
-"nnoremap <silent> T [c^:FuncNameStl<CR>
-
-" 最初に gg , G , [c , ]c すると、FuncNameStlが実行されない不具合あり。対策として、t,Tをnmap。
-
-" Top Hunk
-"nmap     <silent> <Leader>t ggtT
-"nnoremap <silent> <Leader>t gg]c[c^zz:FuncNameStl<CR>
-
-" Bottom Hunk
-"nmap     <silent> <Leader>T  GTt
-"nnoremap <silent> <Leader>T  G[c]c^zz:FuncNameStl<CR>
+nnoremap d<Leader> dx
 
 " diff Special
 nnoremap <expr> d<Space>
@@ -926,26 +906,31 @@ nnoremap <expr> d<Space>
         \ winnr('$') == 2 ? ':<C-u>call PushPos_All() <Bar> exe "windo diffthis" <Bar> call PopPos_All()<CR>' :
         \ ':<C-u>diffthis<CR>'
 
-" diff toggle
-nnoremap <expr> d<CR>
-        \ &diff ? ':<C-u>diffoff<CR>' :
-        \ winnr('$') == 2 ? ':<C-u>call PushPos_All() <Bar> exe "windo diffthis" <Bar> call PopPos_All()<CR>' :
-        \ ':<C-u>diffthis<CR>'
+" Git Diff
+"   ・Windowが1つだけならそのタブで、そうでなければ新しいタブで実行。
+"   ・Focusを元のWindowへ戻す。
+"   ・なぜかfeedkeysにしないと、ウィンドウ移動できない。マップ中にウィンドウを作成すると、それを認識できないようだ。
+"   ・Gdiffsplit実行中は、コマンドラインにGdiffsplitが見えるようにする。
+nnoremap d<CR> :<C-u>exe ( winnr('$') > 1 ? 'tab split' : '' )<CR>:Gdiffsplit<CR>:call feedkeys('<C-v><C-w>p', 'nt')<CR>
+
+" Next Hunk
+"nnoremap <silent> <Tab> ]c^zz:FuncNameStl<CR>
+nnoremap <silent> <Tab> ]c^:FuncNameStl<CR>
+
+" Previouse Hunk
+"nnoremap <silent> <S-Tab> [c^zz:FuncNameStl<CR>
+nnoremap <silent> <S-Tab> [c^:FuncNameStl<CR>
+
+" diff accept (obtain and next, obtain and previouse) (dotは、repeat'.')
+
+let g:DiffAcceptSleepTime = 500
+
+nnoremap d. do:exe 'sleep' g:DiffAcceptSleepTime . 'm'<CR>]c^zz
+nnoremap d, dp:exe 'sleep' g:DiffAcceptSleepTime . 'm'<CR>]c^zz
 
 " Block Diff
 vmap <leader>1 <Plug>(BlockDiff-GetBlock1)
 vmap <leader>2 <Plug>(BlockDiff-GetBlock2andExe)
-
-" Git Diff
-"nnoremap d<CR> :<C-u>tab split<CR>:Gdiffsplit<CR>
-" Windowが1つだけならそのタブで、そうでなければ新しいタブで実行。
-"nnoremap <expr> d<CR> ':<C-u>' . ( winnr('$') > 1 ? 'tab split<CR>:' : '' ) . 'Gdiffsplit<CR>'
-" Focusを元のWindowへ戻す。
-"nnoremap <expr> d<CR> ':<C-u>' . ( winnr('$') > 1 ? 'tab split<CR>:' : '' ) . 'Gdiffsplit<CR>' . ':wincmd p'
-" なぜかfeedkeysにしないと、ウィンドウ移動できない。マップ中にウィンドウを作成すると、それを認識できないようだ。
-"nnoremap d<CR> :<C-u>exe ( winnr('$') > 1 ? 'tab split' : '' ) <Bar> Gdiffsplit <Bar> call feedkeys('<C-v><C-w>p', 'nt')<CR>
-" Gdiffsplit実行中は、コマンドラインにGdiffsplitが見えるようにする。
-nnoremap d<CR> :<C-u>exe ( winnr('$') > 1 ? 'tab split' : '' )<CR>:Gdiffsplit<CR>:call feedkeys('<C-v><C-w>p', 'nt')<CR>
 
 " Diff }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
@@ -2377,17 +2362,6 @@ nmap M <Plug>(MyVimrc-Window-AutoNew)
 
 " Window Wrap Focus 補償 }}}
 
-
-"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-" Next Hunk
-"nnoremap <silent> <C-i> ]c^zz:FuncNameStl<CR>
-nnoremap <silent> <Tab> ]c^:FuncNameStl<CR>
-
-" Previouse Hunk
-"nnoremap <silent> <C-o> [c^zz:FuncNameStl<CR>
-"nnoremap <silent> <C-o> [c^:FuncNameStl<CR>
-nnoremap <silent> <S-Tab> [c^:FuncNameStl<CR>
-"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 " Window Temp }}}}}}}}}}}}}}}}}}}}}}}
