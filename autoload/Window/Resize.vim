@@ -62,7 +62,7 @@ function! Window#Resize#SetOptimalWidth()
     let max -= 2
   endif
 
-  exe max + (&number || &l:number || &relativenumber || &l:relativenumber ? 5 : 0) . ' wincmd |'
+  exe max + (&number || &l:number || &relativenumber || &l:relativenumber ? 5 : 0) + &l:foldcolumn . ' wincmd |'
 endfunction
 
 
