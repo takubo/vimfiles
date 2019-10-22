@@ -147,36 +147,75 @@ packadd vim-submode
 
 " Basic {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
+
 nnoremap Y y$
 
+
 " US Keyboard {{{
-nnoremap ; :
-vnoremap ; :
+
+noremap ; :
+
+" ; を連続で押してしまったとき用。
 cnoremap <expr> ; getcmdline() =~# '^:*$' ? ':' : ';'
 cnoremap <expr> : getcmdline() =~# '^:*$' ? ';' : ':'
+
 " US Keyboard }}}
+
 
 nnoremap <silent> ZZ <Nop>
 nnoremap <silent> ZQ <Nop>
+
+
+nmap <silent> W <Plug>CamelCaseMotion_w
+nmap <silent> B <Plug>CamelCaseMotion_b
+if 0
+  nnoremap E ge
+  "nmap <silent> ge <Plug>CamelCaseMotion_e
+  "nmap <silent> gE <Plug>CamelCaseMotion_ge
+else
+  nmap E  <Plug>CamelCaseMotion_e
+  nmap gE <Plug>CamelCaseMotion_ge
+
+  call submode#enter_with('ge', 'n', '', 'ge', 'ge')
+  call submode#map(       'ge', 'n', '', 'e',  'ge')
+  call submode#map(       'ge', 'n', '', 'E',  'e')
+  call submode#enter_with('gE', 'n', 'r', 'gE', '<Plug>CamelCaseMotion_ge')
+  call submode#map(       'gE', 'n', 'r', 'E',  '<Plug>CamelCaseMotion_ge')
+  call submode#map(       'gE', 'n', 'r', 'e',  '<Plug>CamelCaseMotion_e')
+endif
+
 
 " 検索時に/, ?を楽に入力する
 cnoremap <expr> / getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr> ? getcmdtype() == '?' ? '\?' : '?'
 
+
+" 正規表現を楽に入力する
 cnoremap (( \(
 cnoremap )) \)
 cnoremap << \<
 cnoremap >> \>
 cnoremap <Bar><Bar> \<Bar>
 
-" コメント行の後の新規行の自動コメント化のON/OFF
-nnoremap <expr> <Leader># &formatoptions =~# 'o' ? ':<C-u>set formatoptions-=o<CR>:set formatoptions-=r<CR>' : ':<C-u>set formatoptions+=o<CR>:set formatoptions+=r<CR>'
-nmap <Leader>3 <Leader>#
 
-nnoremap <silent> <Leader>@ :<C-u>call <SID>ToggleLineNumber()<CR>
-nmap <Leader>2 <Leader>@
+cnoremap <C-o> <C-\>e(getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?') ? '\<' . getcmdline() . '\>' : getcmdline()<CR><Left><Left>
 
-function! s:ToggleLineNumber()
+
+cnoremap <expr> <C-t> getcmdtype() == ':' ? '../' : '<C-t>'
+cnoremap <expr> <C-^> getcmdtype() == ':' ? '../' : '<C-^>'
+
+
+nnoremap g4 g$
+nnoremap g6 g^
+
+nnoremap ]3 ]#
+nnoremap [3 [#
+
+nnoremap ]8 ]*
+nnoremap [8 [*
+
+
+function! s:SwitchLineNumber()
   if !&l:number && !&l:relativenumber
     let &numberwidth = 3
     let &l:number = 1
@@ -189,38 +228,26 @@ function! s:ToggleLineNumber()
   endif
 endfunction
 
-cnoremap <expr> <C-t>	  getcmdtype() == ':' ? '../' :
-			\ (getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?') ? '\\|' :
-			\ '<C-t>'
-
-nnoremap <leader>; q:
+nnoremap <silent> <Leader>@ :<C-u>call <SID>SwitchLineNumber()<CR>
+nmap <Leader>2 <Leader>@
 
 
-"nnoremap  ]]  ]]f(bzt
-nnoremap g]]  ]]f(b
-"nnoremap  [[  [[f(bzt
-nnoremap g[[  [[f(b
-"nnoremap  ][  ][zb
-nnoremap g][  ][
-"nnoremap  []  []zb
-nnoremap g[]  []
+" コメント行の後の新規行の自動コメント化のON/OFF
+nnoremap <expr> <Leader>#&formatoptions =~# 'o' ?
+      \ ':<C-u>set formatoptions-=o<CR>:set formatoptions-=r<CR>' :
+      \ ':<C-u>set formatoptions+=o<CR>:set formatoptions+=r<CR>'
+nmap <Leader>3 <Leader>#
+
 
 vnoremap af ][<ESC>V[[
 vnoremap if ][k<ESC>V[[j
 
 
-nnoremap ]3 ]#
-nnoremap [3 [#
-
-nnoremap ]8 ]*
-nnoremap [8 [*
-
-
-nmap <silent> W <Plug>CamelCaseMotion_w
-nmap <silent> B <Plug>CamelCaseMotion_b
-"nmap <silent> e <Plug>CamelCaseMotion_e
-"nmap <silent> ge <Plug>CamelCaseMotion_ge
-nnoremap E ge
+nnoremap <silent> +  :echo '++ ' <Bar> exe 'setl isk+=' . GetKeyEcho()<CR>
+nnoremap <silent> -  :echo '-- ' <Bar> exe 'setl isk-=' . GetKeyEcho()<CR>
+nnoremap <silent> z+ :exe 'setl isk+=' . substitute(input('isk++ '), '.\($\)\@!', '&,', 'g')<CR>
+nnoremap <silent> z- :exe 'setl isk-=' . substitute(input('isk-- '), '.\($\)\@!', '&,', 'g')<CR>
+nnoremap <silent> z= :exe 'setl isk+=' . substitute(input('isk++ '), '.\($\)\@!', '&,', 'g')<CR>
 
 
 " Basic }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -471,7 +498,7 @@ nmap N  <Plug>(Search-N)
 "nnoremap ? /<C-p>\<Bar>
 " 末尾が\|でないときだけ、\|を追加しないと、\|の後でEscでキャンセルすると、\|が溜まっていってしまう。
 "nnoremap ? /<C-p><C-\>e getcmdline() . ( match(getcmdline(), '\|$') == -1 ? '\\|' : '') <CR>
-nnoremap ? /<C-p><C-r>=match(getcmdline(), '\|$') == -1 ? '\\|' : ''<CR>
+nnoremap g/ /<C-p><C-r>=match(getcmdline(), '\|$') == -1 ? '\\|' : ''<CR>
 
 
 "----------------------------------------------------------------------------------------
@@ -886,11 +913,11 @@ nnoremap dP dp1gs[c^
 " 最初に gg , G , [c , ]c すると、FuncNameStlが実行されない不具合あり。対策として、t,Tをnmap。
 
 " Top Hunk
-"nmap      <silent> <Leader>t ggtT
+"nmap     <silent> <Leader>t ggtT
 "nnoremap <silent> <Leader>t gg]c[c^zz:FuncNameStl<CR>
 
 " Bottom Hunk
-nmap      <silent> <Leader>T  GTt
+"nmap     <silent> <Leader>T  GTt
 "nnoremap <silent> <Leader>T  G[c]c^zz:FuncNameStl<CR>
 
 " diff Special
@@ -1145,9 +1172,12 @@ function! OpenTerm()
   endif
 endfunction
 
-nnoremap <silent> gt         :<C-u>call OpenTerm()<CR>
-nnoremap <silent> gT         :terminal<CR>
-nnoremap <silent> <Leader>gt :vsplit<CR>:terminal ++curwin<CR>
+"nnoremap <silent> gt         :<C-u>call OpenTerm()<CR>
+"nnoremap <silent> gT         :terminal<CR>
+"nnoremap <silent> <Leader>gt :vsplit<CR>:terminal ++curwin<CR>
+
+"nnoremap <C-d> :<C-u>terminal<CR><C-w>p
+nnoremap <C-d> :<C-u>call OpenTerm()<CR>
 
 tnoremap <C-w>; <C-w>:
 tnoremap <Esc><Esc> <C-w>N
@@ -1168,9 +1198,17 @@ nmap <expr> o &buftype == 'terminal' ? 'i' : 'o'
 
 " Buffer {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-"nnoremap K         :<C-u>ls <CR>:b<Space>
-nnoremap gK        :<C-u>ls!<CR>:b<Space>
-nnoremap <Leader>K :<C-u>ls <CR>:bdel<Space>
+if 0
+  nnoremap K         :<C-u>ls <CR>:b<Space>
+  nnoremap gK        :<C-u>ls!<CR>:b<Space>
+  nnoremap <Leader>K :<C-u>ls <CR>:bdel<Space>
+  nnoremap zK        :<C-u>ls <CR>:bdel<Space>
+else
+  nnoremap <C-k>         :<C-u>ls <CR>:b<Space>
+  nnoremap g<C-k>        :<C-u>ls!<CR>:b<Space>
+  nnoremap <Leader><C-k> :<C-u>ls <CR>:bdel<Space>
+  nnoremap z<C-k>        :<C-u>ls <CR>:bdel<Space>
+endif
 
 nnoremap <silent> <A-n> :<C-u>bnext<CR>
 nnoremap <silent> <A-p> :<C-u>bprev<CR>
@@ -1350,7 +1388,9 @@ function! s:SetStatusline(stl, local, time)
     let save_cur_win = winnr()
     windo let w:stl = getwinvar(winnr(), 'stl', &l:stl)
     silent exe save_cur_win . 'wincmd w'
-    au! MyVimrc_Restore_LocalStl
+    augroup MyVimrc_Restore_LocalStl
+      au!
+    augroup end
   endif
 
   " Statusline の設定
@@ -1396,11 +1436,11 @@ function! s:SetDefaultStatusline(statusline_contents)
   let s:stl .= "%#SLFileName#[ %{winnr()} ]%## ( %n ) "
   let s:stl .= "%##%m%r%{(!&autoread&&!&l:autoread)?'[AR]':''}%h%w "
 
-  let g:MyStlFugitive = a:statusline_contents['GitBranch'] ? ' [fugitive]' : ' fugitive'
+  let g:MyStlFugitive = a:statusline_contents['Branch'] ? ' [fugitive]' : ' fugitive'
   let s:stl .= "%#hl_func_name_stl#%{bufname('') =~ '^fugitive' ? g:MyStlFugitive : ''}"
   let s:stl .= "%#hl_func_name_stl#%{&filetype == 'fugitive' ? g:MyStlFugitive : ''}"
 
-  if a:statusline_contents['GitBranch']
+  if a:statusline_contents['Branch']
     let s:stl .= "%#hl_func_name_stl# %{FugitiveHead(7)}"
   endif
 
@@ -1457,7 +1497,7 @@ endfunction
 let g:StatuslineContents = {}
 
 let g:StatuslineContents['Column'] = v:false
-let g:StatuslineContents['GitBranch'] = v:false
+let g:StatuslineContents['Branch'] = v:false
 let g:StatuslineContents['FuncName'] = v:false
 let g:StatuslineContents['Keywords'] = v:false
 let g:StatuslineContents['LineColumn'] = v:false
@@ -1470,7 +1510,7 @@ endfunction
 com! -nargs=1 -complete=custom,CompletionStlContents Stl let g:StatuslineContents['<args>'] = !g:StatuslineContents['<args>'] | call <SID>SetDefaultStatusline(g:StatuslineContents)
 
 nnoremap <silent> <Leader>_ :<C-u>Stl Column<CR>
-nnoremap <silent> <Leader>. :<C-u>Stl GitBranch<CR>
+nnoremap <silent> <Leader>. :<C-u>Stl Branch<CR>
 nnoremap <silent> <Leader>, :<C-u>Stl FuncName<CR>
 nnoremap <silent> <Leader>- :<C-u>Stl Path<CR>
 
@@ -1956,6 +1996,13 @@ function! GetKey()
 endfunction
 
 
+function! GetKeyEcho()
+  let k = nr2char(getchar())
+  echon k
+  return k
+endfunction
+
+
 function! Eatchar(pat)
   let c = nr2char(getchar(0))
   return (c =~ a:pat) ? '' : c
@@ -2114,27 +2161,12 @@ nnorema <silent> <Leader>D :<C-u>PushPos<CR>:g$.$s    /<C-r>//<C-r><C-w>/g<CR>:P
 
 nnoremap <C-@> g-
 nnoremap <C-^> g+
-nnoremap <C-]> g;
-nnoremap <C-\> g,
 
-cnoremap <C-o> <C-\>e(getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?') ? '\<' . getcmdline() . '\>' : getcmdline()<CR><Left><Left>
 
-nnoremap + :setl isk+=
-nnoremap - :setl isk-=
-
-nnoremap <silent> <C-]> [c^:FuncNameStl<CR>
-nnoremap <silent> <C-\> ]c^:FuncNameStl<CR>
 
 nnoremap <silent> <C-]> g;:FuncNameStl<CR>
 nnoremap <silent> <C-\> g,:FuncNameStl<CR>
 
-nnoremap <silent> <C-u> :<C-u>new<CR>
-nnoremap <silent> <C-d> :<C-u>vnew<CR>
-
-"nnoremap ( zh
-"nnoremap ) zl
-nnoremap g4 g$
-nnoremap g6 g^
 
 
 function! ZZ()
@@ -2145,16 +2177,14 @@ function! ZZ()
   endfor
 endfunction
 
+
+
 let plugin_dicwin_disable = v:true
+
+
 
 ru! ftplugin/man.vim
 
-
-nmap gt ggt
-nmap gT GT
-
-"nnoremap <C-d> :<C-u>terminal<CR><C-w>p
-nnoremap <C-d> :<C-u>call OpenTerm()<CR>
 
 
 "-------------------------------------------------------------------
@@ -2172,6 +2202,7 @@ function! s:get_highlight_info()
 endfunction
 command! HighlightInfo call s:get_highlight_info()
 "-------------------------------------------------------------------
+
 
 
 nnoremap <Leader>$ :<C-u>setl scrollbind!<CR>
@@ -2194,6 +2225,18 @@ endfunction
 com! -range Brace <line1>,<line2>call SurroundLineBrace()
 vnoremap J :Brace<CR>
 " }}}
+
+
+
+"nnoremap  ]]  ]]f(bzt
+"nnoremap g]]  ]]f(b
+"nnoremap  [[  [[f(bzt
+"nnoremap g[[  [[f(b
+"nnoremap  ][  ][zb
+"nnoremap g][  ][
+"nnoremap  []  []zb
+"nnoremap g[]  []
+
 
 
 
@@ -2327,9 +2370,6 @@ let g:submode_timeoutlen = 5000
 "nnoremap <C-j> M
 
 
-nnoremap <C-k> :<C-u>ls <CR>:b<Space>
-
-
 nnoremap M <C-w>n
 nmap U *
 nmap M <Plug>(MyVimrc-Window-AutoNew)
@@ -2341,11 +2381,11 @@ nmap M <Plug>(MyVimrc-Window-AutoNew)
 "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 " Next Hunk
 "nnoremap <silent> <C-i> ]c^zz:FuncNameStl<CR>
-nnoremap <silent> <C-i> ]c^:FuncNameStl<CR>
+nnoremap <silent> <Tab> ]c^:FuncNameStl<CR>
 
 " Previouse Hunk
 "nnoremap <silent> <C-o> [c^zz:FuncNameStl<CR>
-nnoremap <silent> <C-o> [c^:FuncNameStl<CR>
+"nnoremap <silent> <C-o> [c^:FuncNameStl<CR>
 nnoremap <silent> <S-Tab> [c^:FuncNameStl<CR>
 "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -2354,13 +2394,15 @@ nnoremap <silent> <S-Tab> [c^:FuncNameStl<CR>
 
 
 
+nnoremap <silent> <C-o> o<Esc>
+"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
 nnoremap go :<C-u>MRU<Space>
 nnoremap gO :<C-u>MRU<CR>
 nnoremap gw :<C-u>w<CR>
-nmap ge <Leader>e
+nmap gr <Leader>e
 nmap gt <Plug>(PrjTree-MyExplore)
 
 
