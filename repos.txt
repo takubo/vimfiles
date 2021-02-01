@@ -1,7 +1,16 @@
 BlockDiff
+CamelCaseMotion
 clever-f.vim
 comfortable-motion.vim
 current-func-info.vim
 mru.vim
+rainbow_parentheses.vim
+# tags
+# tags-ja
+# tmp
 vim-anzu
+vim-easy-align
 vim-fugitive
+vim-prettyprint
+vim-textobj-user
+vim-textobj-variable-segment
