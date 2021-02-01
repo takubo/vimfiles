@@ -7,9 +7,9 @@ endif
 
 
 " Shellの設定 (Cygwinでも、なぜか設定しないとbashになる。)
-set sh=C:/cygwin/bin/zsh
+set sh=C:/cygwin64/bin/zsh
 
-let s:home = 'C:/cygwin/home/' . $USERNAME
+let s:home = 'C:/cygwin64/home/' . $USERNAME
 
 if substitute($HOME, '\', '/', 'g') == s:home
   " Cygwinから起動されたときの設定
@@ -30,7 +30,7 @@ endif
 let $LANG = 'ja_JP.UTF-8'
 
 " PATHの追加
-let $PATH .= ';C:/cygwin/bin;'
+let $PATH .= ';C:/cygwin64/bin;'
 let $PATH .= $HOME . '/bin;'
 
 " ファイル名の展開にスラッシュを使う
@@ -44,9 +44,9 @@ set shellcmdflag=-c\
 set shellxquote=\"
 
 " runtimepathの追加
-exe 'set runtimepath+=C:/cygwin/home/' . $USERNAME . '/vimfiles/'
-exe 'set runtimepath+=C:/cygwin/home/' . $USERNAME . '/vimfiles/after'
+exe 'set runtimepath+=C:/cygwin64/home/' . $USERNAME . '/vimfiles/'
+exe 'set runtimepath+=C:/cygwin64/home/' . $USERNAME . '/vimfiles/after'
 
 " packpathの追加
-exe 'set packpath+=C:/cygwin/home/' . $USERNAME . '/vimfiles/'
-exe 'set packpath+=C:/cygwin/home/' . $USERNAME . '/vimfiles/after'
+exe 'set packpath+=C:/cygwin64/home/' . $USERNAME . '/vimfiles/'
+exe 'set packpath+=C:/cygwin64/home/' . $USERNAME . '/vimfiles/after'
