@@ -20,7 +20,8 @@ endfunction
 augroup BrowserJump
   au!
   au WinNew * call s:init_win()
-  au VimEnter * call PushPos_All() | exe 'tabdo windo call s:init_win()' | call PopPos_All()
+  " WinNew not fire for the windows created when Vim starts.
+  au VimEnter * exe 'tabdo windo call s:init_win()' | tabfirst | 1 wincmd w
 augroup end
 
 
