@@ -57,15 +57,25 @@ function! BrowserJump#Foward()
 endfunction
 
 
-function! s:exe_jump(n)
-  " カーソルをsetpos()するときは、バッファ指定は無視されるので、先にバッファを変更しておく。
-  silent exe 'buffer ' . w:BrowserJumpList[a:n]['bufnr']
+function! BrowserJump#History()
+  call s:update_jumplist()
 
-  " getjumplist()で取得できる桁は、なぜか1小さいので+1する。
-  call setpos('.', [0, w:BrowserJumpList[a:n]['lnum'], w:BrowserJumpList[a:n]['col'] + 1, w:BrowserJumpList[a:n]['coladd']])
+  for i in range(0, len(w:BrowserJumpList) - 1)
+    let jump_list = w:BrowserJumpList[i]
+    echo printf('%3d %s %5d %3d %s',
+              \ i,
+              \ w:BrowserJumpNowIndex == i ? '>' : ' ',
+              \ jump_list['lnum'],
+              \ jump_list['bufnr'],
+              \ bufname(jump_list['bufnr'])
+         \ )
+  endfor
 
-  " 今回のジャンプを忘れる (バッファ移動を伴うと、jumplistへ記録されてしまう。)
-  clearjumps
+  " 上のupdate_jump()で新規登録があった場合、この時点で、IndexはJumpListの範囲外を指している。
+  " この場合、現在位置が最新の履歴になる可能性がある。
+  if w:BrowserJumpNowIndex == len(w:BrowserJumpList)
+    echo '    >'
+  endif
 endfunction
 
 
@@ -88,25 +98,15 @@ function! s:update_jumplist()
 endfunction
 
 
-function! BrowserJump#History()
-  call s:update_jumplist()
+function! s:exe_jump(n)
+  " カーソルをsetpos()するときは、バッファ指定は無視されるので、先にバッファを変更しておく。
+  silent exe 'buffer ' . w:BrowserJumpList[a:n]['bufnr']
 
-  for i in range(0, len(w:BrowserJumpList) - 1)
-    let jump_list = w:BrowserJumpList[i]
-    echo printf('%3d %s %5d %3d %s',
-              \ i,
-              \ w:BrowserJumpNowIndex == i ? '>' : ' ',
-              \ jump_list['lnum'],
-              \ jump_list['bufnr'],
-              \ bufname(jump_list['bufnr'])
-         \ )
-  endfor
+  " getjumplist()で取得できる桁は、なぜか1小さいので+1する。
+  call setpos('.', [0, w:BrowserJumpList[a:n]['lnum'], w:BrowserJumpList[a:n]['col'] + 1, w:BrowserJumpList[a:n]['coladd']])
 
-  " 上のupdate_jump()で新規登録があった場合、この時点で、IndexはJumpListの範囲外を指している。
-  " この場合、現在位置が最新の履歴になる可能性がある。
-  if w:BrowserJumpNowIndex == len(w:BrowserJumpList)
-    echo '    >'
-  endif
+  " 今回のジャンプを忘れる (バッファ移動を伴うと、jumplistへ記録されてしまう。)
+  clearjumps
 endfunction
 
 
