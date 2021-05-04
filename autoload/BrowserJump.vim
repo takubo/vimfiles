@@ -16,21 +16,17 @@ function! BrowserJump#Back()
   if w:BrowserJumpNowIndex > 0
     " 既に最古の履歴箇所に居るときは、何もしない。
 
-    let now_idx = w:BrowserJumpNowIndex
-
-    if now_idx == len(w:BrowserJumpList)
+    if w:BrowserJumpNowIndex == len(w:BrowserJumpList)
       " 現在位置を登録するために、要素を1つ追加しておく。
       " 上のupdate_jump()で新規登録があった場合、この時点で、Indexはlen(JumpList)となっている。 (つまり、Indexは1大きい。)
-      " 追加するついでに、バッファ番号を登録しておく。行桁は、下で登録される。
+      " 追加するついでに、バッファ番号を登録しておく。行桁は、下のs:update_curpos()で登録される。
       call add(w:BrowserJumpList, {'bufnr' :  bufnr()})
     endif
 
-    let cur_pos = getpos('.')
     " 現在位置に戻って来れるように履歴を更新しておく。
     " 今回、最新の現在位置を追加したときは、ここが行桁を登録する場所となる。
-    let w:BrowserJumpList[now_idx]['lnum'] = cur_pos[1]
-    let w:BrowserJumpList[now_idx]['col'] = cur_pos[2]
-    let w:BrowserJumpList[now_idx]['coladd'] = cur_pos[3]
+    " 現在位置に戻って来れるように履歴を更新しておく。
+    call s:update_curpos()
 
     " Back動作実行
     let w:BrowserJumpNowIndex -= 1
@@ -43,12 +39,8 @@ function! BrowserJump#Foward()
   if w:BrowserJumpNowIndex < (len(w:BrowserJumpList) - 1)
     " 既に最新の履歴箇所に居るときは、何もしない。
 
-    let now_idx = w:BrowserJumpNowIndex
-    let cur_pos = getpos('.')
     " 現在位置に戻って来れるように履歴を更新しておく。
-    let w:BrowserJumpList[now_idx]['lnum'] = cur_pos[1]
-    let w:BrowserJumpList[now_idx]['col'] = cur_pos[2]
-    let w:BrowserJumpList[now_idx]['coladd'] = cur_pos[3]
+    call s:update_curpos()
 
     " Forward動作実行
     let w:BrowserJumpNowIndex += 1
@@ -76,6 +68,17 @@ function! BrowserJump#History()
   if w:BrowserJumpNowIndex == len(w:BrowserJumpList)
     echo '    >'
   endif
+endfunction
+
+
+function! s:update_curpos()
+  let cur_pos = getpos('.')
+
+  let now_idx = w:BrowserJumpNowIndex
+
+  let w:BrowserJumpList[now_idx]['lnum'] = cur_pos[1]
+  let w:BrowserJumpList[now_idx]['col'] = cur_pos[2]
+  let w:BrowserJumpList[now_idx]['coladd'] = cur_pos[3]
 endfunction
 
 
