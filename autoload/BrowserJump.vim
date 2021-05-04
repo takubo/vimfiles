@@ -72,9 +72,15 @@ endfunction
 
 
 function! s:update_curpos()
-  let cur_pos = getpos('.')
-
   let now_idx = w:BrowserJumpNowIndex
+
+  if !has_key(w:BrowserJumpList[now_idx], 'org_lnum')
+    let w:BrowserJumpList[now_idx]['org_lnum']   = w:BrowserJumpList[now_idx]['lnum']
+    let w:BrowserJumpList[now_idx]['org_col']    = w:BrowserJumpList[now_idx]['col']
+    let w:BrowserJumpList[now_idx]['org_coladd'] = w:BrowserJumpList[now_idx]['coladd']
+  endif
+
+  let cur_pos = getpos('.')
 
   let w:BrowserJumpList[now_idx]['lnum'] = cur_pos[1]
   let w:BrowserJumpList[now_idx]['col'] = cur_pos[2]
