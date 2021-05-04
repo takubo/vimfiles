@@ -10,46 +10,61 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-let g:BrowserJump_JumpToOrgPos = get(g:, 'BrowserJump_JumpToOrgPos', v:false)
-
-
 function! BrowserJump#Back()
-  if s:update_jumplist() || w:BrowserJumpTop
-    exe 'normal! ' . line('.') . 'G'
-    call s:update_jumplist()
-    let w:BrowserJumpTop = v:false
-  endif
+  call s:update_jumplist()
 
   if w:BrowserJumpNowIndex > 0
+    " 既に最古の履歴箇所に居るときは、何もしない。
+
+    let now_idx = w:BrowserJumpNowIndex
+
+    if now_idx == len(w:BrowserJumpList)
+      " 現在位置を登録するために、要素を1つ追加しておく。
+      " 上のupdate_jump()で新規登録があった場合、この時点で、Indexはlen(JumpList)となっている。 (つまり、Indexは1大きい。)
+      " 追加するついでに、バッファ番号を登録しておく。行桁は、下で登録される。
+      call add(w:BrowserJumpList, {'bufnr' :  bufnr()})
+    endif
+
+    let cur_pos = getpos('.')
+    " 現在位置に戻って来れるように履歴を更新しておく。
+    " 今回、最新の現在位置を追加したときは、ここが行桁を登録する場所となる。
+    let w:BrowserJumpList[now_idx]['lnum'] = cur_pos[1]
+    let w:BrowserJumpList[now_idx]['col'] = cur_pos[2]
+    let w:BrowserJumpList[now_idx]['coladd'] = cur_pos[3]
+
+    " Back動作実行
     let w:BrowserJumpNowIndex -= 1
-    call s:jump(w:BrowserJumpNowIndex)
+    call s:exe_jump(w:BrowserJumpNowIndex)
   endif
 endfunction
 
 
 function! BrowserJump#Foward()
   if w:BrowserJumpNowIndex < (len(w:BrowserJumpList) - 1)
-    " 現在位置に戻って来れるように更新
-    let ind = w:BrowserJumpNowIndex
-    let w:BrowserJumpList[ind]['lnum'] = line('.')
-    let w:BrowserJumpList[ind]['col'] = col('.')
+    " 既に最新の履歴箇所に居るときは、何もしない。
 
+    let now_idx = w:BrowserJumpNowIndex
+    let cur_pos = getpos('.')
+    " 現在位置に戻って来れるように履歴を更新しておく。
+    let w:BrowserJumpList[now_idx]['lnum'] = cur_pos[1]
+    let w:BrowserJumpList[now_idx]['col'] = cur_pos[2]
+    let w:BrowserJumpList[now_idx]['coladd'] = cur_pos[3]
+
+    " Forward動作実行
     let w:BrowserJumpNowIndex += 1
-    call s:jump(w:BrowserJumpNowIndex)
+    call s:exe_jump(w:BrowserJumpNowIndex)
   endif
 endfunction
 
 
-function! s:jump(n)
+function! s:exe_jump(n)
+  " カーソルをsetpos()するときは、バッファ指定は無視されるので、先にバッファを変更しておく。
   silent exe 'buffer ' . w:BrowserJumpList[a:n]['bufnr']
-  if !g:BrowserJump_JumpToOrgPos
-    " getjumplist()で取得できる桁は、なぜか1小さいので+1する。
-    call setpos('.', [0, w:BrowserJumpList[a:n]['lnum'], w:BrowserJumpList[a:n]['col'] + 1, w:BrowserJumpList[a:n]['coladd']])
-  else
-    " getjumplist()で取得できる桁は、なぜか1小さいので+1する。
-    let cell = split(w:BrowserJumpList[a:n]['org']) " TODO
-    call setpos('.', [0, cell[1], cell[2] + 1, 0])
-  endif
+
+  " getjumplist()で取得できる桁は、なぜか1小さいので+1する。
+  call setpos('.', [0, w:BrowserJumpList[a:n]['lnum'], w:BrowserJumpList[a:n]['col'] + 1, w:BrowserJumpList[a:n]['coladd']])
+
+  " 今回のジャンプを忘れる (バッファ移動を伴うと、jumplistへ記録されてしまう。)
   clearjumps
 endfunction
 
@@ -59,39 +74,39 @@ function! s:update_jumplist()
 
   silent clearjumps
 
-  if new_jump_list != []
+  if !empty(new_jump_list)
     if w:BrowserJumpNowIndex < (len(w:BrowserJumpList) - 1)
       call remove(w:BrowserJumpList, w:BrowserJumpNowIndex + 1, -1)
     endif
 
     let w:BrowserJumpList += new_jump_list
 
-    let w:BrowserJumpNowIndex = len(w:BrowserJumpList) - 1
-    return v:true
+    let w:BrowserJumpNowIndex = len(w:BrowserJumpList)
+    " この時点では、w:BrowserJumpNowIndexは、リストの範囲外を指している。
+    " Backから呼ばれているなら、Back()内ですぐに是正される。
   endif
-  return v:false
 endfunction
 
 
 function! BrowserJump#History()
-  let w:BrowserJumpTop = (w:BrowserJumpTop || s:update_jumplist())
+  call s:update_jumplist()
+
   for i in range(0, len(w:BrowserJumpList) - 1)
     let jump_list = w:BrowserJumpList[i]
     echo printf('%3d %s %5d %3d %s',
               \ i,
-              \ w:BrowserJumpNowIndex == i ? w:BrowserJumpTop ? '?' : '>' : ' ',
+              \ w:BrowserJumpNowIndex == i ? '>' : ' ',
               \ jump_list['lnum'],
               \ jump_list['bufnr'],
               \ bufname(jump_list['bufnr'])
-              \ )
+         \ )
   endfor
-  echo ' ' ((w:BrowserJumpNowIndex < 0 || len(w:BrowserJumpList) <= w:BrowserJumpNowIndex) ? w:BrowserJumpNowIndex : '')
-endfunction
 
-
-function! BrowserJump#ToggleOrgPos()
-  let g:BrowserJump_JumpToOrgPos = !g:BrowserJump_JumpToOrgPos
-  echo 'BrowserJump: ' . (g:BrowserJump_JumpToOrgPos ? '' : 'No ') . 'JumpToOrgPos'
+  " 上のupdate_jump()で新規登録があった場合、この時点で、IndexはJumpListの範囲外を指している。
+  " この場合、現在位置が最新の履歴になる可能性がある。
+  if w:BrowserJumpNowIndex == len(w:BrowserJumpList)
+    echo '    >'
+  endif
 endfunction
 
 

@@ -12,8 +12,9 @@ set cpo&vim
 
 function! s:init_win()
   let w:BrowserJumpList = []
-  let w:BrowserJumpNowIndex = -1
-  let w:BrowserJumpTop = v:false
+  " 履歴がないとき、w:BrowserJumpNowIndex は len(w:BrowserJumpLista) となっていないといけない。
+  " 履歴がない状態でForwardされても実行させないためにも、初期値は0でないといけない。
+  let w:BrowserJumpNowIndex = 0
 endfunction
 
 
