@@ -19,8 +19,8 @@ function! BrowserJump#Back()
     if w:BrowserJumpNowIndex == len(w:BrowserJumpList)
       " 現在位置を登録するために、要素を1つ追加しておく。
       " 上のupdate_jump()で新規登録があった場合、この時点で、Indexはlen(JumpList)となっている。 (つまり、Indexは1大きい。)
-      " 追加するついでに、バッファ番号を登録しておく。行桁は、下のs:update_curpos()で登録される。
-      call add(w:BrowserJumpList, {'bufnr' :  bufnr()})
+      " バッファ番号はここで登録しておく。行桁は仮の番号であり、下のs:update_curpos()で正しい値が登録される。
+      call add(w:BrowserJumpList, {'bufnr':bufnr(), 'lnum':0, 'col':0, 'coladd':0})
     endif
 
     " 現在位置に戻って来れるように履歴を更新しておく。
