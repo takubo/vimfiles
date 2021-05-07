@@ -660,176 +660,22 @@ nmap <silent> <A-m> <Plug>(MyVimrc-LlPrev)
 
 " Tag, Jump, and Unified CR {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
-" Browse
-if 0
-  "nnoremap H <C-o>
-  "nnoremap L <C-i>
 
-  "nmap H <Plug>(BrowserJump-Back)
-  "nmap L <Plug>(BrowserJump-Foward)
+" -----------------------------------------------------------------------------
+" Unified_CR
 
-  "nnoremap <silent> H :<C-u>pop<CR>
-  "nnoremap <silent> L :<C-u>tag<CR>
+" ------------------------------------------------------------
+"   count付き実行されたら、count行へジャンプ。
+"   qfならエラー元へジャンプ。
+"   helpならリンクへジャンプ。
+"   カーソルが数値上なら、基数変換。
+"   それ以外なら、タグジャンプ。
+"   失敗したら、マニュアルを引く。
+"   失敗したら、Go File。
+"   失敗したら、Go Define。
+" ------------------------------------------------------------
 
-  "nmap <BS>H  <Plug>(MyVimrc-WindowSplitAuto)<C-w>p<Plug>(BrowserJump-Back)
-  "nmap <BS>L  <Plug>(MyVimrc-WindowSplitAuto)<C-w>p<Plug>(BrowserJump-Foward)
-
-  "nmap <BS>H  <Plug>(MyVimrc-WindowSplitAuto)<Plug>(MyVimrc-WinCmd-p)<Plug>(BrowserJump-Back)
-  "nmap <BS>L  <Plug>(MyVimrc-WindowSplitAuto)<Plug>(MyVimrc-WinCmd-p)<Plug>(BrowserJump-Foward)
-else
-  nmap <C-p>      <Plug>(BrowserJump-Back)
-  nmap <C-n>      <Plug>(BrowserJump-Foward)
-
-  nmap <BS><C-p>  <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-p>
-  nmap <BS><C-n>  <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-n>
-endif
-
-
-" ---------------
-" Unified CR
-"   数字付きなら、行へジャンプ
-"   qfなら当該行へジャンプ
-"   helpなら当該行へジャンプ
-"   それ以外なら、タグジャンプ
-" ---------------
-function! Unified_CR(mode)
-  if v:prevcount
-    " jumpする前に登録しないと、v:prevcountが上書されてしまう。
-    call histadd('cmd', v:prevcount)
-    " jumplistに残すために、Gを使用。
-    exe 'normal! ' . v:prevcount . 'G'
-    return
-  elseif &ft == 'qf'
-    call feedkeys("\<CR>:FF2\<CR>", 'nt')
-    return
-  elseif &ft == 'vim'
-    exe 'help ' . expand('<cword>')
-    return
-  elseif &ft == 'help'
-    call feedkeys("\<C-]>", 'nt')
-    return
-  else
-    let ret = JumpToDefine(a:mode)
-    if ret > 0
-      keeppatterns normal! gd
-    endif
-    return
-  endif
-endfunction
-
-
-" ----------------------------------------------------------------------------------------------
-" Tag Match
-
-augroup MyVimrc_TagMatch
-  au!
-  au ColorScheme * hi TagMatch	guibg=#c0504d	guifg=white
-augroup end
-
-function! TagHighlightDelete(dummy)
-  call timer_stop(a:dummy)
-
-  "echo a:dummy
-  "sleep 5
-  "call matchdelete(g:TagMatch)
-  call matchdelete(g:TagMatchI[a:dummy])
-  call remove(g:TagMatchI, a:dummy . '')
-  "echo g:TagMatchI
-
-  if a:dummy == g:TimerTagMatch0
-    au! ZZZZ0
-    "ここでreturnしないと、この下のif文でg:TimerTagMatchが未定義エラーになる。
-    return
-  endif
-  if a:dummy == g:TimerTagMatch
-    au! ZZZZ
-    return
-  endif
-endfunction
-
-let g:TagMatchI = {}
-let s:TagHighlightTime = 1500  " [ms]
-
-" TODO
-"   ラベルならf:b
-"   変数なら、スクロールしない
-"   引数のタグ
-"   asmのタグ
-function! JumpToDefine(mode)
-  let w0 = expand("<cword>")
-
-  if w0 !~ '\<\i\+\>'
-    return -1
-  endif
-
-  let w = w0
-
-  let g:TagMatch0 = matchadd('TagMatch', '\<'.w.'\>')
-  let g:TimerTagMatch0 = timer_start(s:TagHighlightTime, 'TagHighlightDelete')
-  let g:TagMatchI[g:TimerTagMatch0] = g:TagMatch0
-  augroup ZZZZ0
-    au!
-    au WinLeave * call TagHighlightDelete(g:TimerTagMatch0)
-  augroup end
-  redraw
-
-  for i in range(2)
-    try
-      if a:mode =~? 's'
-	exe (a:mode =~? 'p' ? 'p' : (a:mode =~? 'w' ? 's' : '')) . "tselect " . w
-      else
-	exe (a:mode =~? 'p' ? 'p' : (a:mode =~? 'w' ? 's' : '')) . "tjump " . w
-      endif
-      " 表示範囲を最適化
-      exe "normal! z\<CR>" . (winheight(0)/4) . "\<C-y>"
-      " カーソル位置を調整 (C専用)
-      call PostTagJumpCursor_C()
-      let g:TagMatch = matchadd('TagMatch', '\<'.w.'\>')
-      let g:TimerTagMatch = timer_start(s:TagHighlightTime, 'TagHighlightDelete')
-      let g:TagMatchI[g:TimerTagMatch] = g:TagMatch
-      augroup ZZZZ
-	au!
-	au WinLeave * call TagHighlightDelete(g:TimerTagMatch)
-      augroup end
-      return 0
-    catch /:E426:/
-      if w0 =~ '^_'
-	" 元の検索語は"_"始まり
-	let w = substitute(w0, '^_', '', '')
-      else
-	" 元の検索語は"_"始まりでない
-	let w = '_' . w0
-      endif
-      if i == 0
-	" エラーメッセージ表示用にオリジナル単語でのエラー文字列を保存
-      let exception = v:exception
-      endif
-    catch /:E433:/
-      echohl ErrorMsg | echo matchstr(v:exception, 'E\d\+:.*') | echohl None
-      return 1
-    endtry
-  endfor
-  echohl ErrorMsg | echo matchstr(exception, 'E\d\+:.*') | echohl None
-  return 1
-endfunction
-
-" カーソル位置を調整 (C専用)
-function! PostTagJumpCursor_C()
-  if search('\%##define\s\+\k\+(', 'bcn')
-  "関数形式マクロ
-    normal! ww
-  elseif search('\%##define\s\+\k\+\s\+', 'bcn')
-  "定数マクロ
-    normal! ww
-  elseif search('\%#.\+;', 'bcn')
-  "変数
-    normal! f;b
-  else
-    "関数
-    normal! $F(b
-  endif
-endfunction
-
+" ------------------------------------------------------------
 " 対象
 "   カーソル下  ->  Normal mode デフォルト
 "   Visual      ->  Visual mode デフォルト
@@ -844,23 +690,154 @@ endfunction
 "   そのまま
 "   別ウィンドウ
 "   プレビュー
+" ------------------------------------------------------------
 
-" mode
+" TODO selectの扱い。   よきに計らう(タグの数次第で) -> デフォルトとする
+" TODO 端末用に、もっと、モディファイア＋特殊キーを使わなくて良いようにする。
+
+" ノーマル (最初の<Esc>がないと、prevcountをうまく処理できない。)
+nnoremap <silent>         <CR>    <Esc>:call Unified_CR('')<CR>
+" スプリット (端末では通常<S-CR>が使えないので、別のパターンを用意しておく。)
+nmap                    <S-CR>    <Plug>(MyVimrc-Window-AutoSplit)<CR>
+nmap                  <BS><CR>    <Plug>(MyVimrc-Window-AutoSplit)<CR>
+nmap               <Space><CR>    <Plug>(MyVimrc-Window-AutoSplit)<CR>
+" プレビュー
+nnoremap <silent>       <C-CR>    :call Unified_CR('p')<CR>
+" セレクト
+nnoremap <silent>        g<CR>    :call Unified_CR('s')<CR>
+" スプリットセレクト
+nmap                   g<S-CR>    <Plug>(MyVimrc-Window-AutoSplit)g<CR>
+" プレビューセレクト
+nnoremap <silent>      g<C-CR>    <Esc>:call Unified_CR('sp')<CR>
+
+" 引数のmodeは、次の文字をから構成される文字列。
 "   s:select
 "   p:preview
 "   w:別ウィンドウ
-"
-" 最初の<Esc>がないと、prevcountをうまく処理できない。
-nnoremap <silent> <CR>         <Esc>:call Unified_CR('')<CR>
-nnoremap <silent> g<CR>        <Esc>:call Unified_CR('p')<CR>
-nnoremap <silent> <Leader><CR> <Esc>:call Unified_CR('w')<CR>
-nnoremap <silent> <C-CR>       <Esc>:call Unified_CR('s')<CR>
-nnoremap <silent> <S-CR>       <Esc>:call Unified_CR('sp')<CR>
-nnoremap <silent> <C-S-CR>     <Esc>:call Unified_CR('sw')<CR>
-nnoremap          <C-S-CR>     <Esc>:tags<CR>;pop
+function! Unified_CR(mode)
 
-nmap <BS><CR>     <Plug>(MyVimrc-Window-AutoSplit)<CR>
-nmap <Leader><CR> <Plug>(MyVimrc-Window-AutoSplit-Rev)<CR>
+  " count付き実行されたら、count行へジャンプ。
+  if v:prevcount
+    "jumpする前に登録しないと、v:prevcountが上書されてしまう。
+    call histadd('cmd', v:prevcount)
+    "jumplistに残すために、Gを使用。
+    exe 'normal!' v:prevcount . 'G'
+    " TODO CFI
+    return
+  endif
+
+  " qfならエラー元へジャンプ。
+  if &buftype == 'quickfix'
+    call feedkeys("\<CR>:FF2\<CR>", 'nt')
+    return
+  " helpならリンクへジャンプ。
+  elseif &buftype == 'help'
+    call feedkeys("\<C-]>", 'nt')
+    return
+  endif
+
+  let cword = expand('<cword>')
+
+  " カーソルが数値上なら、基数変換。
+  if cword[0] =~ '\d'
+    EmDisp
+    return
+  endif
+
+  " それ以外なら、タグジャンプ。
+  if TagJump(cword, a:mode)
+    return
+  endif
+
+  " TODO 暫定対応
+  if &ft == 'vim' && isk !~ '#'
+    set isk+=#
+    let cword2 = expand('<cword>')
+    let res = TagJump(cword2, a:mode)
+    set isk-=#
+    if res
+      return
+    endif
+  endif
+
+  " 失敗したら、マニュアルを引く。
+  if s:lookup_in_man(cword)
+    return
+  endif
+
+  " 失敗したら、Go File。
+  if s:go_file_curfile(a:mode)
+    return
+  endif
+
+  " 失敗したら、Go Define。
+  keeppatterns normal! gd
+
+endfunction
+
+
+" -----------------------------------------------------------------------------
+" マニュアルを引く
+
+function! s:lookup_in_man(word)
+  if &ft == 'vim'
+    try
+      exe 'help ' . a:word
+      call TemporaryHighlightWord(a:word, v:false)
+      return v:true
+    catch /E149/  " Sorry no help for ...
+    endtry
+  endif
+  return v:false
+endfunction
+
+
+" -----------------------------------------------------------------------------
+" Go File
+
+" カーソル下のファイルにgf
+"
+" go fileに
+"   成功したら、true、
+"   失敗したら、fals、
+" を返す。
+"
+" TODO Preview対応
+"
+function! s:go_file_curfile(mode)
+  if search('\%#\f', 'bcn')
+    try
+      normal! gf
+      call popup_create('    Go  File    ' , #{
+            \ line: 'cursor+3',
+            \ col: 'cursor',
+            \ posinvert: v:true,
+            \ wrap: v:false,
+            \ zindex: 200,
+            \ highlight: 'SLFileName',
+            \ border: [1, 1, 1, 1],
+            \ borderhighlight: ['QuickFixLine'],
+            \ moved: 'any',
+            \ time: 2000,
+            \ })
+      return v:true
+    catch /E447/
+    finally
+    endtry
+  endif
+  return v:false
+endfunction
+
+
+" -----------------------------------------------------------------------------
+" Jump (Browsing)
+
+nmap <C-p>      <Plug>(BrowserJump-Back)
+nmap <C-n>      <Plug>(BrowserJump-Foward)
+
+nmap <BS><C-p>  <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-p>
+nmap <BS><C-n>  <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-n>
+
 
 " Tag, Jump, and Unified CR }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
