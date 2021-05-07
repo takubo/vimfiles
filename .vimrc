@@ -832,8 +832,8 @@ endfunction
 " -----------------------------------------------------------------------------
 " Jump (Browsing)
 
-nmap <C-p>      <Plug>(BrowserJump-Back)
-nmap <C-n>      <Plug>(BrowserJump-Foward)
+nmap <C-p>      <Plug>(JumpStack-Back)
+nmap <C-n>      <Plug>(JumpStack-Foward)
 
 nmap <BS><C-p>  <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-p>
 nmap <BS><C-n>  <Plug>(MyVimrc-Window-AutoSplit)<Plug>(MyVimrc-WinCmd-p)<C-n>
